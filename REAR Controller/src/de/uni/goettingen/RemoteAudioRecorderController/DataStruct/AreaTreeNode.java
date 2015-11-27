@@ -38,4 +38,11 @@ public class AreaTreeNode extends DefaultMutableTreeNode implements Cloneable, M
 		if(userObject != null)
 			((Area) userObject).setColor(c);
 	}
+	
+	@Override
+	public String toString() {
+		if(userObject != null)
+			return ((Area) userObject).getName();
+		return "";
+	}
 }

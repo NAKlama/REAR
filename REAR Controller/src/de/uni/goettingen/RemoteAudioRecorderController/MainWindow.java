@@ -286,6 +286,11 @@ public class MainWindow {
 			btnNextStep.setEnabled(false);
 			mainLayout.setComponentConstraints(table, "cell 1 1 1 2,grow");
 		}
+		table.setEditMode(editMode);
+	}
+	
+	public Boolean isEdit() {
+		return editMode;
 	}
 	
 	private void next() {

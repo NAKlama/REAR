@@ -1,5 +1,6 @@
 package de.uni.goettingen.RemoteAudioRecorderController.DataStruct;
 
+import java.net.InetAddress;
 import java.util.Vector;
 
 import javax.swing.table.AbstractTableModel;
@@ -17,13 +18,13 @@ public class MachinesTable extends AbstractTableModel implements TableModel {
 			"Rec. Time"
 		};
 	
-	private Vector<Machine> table;
-	private Boolean			examMode	= false;
-	private Boolean			examStarted	= false;
-	private Boolean[] 		editableCol = {true, true, true, false, false, false};
+	private Vector<Vector<Object>>	table;
+	private Boolean					examMode	= false;
+	private Boolean					examStarted	= false;
+	private Boolean[] 				editableCol = {true, true, true, false, false, false};
 	
 	public MachinesTable() {
-		table = new Vector<Machine>();
+		table = new Vector<Vector<Object>>();
 	}
 	
 	public void setExamMode(Boolean exam, Boolean started) {
@@ -46,12 +47,12 @@ public class MachinesTable extends AbstractTableModel implements TableModel {
 		}
 	}
 	
-	public Machine getLine(int y) {
-		return table.get(y);
+	public Machine getLine(int r) {
+		return objVectorToMachine(table.get(r));
 	}
 	
 	public void addBlankLine() {
-		table.addElement(new Machine());
+		table.addElement(new Machine().getObjVector());
 	}
 	
 	@Override
@@ -60,9 +61,9 @@ public class MachinesTable extends AbstractTableModel implements TableModel {
 	}
 
 	@Override
-	public String getColumnName(int i) {
-		if(i < COL_NUM)
-			return COLUMN_NAMES[i]; 
+	public String getColumnName(int c) {
+		if(c < COL_NUM)
+			return COLUMN_NAMES[c]; 
 		return null;
 	}
 
@@ -72,28 +73,35 @@ public class MachinesTable extends AbstractTableModel implements TableModel {
 	}
 
 	@Override
-	public Object getValueAt(int x, int y) {
-		if(x < COL_NUM && y < table.size())
-			return table.get(y).getValue(x);
+	public Object getValueAt(int r, int c) {
+		if(c < COL_NUM && r < table.size())
+			return table.get(r).get(c);
 		return null;
 	}
 
 	@Override
-	public boolean isCellEditable(int x, int y) {
-		if(x < COL_NUM)
-			return editableCol[x];
+	public boolean isCellEditable(int r, int c) {
+		if(c < COL_NUM)
+			return editableCol[c];
 		return false;
 	}
 
 	@Override
-	public void setValueAt(Object o, int x, int y) {
-		System.out.println(String.valueOf(x) + ", " + String.valueOf(y));
-		if(x < COL_NUM && y < table.size()) {
-			Machine m = table.get(y);
-			m.setValue(x, o);
-			table.set(y, m);
-			fireTableCellUpdated(x, y);
+	public void setValueAt(Object o, int r, int c) {
+		if(c < COL_NUM && r < table.size()) {
+			table.get(r).set(c, o);
+			fireTableCellUpdated(r, c);
 		}
 	}
-
+	
+	private Machine objVectorToMachine(Vector<Object> o) {
+		Machine m = new Machine(
+				(String) o.get(0),
+				(Area) ((AreaTreeNode) o.get(1)).getUserObject(),
+				(InetAddress) o.get(2),
+				(String) o.get(3),
+				(int)    o.get(4),
+				(String) o.get(5) );
+		return m;
+	}
 }

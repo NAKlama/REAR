@@ -2,13 +2,15 @@ package de.uni.goettingen.RemoteAudioRecorderController.DataStruct;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Vector;
 
 public class Machine {
 	private String			computerID;
+	private AreaTreeNode	aNode;
 	private Area			area;
 	private InetAddress		ip;
 	private String			studentID;
-	private int				status;
+	private Status				status;
 	private String			recTime;
 	
 	public Machine(Machine m) {
@@ -20,13 +22,22 @@ public class Machine {
 		recTime		= m.getRecTime();
 	}
 	
+	public Machine(String id, Area a, InetAddress i, String studID, int stat, String recTime) {
+		computerID	= id;
+		area		= a;
+		ip			= i;
+		studentID	= "";
+		status		= Status.UNINITIALIZED;
+		recTime		= "0:00:00";
+	}
+	
 	public Machine(String id, Area a, InetAddress i) {
 		computerID	= id;
 		area		= a;
 		ip			= i;
 		studentID	= "";
-		status		= 0;
-		recTime		= "";
+		status		= Status.UNINITIALIZED;
+		recTime		= "0:00:00";
 	}
 	
 	public Machine(String id, Area a) {
@@ -34,8 +45,8 @@ public class Machine {
 		area		= a;
 		ip			= null;
 		studentID	= "";
-		status		= 0;
-		recTime		= "";
+		status		= Status.UNINITIALIZED;
+		recTime		= "0:00:00";
 	}
 	
 	public Machine() {
@@ -43,12 +54,17 @@ public class Machine {
 		area		= null;
 		ip			= null;
 		studentID	= "";
-		status		= 0;
-		recTime		= "";
+		status		= Status.RECORDING;
+		recTime		= "0:00:00";
 	}
 	
 	public void setComputerID(String id) {
 		computerID = id;
+	}
+	
+	public void setAreaTreeNode(AreaTreeNode atn) {
+		aNode = atn;
+		area  = (Area) aNode.getUserObject();
 	}
 	
 	public void setArea(Area a) {
@@ -63,7 +79,7 @@ public class Machine {
 		studentID = sid;
 	}
 	
-	public void setStatus(int s) {
+	public void setStatus(Status s) {
 		status = s;
 	}
 	
@@ -90,7 +106,7 @@ public class Machine {
 			studentID = (String) o;
 			break;
 		case 4:
-			status = (int) o;
+			status = (Status) o;
 			break;
 		case 5:
 			recTime = (String) o;
@@ -106,6 +122,10 @@ public class Machine {
 		return area;
 	}
 	
+	public AreaTreeNode getAreaTreeNode() {
+		return aNode;
+	}
+	
 	public InetAddress getIP() {
 		return ip;
 	}
@@ -114,7 +134,7 @@ public class Machine {
 		return studentID;
 	}
 	
-	public int getStatus() {
+	public Status getStatus() {
 		return status;
 	}
 	
@@ -138,5 +158,16 @@ public class Machine {
 			return recTime;
 		}
 		return null;
+	}
+	
+	public Vector<Object>	getObjVector() {
+		Vector<Object> v = new Vector<Object>();
+		v.addElement(computerID);
+		v.addElement(aNode);
+		v.addElement(ip);
+		v.addElement(studentID);
+		v.addElement(status);
+		v.addElement(recTime);
+		return v;
 	}
 }
