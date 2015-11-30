@@ -6,16 +6,21 @@ import java.util.Vector;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 
+import de.uni.goettingen.RemoteAudioRecorderController.DataStruct.Serializable.SerMachinesTable;
+import de.uni.goettingen.RemoteAudioRecorderController.GUI.IDfactory;
+
 @SuppressWarnings("serial")
 public class MachinesTable extends AbstractTableModel implements TableModel {
-	private final static int		COL_NUM			= 6;
+	private final static int		COL_NUM			= 7;
 	private final static String []	COLUMN_NAMES 	=
 		{	"Computer ID",
 			"Area",
 			"IP Address",
 			"Student ID",
 			"Status",
-			"Rec. Time"
+			"Rec. Time",
+			"Del",
+			"ID"
 		};
 	
 	private final static Class<?>[] COLUMN_CLASSES =
@@ -24,13 +29,15 @@ public class MachinesTable extends AbstractTableModel implements TableModel {
 			InetAddress.class,
 			String.class,
 			Status.class,
-			String.class
+			String.class,
+			DelButton.class,
+			Long.class
 		};
 	
 	private Vector<Vector<Object>>	table;
 	private Boolean					examMode	= false;
 	private Boolean					examStarted	= false;
-	private Boolean[] 				editableCol = {true, true, true, false, false, false};
+	private Boolean[] 				editableCol = {true, true, true, false, false, false, false, false};
 	
 	public MachinesTable() {
 		table = new Vector<Vector<Object>>();
@@ -64,9 +71,45 @@ public class MachinesTable extends AbstractTableModel implements TableModel {
 		table.addElement(new Machine().getObjVector());
 	}
 	
+	public SerMachinesTable getSaveObject() {
+		SerMachinesTable o = new SerMachinesTable();
+		for(Vector<Object> line : table) {
+			Vector<Object> l = new Vector<Object>();
+			for(int i = 0; i < COL_NUM + 1; i++) { // + 1
+				if(i==3)
+					l.addElement("");
+				else if(i==4)
+					l.addElement(new Status());
+				else if(i==5)
+					l.addElement("0:00:00");
+				else if(i==6)
+					l.addElement(null);
+				else
+					l.addElement(line.get(i));
+			}
+			o.data.addElement(l);
+		}
+		System.out.println("Save: " + o.data.size());
+		return o;
+	}
+
+	public static MachinesTable loadSaveObject(SerMachinesTable t) {
+		MachinesTable o = new MachinesTable();
+		System.out.println("Load: " + t.data.size());
+		if(t != null)
+			for(Vector<Object> line : t.data) {
+				Vector<Object> newLine = new Vector<Object>();
+				new IDfactory().setUsedID((long) line.get(7));
+				for(Object obj : line)
+					newLine.addElement(obj);
+				o.table.addElement(newLine);
+			}
+		return o;
+	}
+	
 	@Override
 	public int getColumnCount() {
-		return 6;
+		return COL_NUM;
 	}
 	
 	@Override
@@ -117,7 +160,7 @@ public class MachinesTable extends AbstractTableModel implements TableModel {
 				(InetAddress) o.get(2),
 				(String) o.get(3),
 				(Status) o.get(4),
-				(String) o.get(5) );
+				(String) o.get(5));
 		return m;
 	}
 }

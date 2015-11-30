@@ -40,7 +40,7 @@ public class InfoDialog extends JDialog {
 	public InfoDialog() {
 		setTitle(MainWindow.PROGRAM_NAME+" "+ MainWindow.getVersion());
 		setType(Type.UTILITY);
-		setMinimumSize(new Dimension(450, 420));
+		setMinimumSize(new Dimension(450, 450));
 		setBounds(100, 100, 450, 356);
 		getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.PAGE_AXIS));
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));

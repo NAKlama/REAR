@@ -1,6 +1,9 @@
 package de.uni.goettingen.RemoteAudioRecorderController.DataStruct;
 
-public class Status {
+import java.io.Serializable;
+
+public class Status implements Serializable {
+	private static final long serialVersionUID = 3536320114748358072L;
 	private StatusEnum	status;
 	
 	public Status(StatusEnum s) {

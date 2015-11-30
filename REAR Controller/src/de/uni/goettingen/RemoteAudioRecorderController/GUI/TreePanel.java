@@ -32,6 +32,8 @@ public class TreePanel extends JPanel implements TreeSelectionListener {
 	private JButton		btnAdd;
 	private JButton		btnRemove;
 	private JButton		btnEdit;
+	
+	private DataTablePanel table;
 
 	private AreaTreeNode	selectedArea		= null;
 	private AreaTreeNode	selectedAreaParent	= null;
@@ -42,6 +44,7 @@ public class TreePanel extends JPanel implements TreeSelectionListener {
 	private Vector<TreeChangeListener> treeChangeListeners;
 
 	public TreePanel() {
+		table = null;
 		treeChangeListeners = new Vector<TreeChangeListener>();
 		setMinimumSize(new Dimension(100, 200));
 		rootNode	= new AreaTreeNode();
@@ -90,6 +93,22 @@ public class TreePanel extends JPanel implements TreeSelectionListener {
 		toolBar.add(horizontalGlue);
 	}
 	
+	public void setTable(DataTablePanel t) {
+		table = t;
+	}
+	
+	public void newEmpty() {
+		rootNode	= new AreaTreeNode();
+		treeDisp.setModel(new DefaultTreeModel(rootNode));
+		((DefaultTreeModel) treeDisp.getModel()).reload();
+	}
+	
+	public void setRootNode(AreaTreeNode n) {
+		rootNode = n;
+		treeDisp.setModel(new DefaultTreeModel(n));
+		((DefaultTreeModel) treeDisp.getModel()).reload();
+	}
+	
 	public JTree getTree() {
 		return treeDisp;
 	}
@@ -102,8 +121,8 @@ public class TreePanel extends JPanel implements TreeSelectionListener {
 		treeChangeListeners.removeElement(l);
 	}
 	
-	public Area getRoot() {
-		return (Area) rootNode.getUserObject();
+	public AreaTreeNode getRoot() {
+		return rootNode;
 	}
 
 	public void addArea(Area newArea) {
@@ -116,7 +135,7 @@ public class TreePanel extends JPanel implements TreeSelectionListener {
 			for(TreeChangeListener l : treeChangeListeners)
 				l.changedTreeStructure();
 		DefaultTreeModel model = (DefaultTreeModel) treeDisp.getModel();
-		model.reload();		
+		model.reload(parent);		
 	}
 
 	public void removeArea() {
@@ -126,7 +145,7 @@ public class TreePanel extends JPanel implements TreeSelectionListener {
 				for(TreeChangeListener l : treeChangeListeners)
 					l.changedTreeStructure();
 			DefaultTreeModel model = (DefaultTreeModel) treeDisp.getModel();
-			model.reload();	
+			model.reload(selectedAreaParent);	
 		}
 		
 	}
@@ -156,7 +175,11 @@ public class TreePanel extends JPanel implements TreeSelectionListener {
 		selectedArea		= node;
 		selectedAreaParent	= parent;
 		
-		// Change displayed table here
+		if(selectedArea != null)
+			System.out.println(((Area) selectedArea.getUserObject()).getID());
+		
+		if(table != null)
+			table.setFilter(selectedArea);
 	}
 
 	private class TreeRenderer extends DefaultTreeCellRenderer implements TreeCellRenderer {

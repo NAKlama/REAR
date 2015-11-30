@@ -4,14 +4,18 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Vector;
 
+import de.uni.goettingen.RemoteAudioRecorderController.GUI.IDfactory;
+
 public class Machine {
+	private long			id;
 	private String			computerID;
 	private AreaTreeNode	aNode;
 	private Area			area;
 	private InetAddress		ip;
 	private String			studentID;
-	private Status				status;
+	private Status			status;
 	private String			recTime;
+	private Boolean			delete;
 	
 	public Machine(Machine m) {
 		computerID	= m.getComputerID();
@@ -20,33 +24,52 @@ public class Machine {
 		studentID	= m.getStudentID();
 		status		= m.getStatus();
 		recTime		= m.getRecTime();
+		delete		= false;
+		id			= new IDfactory().getID();
 	}
 	
-	public Machine(String id, Area a, InetAddress i, String studID, Status s, String rTime) {
-		computerID	= id;
+	public Machine(String cid, Area a, InetAddress i, String studID, Status s, String rTime, long idIn) {
+		computerID	= cid;
 		area		= a;
 		ip			= i;
 		studentID	= studID;
 		status		= s;
 		recTime		= rTime;
+		delete		= false;
+		id			= idIn;
 	}
 	
-	public Machine(String id, Area a, InetAddress i) {
-		computerID	= id;
+	public Machine(String cid, Area a, InetAddress i, String studID, Status s, String rTime) {
+		computerID	= cid;
+		area		= a;
+		ip			= i;
+		studentID	= studID;
+		status		= s;
+		recTime		= rTime;
+		delete		= false;
+		id			= new IDfactory().getID();
+	}
+	
+	public Machine(String cid, Area a, InetAddress i) {
+		computerID	= cid;
 		area		= a;
 		ip			= i;
 		studentID	= "";
 		status		= new Status(StatusEnum.UNINITIALIZED);
 		recTime		= "0:00:00";
+		delete		= false;
+		id			= new IDfactory().getID();
 	}
 	
-	public Machine(String id, Area a) {
-		computerID	= id;
+	public Machine(String cid, Area a) {
+		computerID	= cid;
 		area		= a;
 		ip			= null;
 		studentID	= "";
 		status		= new Status(StatusEnum.UNINITIALIZED);
 		recTime		= "0:00:00";
+		delete		= false;
+		id			= new IDfactory().getID();
 	}
 	
 	public Machine() {
@@ -54,8 +77,10 @@ public class Machine {
 		area		= null;
 		ip			= null;
 		studentID	= "";
-		status		= new Status(StatusEnum.RECORDING);
+		status		= new Status(StatusEnum.UNINITIALIZED);
 		recTime		= "0:00:00";
+		delete		= false;
+		id			= new IDfactory().getID();
 	}
 	
 	public void setComputerID(String id) {
@@ -87,6 +112,14 @@ public class Machine {
 		recTime = t;
 	}
 	
+	public void setDelete() {
+		delete = true;
+	}
+	
+	public void setDelete(Boolean d) {
+		delete = d;
+	}
+	
 	public void setValue(int i, Object o) {
 		switch(i) {
 		case 0:
@@ -110,6 +143,9 @@ public class Machine {
 			break;
 		case 5:
 			recTime = (String) o;
+			break;
+		case 6:
+			delete = (Boolean) o;
 			break;
 		}
 	}
@@ -142,6 +178,14 @@ public class Machine {
 		return recTime;
 	}
 	
+	public Boolean getDelete() {
+		return delete;
+	}
+	
+	public long getID() {
+		return id;
+	}
+	
 	public Object getValue(int i) {
 		switch(i) {
 		case 0:
@@ -156,6 +200,8 @@ public class Machine {
 			return status;
 		case 5:
 			return recTime;
+		case 6:
+			return delete;
 		}
 		return null;
 	}
@@ -168,6 +214,8 @@ public class Machine {
 		v.addElement(studentID);
 		v.addElement(status);
 		v.addElement(recTime);
+		v.addElement(delete);
+		v.addElement(id);
 		return v;
 	}
 }

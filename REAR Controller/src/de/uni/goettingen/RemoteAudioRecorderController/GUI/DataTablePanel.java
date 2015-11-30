@@ -22,12 +22,14 @@ import de.uni.goettingen.RemoteAudioRecorderController.DataStruct.Area;
 import de.uni.goettingen.RemoteAudioRecorderController.DataStruct.AreaTreeNode;
 import de.uni.goettingen.RemoteAudioRecorderController.DataStruct.MachinesTable;
 import de.uni.goettingen.RemoteAudioRecorderController.DataStruct.Status;
+import de.uni.goettingen.RemoteAudioRecorderController.DataStruct.Serializable.SerMachinesTable;
 
 import javax.swing.JScrollPane;
 
 import java.awt.Component;
 import java.awt.Dimension;
 import java.net.InetAddress;
+import java.util.Vector;
 
 @SuppressWarnings("serial")
 public class DataTablePanel extends JPanel implements TableModelListener {
@@ -44,8 +46,12 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 
 	private JComboBox<AreaTreeNode>		areaSelector;
 
+	private SerMachinesTable			mainTable;
+
 	public DataTablePanel(TreePanel t) {
 		tree = t;
+		mainTable = new SerMachinesTable();
+
 		t.addTreeChangeListener(new DataTableTreeChangeListener());
 		setLayout(new MigLayout("", "[fill]", "[fill]"));
 
@@ -56,26 +62,77 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 
 		machines = new MachinesTable();
 		machines.addBlankLine();
-		
+		addListener();
 
-		table = new JTable(machines);
+		table = new JTable();
+		initTable(machines);
+
+		scrollPane.setViewportView(table);
+	}
+
+	public void initTable(TableModel m) {
+		table.setModel(m);
 		table.setDefaultRenderer(AreaTreeNode.class, new AreaTreeNodeRenderer());
 		table.setDefaultRenderer(InetAddress.class, new IpRenderer());
 		table.setDefaultRenderer(Status.class, new StatusRenderer());
-		table.getModel().addTableModelListener(this);
-		
+		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
 		TableColumn statusCol;
 		statusCol = table.getColumnModel().getColumn(4);
 		statusCol.setPreferredWidth(40);
 		statusCol.setMaxWidth(40);
-		
-		updateComboBox();		
+
+		updateComboBox();
 
 		TableColumn ipColumn = table.getColumnModel().getColumn(2);
 		ipColumn.setCellEditor(new IpAddressEditor(new JTextField()));
+	}
 
-		scrollPane.setViewportView(table);
-		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+	public void setFilter(AreaTreeNode n) {
+		Vector<AreaTreeNode> nodeList = new Vector<AreaTreeNode>();
+		populateNodeList(nodeList, n);
+		machines = MachinesTable.loadSaveObject(mainTable.filter(nodeList));
+		addListener();
+		machines.addBlankLine();
+		initTable(machines);
+
+	}
+
+	private void populateNodeList(Vector<AreaTreeNode> l, AreaTreeNode n) {
+		if(n != null) {
+			l.addElement((AreaTreeNode) n);
+			for(int i=0; i < n.getChildCount(); i++)
+				populateNodeList(l, (AreaTreeNode) n.getChildAt(i));
+		}
+	}
+
+	private void addListener() {
+		if(machines.getListeners(TableModelListener.class).length == 0)
+			machines.addTableModelListener(this);
+	}
+
+	public void newEmpty() {
+		machines = new MachinesTable();
+		addListener();
+		machines.addBlankLine();
+		initTable(machines);
+	}
+
+	public void setTable(MachinesTable t) {
+		machines = t;
+		addListener();
+		if(machines.getRowCount() == 0)
+			machines.addBlankLine();
+		initTable(machines);
+		mainTable = machines.getSaveObject();
+	}
+
+	public MachinesTable getTableModel() {
+		return machines;
+	}
+
+	public SerMachinesTable getMainTable() {
+		return mainTable;
 	}
 
 	public void tableChanged(TableModelEvent e) {
@@ -85,6 +142,10 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 		if(row == model.getRowCount()-1) {
 			machines.addBlankLine();
 		}
+
+		MachinesTable tm = this.getTableModel();
+		SerMachinesTable ser = tm.getSaveObject();
+		mainTable.update(ser);
 	}
 
 	public void setEditMode(Boolean e) {
@@ -105,11 +166,10 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 			super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 			String text = "";
-			System.out.println("FOO");
 			if(editMode == false) {
 				Status status = (Status) value;
 				if(status.isUninitialized())
-					text = "Waiting for initialization";
+				{}
 				else if(status.isStopped())
 					this.setIcon(stoppedIcon);
 				else if(status.isRecording())
@@ -144,7 +204,8 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 
 			if(value != null) { // Area
 				Area a = (Area) ((AreaTreeNode) value).getUserObject();
-				this.setText(a.getName());
+				this.setText(a.getName() + "(" + a.getID() + ")");
+				this.setForeground(a.getColor());
 			}
 			return this;
 		}
