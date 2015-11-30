@@ -18,6 +18,15 @@ public class MachinesTable extends AbstractTableModel implements TableModel {
 			"Rec. Time"
 		};
 	
+	private final static Class<?>[] COLUMN_CLASSES =
+		{	String.class,
+			AreaTreeNode.class,
+			InetAddress.class,
+			String.class,
+			Status.class,
+			String.class
+		};
+	
 	private Vector<Vector<Object>>	table;
 	private Boolean					examMode	= false;
 	private Boolean					examStarted	= false;
@@ -58,6 +67,13 @@ public class MachinesTable extends AbstractTableModel implements TableModel {
 	@Override
 	public int getColumnCount() {
 		return 6;
+	}
+	
+	@Override
+	public Class<?> getColumnClass(int c) {
+		if(c < COL_NUM)
+			return COLUMN_CLASSES[c];
+		return null;
 	}
 
 	@Override
@@ -100,7 +116,7 @@ public class MachinesTable extends AbstractTableModel implements TableModel {
 				(Area) ((AreaTreeNode) o.get(1)).getUserObject(),
 				(InetAddress) o.get(2),
 				(String) o.get(3),
-				(int)    o.get(4),
+				(Status) o.get(4),
 				(String) o.get(5) );
 		return m;
 	}

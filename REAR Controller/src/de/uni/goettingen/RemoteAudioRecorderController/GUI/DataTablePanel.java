@@ -56,12 +56,19 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 
 		machines = new MachinesTable();
 		machines.addBlankLine();
+		
 
 		table = new JTable(machines);
 		table.setDefaultRenderer(AreaTreeNode.class, new AreaTreeNodeRenderer());
 		table.setDefaultRenderer(InetAddress.class, new IpRenderer());
 		table.setDefaultRenderer(Status.class, new StatusRenderer());
 		table.getModel().addTableModelListener(this);
+		
+		TableColumn statusCol;
+		statusCol = table.getColumnModel().getColumn(4);
+		statusCol.setPreferredWidth(40);
+		statusCol.setMaxWidth(40);
+		
 		updateComboBox();		
 
 		TableColumn ipColumn = table.getColumnModel().getColumn(2);
@@ -97,27 +104,23 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 		@Override
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 			super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-			this.setText("");
+			String text = "";
+			System.out.println("FOO");
 			if(editMode == false) {
 				Status status = (Status) value;
-				switch(status) {
-				case UNINITIALIZED:
-					this.setText("Waiting for initialization");
-					break;
-				case STOPPED:
+				if(status.isUninitialized())
+					text = "Waiting for initialization";
+				else if(status.isStopped())
 					this.setIcon(stoppedIcon);
-					break;
-				case RECORDING:
+				else if(status.isRecording())
 					this.setIcon(recIcon);
-					break;
-				case UPLOADING:
+				else if(status.isUploading())
 					this.setIcon(uploadIcon);
-					break;
-				case DONE:
+				else if(status.isDone())
 					this.setIcon(okIcon);
-					break;
-				}
 			}
+			this.setText(text);
+			this.setHorizontalAlignment(DefaultTableCellRenderer.CENTER);
 			return this;
 		}
 	}
@@ -126,8 +129,10 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 		@Override
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 			super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-			InetAddress a = (InetAddress) value;
-			this.setText(a.getHostAddress());
+			if(value != null) {
+				InetAddress a = (InetAddress) value;
+				this.setText(a.getHostAddress());
+			}
 			return this;
 		}
 	}
@@ -137,10 +142,10 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 			super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
-			//			if(column == 1 && value != null) { // Area
-			Area a = (Area) ((AreaTreeNode) value).getUserObject();
-			this.setText(a.getName());
-			//			}
+			if(value != null) { // Area
+				Area a = (Area) ((AreaTreeNode) value).getUserObject();
+				this.setText(a.getName());
+			}
 			return this;
 		}
 	}

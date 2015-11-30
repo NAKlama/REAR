@@ -22,13 +22,13 @@ public class Machine {
 		recTime		= m.getRecTime();
 	}
 	
-	public Machine(String id, Area a, InetAddress i, String studID, int stat, String recTime) {
+	public Machine(String id, Area a, InetAddress i, String studID, Status s, String rTime) {
 		computerID	= id;
 		area		= a;
 		ip			= i;
-		studentID	= "";
-		status		= Status.UNINITIALIZED;
-		recTime		= "0:00:00";
+		studentID	= studID;
+		status		= s;
+		recTime		= rTime;
 	}
 	
 	public Machine(String id, Area a, InetAddress i) {
@@ -36,7 +36,7 @@ public class Machine {
 		area		= a;
 		ip			= i;
 		studentID	= "";
-		status		= Status.UNINITIALIZED;
+		status		= new Status(StatusEnum.UNINITIALIZED);
 		recTime		= "0:00:00";
 	}
 	
@@ -45,7 +45,7 @@ public class Machine {
 		area		= a;
 		ip			= null;
 		studentID	= "";
-		status		= Status.UNINITIALIZED;
+		status		= new Status(StatusEnum.UNINITIALIZED);
 		recTime		= "0:00:00";
 	}
 	
@@ -54,7 +54,7 @@ public class Machine {
 		area		= null;
 		ip			= null;
 		studentID	= "";
-		status		= Status.RECORDING;
+		status		= new Status(StatusEnum.RECORDING);
 		recTime		= "0:00:00";
 	}
 	
