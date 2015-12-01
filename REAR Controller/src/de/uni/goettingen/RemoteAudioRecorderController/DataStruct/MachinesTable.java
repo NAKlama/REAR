@@ -89,13 +89,11 @@ public class MachinesTable extends AbstractTableModel implements TableModel {
 			}
 			o.data.addElement(l);
 		}
-		System.out.println("Save: " + o.data.size());
 		return o;
 	}
 
 	public static MachinesTable loadSaveObject(SerMachinesTable t) {
 		MachinesTable o = new MachinesTable();
-		System.out.println("Load: " + t.data.size());
 		if(t != null)
 			for(Vector<Object> line : t.data) {
 				Vector<Object> newLine = new Vector<Object>();

@@ -175,9 +175,6 @@ public class TreePanel extends JPanel implements TreeSelectionListener {
 		selectedArea		= node;
 		selectedAreaParent	= parent;
 		
-		if(selectedArea != null)
-			System.out.println(((Area) selectedArea.getUserObject()).getID());
-		
 		if(table != null)
 			table.setFilter(selectedArea);
 	}

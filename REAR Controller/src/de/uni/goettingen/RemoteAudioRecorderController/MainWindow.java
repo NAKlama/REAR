@@ -40,7 +40,7 @@ public class MainWindow {
 	public  static final String PROGRAM_NAME	= "REAR Controller";
 	private static final int	MajorVersion 	= 0;
 	private static final int	MedVersion		= 1;
-	private static final int	MinorVersion	= 1;
+	private static final int	MinorVersion	= 2;
 
 	private JFrame frmRemoteAudioRecorder;
 
