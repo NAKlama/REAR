@@ -50,7 +50,6 @@ public class NetConnections {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 		return out;
 	}
 	
@@ -64,8 +63,8 @@ public class NetConnections {
 		@Override
 		public ClientStatus call() throws Exception {
 			ClientStatus status = conn.status();
+			conn.getMachine().setStatus(status);
 			return status;
 		}
-		
 	}
 }

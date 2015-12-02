@@ -83,6 +83,10 @@ public class ClientConn {
 	public boolean reset() {
 		return sendAuthCommand("RESET");
 	}
+	
+	public void setStatus(ClientStatus s) {
+		machine.setStatus(s);
+	}
 		
 	private String getReply(String c) {
 		try {
