@@ -8,6 +8,7 @@ import javax.swing.table.TableModel;
 
 import de.uni.goettingen.REARController.DataStruct.Serializable.SerMachinesTable;
 import de.uni.goettingen.REARController.GUI.IDfactory;
+import de.uni.goettingen.REARController.Net.ClientStatus;
 
 @SuppressWarnings("serial")
 public class MachinesTable extends AbstractTableModel implements TableModel {
@@ -28,7 +29,7 @@ public class MachinesTable extends AbstractTableModel implements TableModel {
 			AreaTreeNode.class,
 			InetAddress.class,
 			String.class,
-			Status.class,
+			ClientStatus.class,
 			String.class,
 			DelButton.class,
 			Long.class
@@ -79,7 +80,7 @@ public class MachinesTable extends AbstractTableModel implements TableModel {
 				if(i==3)
 					l.addElement("");
 				else if(i==4)
-					l.addElement(new Status());
+					l.addElement(new ClientStatus());
 				else if(i==5)
 					l.addElement("0:00:00");
 				else if(i==6)
@@ -153,12 +154,12 @@ public class MachinesTable extends AbstractTableModel implements TableModel {
 	
 	private Machine objVectorToMachine(Vector<Object> o) {
 		Machine m = new Machine(
-				(String) o.get(0),
-				(Area) ((AreaTreeNode) o.get(1)).getUserObject(),
-				(InetAddress) o.get(2),
-				(String) o.get(3),
-				(Status) o.get(4),
-				(String) o.get(5));
+				(String) 		o.get(0),
+				(Area) 			((AreaTreeNode) o.get(1)).getUserObject(),
+				(InetAddress)	o.get(2),
+				(String) 		o.get(3),
+				(ClientStatus)	o.get(4),
+				(String) 		o.get(5));
 		return m;
 	}
 }

@@ -38,11 +38,22 @@ public class ClientConn {
 		return machine;
 	}
 	
-	public int status() {
+	public ClientStatus status() {
 		String reply = getReply("STATUS\n");
-		if(reply != null)
-			return Integer.parseInt(reply);
-		return -1;		
+		int st = Integer.parseInt(reply);
+		switch(st) {
+		case 0:
+			return new ClientStatus(false, false, false, false);
+		case 1:
+			return new ClientStatus(true,  false, false, false);
+		case 2:
+			return new ClientStatus(false, true,  false, false);
+		case 3:
+			return new ClientStatus(false, false, true,  false);
+		case 4:
+			return new ClientStatus(false, false, false, true);
+		}
+		return null;		
 	}
 	
 	private String getSalt() {

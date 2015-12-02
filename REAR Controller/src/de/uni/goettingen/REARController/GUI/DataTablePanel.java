@@ -21,8 +21,8 @@ import de.uni.goettingen.REARController.MainWindow;
 import de.uni.goettingen.REARController.DataStruct.Area;
 import de.uni.goettingen.REARController.DataStruct.AreaTreeNode;
 import de.uni.goettingen.REARController.DataStruct.MachinesTable;
-import de.uni.goettingen.REARController.DataStruct.Status;
 import de.uni.goettingen.REARController.DataStruct.Serializable.SerMachinesTable;
+import de.uni.goettingen.REARController.Net.ClientStatus;
 
 import javax.swing.JScrollPane;
 
@@ -74,7 +74,7 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 		table.setModel(m);
 		table.setDefaultRenderer(AreaTreeNode.class, new AreaTreeNodeRenderer());
 		table.setDefaultRenderer(InetAddress.class, new IpRenderer());
-		table.setDefaultRenderer(Status.class, new StatusRenderer());
+		table.setDefaultRenderer(ClientStatus.class, new StatusRenderer());
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
 		TableColumn statusCol;
@@ -167,16 +167,16 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 			super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 			String text = "";
 			if(editMode == false) {
-				Status status = (Status) value;
+				ClientStatus status = (ClientStatus) value;
 				if(status.isUninitialized())
 				{}
-				else if(status.isStopped())
+				else if(status.getInit())
 					this.setIcon(stoppedIcon);
-				else if(status.isRecording())
+				else if(status.getRec())
 					this.setIcon(recIcon);
-				else if(status.isUploading())
+				else if(status.getUpload())
 					this.setIcon(uploadIcon);
-				else if(status.isDone())
+				else if(status.getDone())
 					this.setIcon(okIcon);
 			}
 			this.setText(text);

@@ -7,5 +7,6 @@ public enum StatusEnum implements Serializable {
 	STOPPED,
 	RECORDING,
 	UPLOADING,
-	DONE
+	DONE,
+	MULTI_STATUS
 }

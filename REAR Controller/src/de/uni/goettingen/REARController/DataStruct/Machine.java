@@ -5,6 +5,7 @@ import java.net.UnknownHostException;
 import java.util.Vector;
 
 import de.uni.goettingen.REARController.GUI.IDfactory;
+import de.uni.goettingen.REARController.Net.ClientStatus;
 
 public class Machine {
 	private long			id;
@@ -13,7 +14,7 @@ public class Machine {
 	private Area			area;
 	private InetAddress		ip;
 	private String			studentID;
-	private Status			status;
+	private ClientStatus	status;
 	private String			recTime;
 	private Boolean			delete;
 	
@@ -22,13 +23,13 @@ public class Machine {
 		area		= m.getArea();
 		ip			= m.getIP();
 		studentID	= m.getStudentID();
-		status		= m.getStatus();
+		status		= m.getClientStatus();
 		recTime		= m.getRecTime();
 		delete		= false;
 		id			= new IDfactory().getID();
 	}
 	
-	public Machine(String cid, Area a, InetAddress i, String studID, Status s, String rTime, long idIn) {
+	public Machine(String cid, Area a, InetAddress i, String studID, ClientStatus s, String rTime, long idIn) {
 		computerID	= cid;
 		area		= a;
 		ip			= i;
@@ -39,7 +40,7 @@ public class Machine {
 		id			= idIn;
 	}
 	
-	public Machine(String cid, Area a, InetAddress i, String studID, Status s, String rTime) {
+	public Machine(String cid, Area a, InetAddress i, String studID, ClientStatus s, String rTime) {
 		computerID	= cid;
 		area		= a;
 		ip			= i;
@@ -55,7 +56,7 @@ public class Machine {
 		area		= a;
 		ip			= i;
 		studentID	= "";
-		status		= new Status(StatusEnum.UNINITIALIZED);
+		status		= new ClientStatus(StatusEnum.UNINITIALIZED);
 		recTime		= "0:00:00";
 		delete		= false;
 		id			= new IDfactory().getID();
@@ -66,7 +67,7 @@ public class Machine {
 		area		= a;
 		ip			= null;
 		studentID	= "";
-		status		= new Status(StatusEnum.UNINITIALIZED);
+		status		= new ClientStatus(StatusEnum.UNINITIALIZED);
 		recTime		= "0:00:00";
 		delete		= false;
 		id			= new IDfactory().getID();
@@ -77,7 +78,7 @@ public class Machine {
 		area		= null;
 		ip			= null;
 		studentID	= "";
-		status		= new Status(StatusEnum.UNINITIALIZED);
+		status		= new ClientStatus(StatusEnum.UNINITIALIZED);
 		recTime		= "0:00:00";
 		delete		= false;
 		id			= new IDfactory().getID();
@@ -104,8 +105,12 @@ public class Machine {
 		studentID = sid;
 	}
 	
-	public void setStatus(Status s) {
+	public void setStatus(ClientStatus s) {
 		status = s;
+	}
+	
+	public void setStatus(StatusEnum s) {
+		status = new ClientStatus(s);
 	}
 	
 	public void setRecTime(String t) {
@@ -139,7 +144,7 @@ public class Machine {
 			studentID = (String) o;
 			break;
 		case 4:
-			status = (Status) o;
+			status = (ClientStatus) o;
 			break;
 		case 5:
 			recTime = (String) o;
@@ -170,7 +175,11 @@ public class Machine {
 		return studentID;
 	}
 	
-	public Status getStatus() {
+	public StatusEnum getStatus() {
+		return status.getStatus();
+	}
+	
+	public ClientStatus getClientStatus() {
 		return status;
 	}
 	
