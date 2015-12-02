@@ -5,7 +5,6 @@ import java.net.UnknownHostException;
 import java.util.Vector;
 
 import de.uni.goettingen.REARController.GUI.IDfactory;
-import de.uni.goettingen.REARController.Net.ClientStatus;
 import de.uni.goettingen.REARController.Net.IPreachable;
 
 public class Machine {

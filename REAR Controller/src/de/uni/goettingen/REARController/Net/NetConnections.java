@@ -1,5 +1,6 @@
 package de.uni.goettingen.REARController.Net;
 
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -11,36 +12,75 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import de.uni.goettingen.REARController.DataStruct.Machine;
+import de.uni.goettingen.REARController.DataStruct.ClientStatus;
+import de.uni.goettingen.REARController.DataStruct.Serializable.SerMachinesTable;
 
 public class NetConnections {
-	private Vector<ClientConn>						clients;
-	private ConcurrentHashMap<Long, ClientConn> 	map;
+	private Vector<Long>							clientIDs;
+	private ConcurrentHashMap<Long, InetAddress>	ipMap;
+	private ConcurrentHashMap<Long, ClientConn> 	connMap;
+	private ConcurrentHashMap<Long, String> 		recTimeMap;
+	private ConcurrentHashMap<Long, ClientStatus>	statusMap;
 	private int										cores;
 	
-	public NetConnections(Vector<Machine> mList) {
-		cores	= Runtime.getRuntime().availableProcessors();
-		clients = new Vector<ClientConn>();
-		map = new ConcurrentHashMap<Long, ClientConn>();
-		for(Machine m : mList) {
-			ClientConn c = new ClientConn(m);
-			clients.addElement(c);
-			map.put(m.getID(), c);
+	public NetConnections() {
+		cores		= Runtime.getRuntime().availableProcessors();
+		clientIDs	= new Vector<Long>();
+		connMap		= new ConcurrentHashMap<Long, ClientConn>();
+		ipMap		= new ConcurrentHashMap<Long, InetAddress>();
+		recTimeMap	= new ConcurrentHashMap<Long, String>();
+		statusMap	= new ConcurrentHashMap<Long, ClientStatus>();
+	}
+	
+	public void update(SerMachinesTable mList) {
+		for(Vector<Object> m : mList.data) {
+			long		id	= (long) m.get(7);
+			InetAddress	ip	= (InetAddress) m.get(2);
+			if(!clientIDs.contains(id) || !ip.equals(ipMap.get(id))) {
+				ClientConn	c	= new ClientConn(ip);
+				if(!clientIDs.contains(id)) 
+					clientIDs.add(id);
+				connMap.put(id, c);
+				ipMap.put(id, ip);				
+			}
 		}
+	}
+	
+	public Boolean hasID(long id) {
+		return clientIDs.contains(id);
+	}
+	
+	public InetAddress getIP(long id) {
+		return ipMap.get(id);
+	}
+	
+	public void setIP(long id, InetAddress ip) {
+		ClientConn c = new ClientConn(ip);
+		connMap.put(id, c);
+		ipMap.put(id, ip);
+	}
+	
+	public ClientStatus getStatus(long id) {
+		if(! statusMap.containsKey(id)) {
+			getStatus();
+			return null;
+		}
+		return statusMap.get(id);
 	}
 
 	public ClientStatus getStatus() {
 		ClientStatus out = new ClientStatus();
-		int numThreads = clients.size() > cores ? cores : clients.size();
-		Collection<Callable<ClientStatus>> tasks = new ArrayList<>();
-		for(ClientConn c : clients)
-			tasks.add(new GetClientStatusThread(c));
+		int numThreads = clientIDs.size() > cores ? cores : clientIDs.size();
+		Collection<Callable<IdTouple>> tasks = new ArrayList<>();
+		for(long id : clientIDs)
+			tasks.add(new GetClientStatusThread(connMap.get(id), id));
 		ExecutorService exec = Executors.newFixedThreadPool(numThreads);
-		List<Future<ClientStatus>> results;
+		List<Future<IdTouple>> results;
 		try {
 			results = exec.invokeAll(tasks);
-			for(Future<ClientStatus> r : results) {
-				ClientStatus s = r.get();
+			for(Future<IdTouple> r : results) {
+				ClientStatus s = (ClientStatus) r.get().o;
+				statusMap.put(r.get().id, s);
 				out.or(s);
 			}
 		} catch (InterruptedException e) {
@@ -54,16 +94,16 @@ public class NetConnections {
 	}
 	
 	public void getRecTime() {
-		int numThreads = clients.size() > cores ? cores : clients.size();
-		Collection<Callable<String>> tasks = new ArrayList<>();
-		for(ClientConn c : clients)
-			tasks.add(new GetRecTimeThread(c));
+		int numThreads = clientIDs.size() > cores ? cores : clientIDs.size();
+		Collection<Callable<IdTouple>> tasks = new ArrayList<>();
+		for(long id : clientIDs)
+			tasks.add(new GetRecTimeThread(connMap.get(id), id));
 		ExecutorService exec = Executors.newFixedThreadPool(numThreads);
-		List<Future<String>> results;
+		List<Future<IdTouple>> results;
 		try {
 			results = exec.invokeAll(tasks);
-			for(Future<String> r : results) {
-				r.get();
+			for(Future<IdTouple> r : results) {
+				recTimeMap.put(r.get().id, (String) r.get().o);
 			}
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
@@ -74,33 +114,48 @@ public class NetConnections {
 		}
 	}
 	
-	private class GetRecTimeThread implements Callable<String> {
-		private ClientConn conn;
+	private class GetRecTimeThread implements Callable<IdTouple> {
+		private ClientConn	conn;
+		long				id;
 		
-		public GetRecTimeThread(ClientConn c) {
-			conn = c;
+		public GetRecTimeThread(ClientConn c, long i) {
+			conn	= c;
+			id		= i;
 		}
 
 		@Override
-		public String call() throws Exception {
+		public IdTouple call() throws Exception {
+			IdTouple out = new IdTouple();
+			out.id = id;
 			String time = conn.getTime();
-			conn.getMachine().setRecTime(time);
-			return time;
+			recTimeMap.put(id, time);
+			out.o = time;
+			return out;
 		}
 	}
 	
-	private class GetClientStatusThread implements Callable<ClientStatus> {
-		private ClientConn conn;
+	private class GetClientStatusThread implements Callable<IdTouple> {
+		private ClientConn	conn;
+		long				id;
 		
-		public GetClientStatusThread(ClientConn c) {
-			conn = c;
+		public GetClientStatusThread(ClientConn c, long i) {
+			conn	= c;
+			id		= i;
 		}
 
 		@Override
-		public ClientStatus call() throws Exception {
+		public IdTouple call() throws Exception {
+			IdTouple out = new IdTouple();
+			out.id = id;
 			ClientStatus status = conn.status();
-			conn.getMachine().setStatus(status);
-			return status;
+			statusMap.put(id, status);
+			out.o = status;
+			return out;
 		}
+	}
+	
+	private class IdTouple {
+		public long id;
+		public Object o;
 	}
 }

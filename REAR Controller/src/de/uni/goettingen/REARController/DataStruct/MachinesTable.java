@@ -8,21 +8,20 @@ import javax.swing.table.TableModel;
 
 import de.uni.goettingen.REARController.DataStruct.Serializable.SerMachinesTable;
 import de.uni.goettingen.REARController.GUI.IDfactory;
-import de.uni.goettingen.REARController.Net.ClientStatus;
 import de.uni.goettingen.REARController.Net.IPreachable;
 
 @SuppressWarnings("serial")
 public class MachinesTable extends AbstractTableModel implements TableModel {
 	private final static int		COL_NUM			= 7;
 	private final static String []	COLUMN_NAMES 	=
-		{	"Computer ID",
-			"Area",
-			"IP Address",
-			"Student ID",
-			"Status",
-			"Rec. Time",
-			"Del",
-			"ID"
+		{	"Computer ID",	// 0
+			"Area",			// 1
+			"IP Address",	// 2
+			"Student ID",	// 3
+			"Status",		// 4
+			"Rec. Time",	// 5
+			"Del",			// 6
+			"ID"			// 7
 		};
 	
 	private final static Class<?>[] COLUMN_CLASSES =

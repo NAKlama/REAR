@@ -20,16 +20,18 @@ import javax.swing.table.TableModel;
 import de.uni.goettingen.REARController.MainWindow;
 import de.uni.goettingen.REARController.DataStruct.Area;
 import de.uni.goettingen.REARController.DataStruct.AreaTreeNode;
+import de.uni.goettingen.REARController.DataStruct.ClientStatus;
 import de.uni.goettingen.REARController.DataStruct.MachinesTable;
 import de.uni.goettingen.REARController.DataStruct.Serializable.SerMachinesTable;
-import de.uni.goettingen.REARController.Net.ClientStatus;
 import de.uni.goettingen.REARController.Net.IPreachable;
+import de.uni.goettingen.REARController.Net.NetConnections;
 
 import javax.swing.JScrollPane;
 
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.net.InetAddress;
 import java.util.Vector;
 
 @SuppressWarnings("serial")
@@ -48,10 +50,12 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 	private JComboBox<AreaTreeNode>		areaSelector;
 
 	private SerMachinesTable			mainTable;
+	private NetConnections				connections;
 
 	public DataTablePanel(TreePanel t) {
-		tree = t;
-		mainTable = new SerMachinesTable();
+		tree		= t;
+		mainTable	= new SerMachinesTable();
+		connections	= new NetConnections();
 
 		t.addTreeChangeListener(new DataTableTreeChangeListener());
 		setLayout(new MigLayout("", "[fill]", "[fill]"));
@@ -87,6 +91,10 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 
 		TableColumn ipColumn = table.getColumnModel().getColumn(2);
 		ipColumn.setCellEditor(new IpAddressEditor(new JTextField()));
+	}
+	
+	public ClientStatus getStatus() {
+		return connections.getStatus();
 	}
 
 	public void setFilter(AreaTreeNode n) {
@@ -126,6 +134,7 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 			machines.addBlankLine();
 		initTable(machines);
 		mainTable = machines.getSaveObject();
+		updateConn();
 	}
 
 	public MachinesTable getTableModel() {
@@ -147,8 +156,21 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 		MachinesTable tm = this.getTableModel();
 		SerMachinesTable ser = tm.getSaveObject();
 		mainTable.update(ser);
+		updateConn();
 	}
 
+	private void updateConn() {
+		for(Vector<Object> line : mainTable.data) {
+			long id = (long) line.get(7);
+			if(line.get(2) != null && connections.hasID(id)) {
+				InetAddress ip = (InetAddress) line.get(2);
+				if(!ip.equals(connections.getIP(id))) {
+					connections.setIP(id, ip);
+				}
+			}
+		}
+	}
+	
 	public void setEditMode(Boolean e) {
 		editMode = e;
 	}
