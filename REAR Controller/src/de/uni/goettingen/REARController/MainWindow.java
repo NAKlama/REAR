@@ -238,7 +238,7 @@ public class MainWindow {
 		panelProgress.add(horizontalGlue_1);
 
 		lblArrowUnInitToStopped = new JLabel("");
-		lblArrowUnInitToStopped.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/32/Arrow_facing_right_-_Green.png")));
+		lblArrowUnInitToStopped.setIcon(iconRightArrowGray);
 		panelProgress.add(lblArrowUnInitToStopped);
 
 		horizontalStrut_6 = Box.createHorizontalStrut(20);
@@ -328,6 +328,7 @@ public class MainWindow {
 	public void timerEvent() {
 		if(!editMode) {
 			mode = table.getStatus();
+			System.out.println(mode);
 			if(mode.getNone() && mode.getInit())
 				lblArrowUnInitToStopped.setIcon(iconRightArrow);
 			else
@@ -386,47 +387,52 @@ public class MainWindow {
 					btnNextStep.setEnabled(true);
 				else
 					btnNextStep.setEnabled(false);
+				break;
 			case 3:
 				if(mode.isDone())
 					btnNextStep.setEnabled(true);
 				else
 					btnNextStep.setEnabled(false);
+				break;
 			}
 		}
 	}
 
 	private void next() {
+		boolean nextStep = true;
 		switch(step) {
 		case 0:	
 			btnNextStep.setIcon(iconRec);
 			btnNextStep.setEnabled(false);
-			// Send INIT Signal to hosts
+			table.init();
 			break;
 		case 1:
 			btnNextStep.setIcon(iconStop);
 			btnNextStep.setEnabled(false);
 			chckbxAllowStopp.setVisible(true);
-			// Send RECORD Signal to hosts
+			table.rec();
 			break;
 		case 2:
 			if(chckbxAllowStopp.isSelected()) {
 				btnNextStep.setIcon(iconRestart);
 				btnNextStep.setEnabled(false);
 				chckbxAllowStopp.setVisible(false);
-				// Send STOP Signal to hosts
+				table.stop();
 			}
-
+			else
+				nextStep = false;
 			break;
 		case 3:
 			btnNextStep.setIcon(iconNext);
 			btnNextStep.setEnabled(false);
-
-			// Send Restart Signal to hosts
+			table.reset();
 			break;
 		}
-		step++;
-		if(step > 3)
-			step = 0;
+		if(nextStep) {
+			step++;
+			if(step > 3)
+				step = 0;
+		}
 		frmRemoteAudioRecorder.repaint();
 	}
 

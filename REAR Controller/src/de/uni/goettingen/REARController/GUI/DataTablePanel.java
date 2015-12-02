@@ -92,7 +92,23 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 		TableColumn ipColumn = table.getColumnModel().getColumn(2);
 		ipColumn.setCellEditor(new IpAddressEditor(new JTextField()));
 	}
-	
+
+	public void init() {
+		connections.init();
+	}
+
+	public void rec() {
+		connections.rec();
+	}
+
+	public void stop() {
+		connections.stop();
+	}
+
+	public void reset() {
+		connections.reset();
+	}
+
 	public ClientStatus getStatus() {
 		return connections.getStatus();
 	}
@@ -123,6 +139,7 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 	public void newEmpty() {
 		machines = new MachinesTable();
 		addListener();
+		connections.update(mainTable);
 		machines.addBlankLine();
 		initTable(machines);
 	}
@@ -134,6 +151,7 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 			machines.addBlankLine();
 		initTable(machines);
 		mainTable = machines.getSaveObject();
+		connections.update(mainTable);
 		updateConn();
 	}
 
@@ -156,21 +174,27 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 		MachinesTable tm = this.getTableModel();
 		SerMachinesTable ser = tm.getSaveObject();
 		mainTable.update(ser);
+		connections.update(mainTable);
 		updateConn();
 	}
 
 	private void updateConn() {
 		for(Vector<Object> line : mainTable.data) {
 			long id = (long) line.get(7);
-			if(line.get(2) != null && connections.hasID(id)) {
-				InetAddress ip = (InetAddress) line.get(2);
-				if(!ip.equals(connections.getIP(id))) {
-					connections.setIP(id, ip);
+			if(line.get(2) != null)
+				if(connections.hasID(id)) {
+					IPreachable ipr	= (IPreachable) line.get(2);
+					if(ipr != null) {
+						InetAddress ip	= ipr.getAddress();
+						if(!ip.equals(connections.getIP(id))) {
+							connections.setIP(id, ip);
+						}
+					}
 				}
-			}
 		}
 	}
-	
+
+
 	public void setEditMode(Boolean e) {
 		editMode = e;
 	}

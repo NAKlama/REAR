@@ -33,18 +33,52 @@ public class NetConnections {
 	}
 
 	public void update(SerMachinesTable mList) {
+		System.out.println("Update (" + mList.data.size() + ")");
 		for(Vector<Object> m : mList.data) {
 			long		id	= (long) m.get(7);
-			InetAddress	ip	= (InetAddress) m.get(2);
-			if(ip != null && (!clientIDs.contains(id) || !ip.equals(ipMap.get(id)))) {
-				ClientConn	c	= new ClientConn(ip);
-				if(!clientIDs.contains(id)) 
-					clientIDs.add(id);
-				connMap.put(id, c);
-				ipMap.put(id, ip);				
+			IPreachable ipr = (IPreachable) m.get(2);
+			if(ipr != null) {
+				InetAddress	ip	= ipr.getAddress();
+				if(ip != null && (!clientIDs.contains(id) || !ip.equals(ipMap.get(id)))) {
+					ClientConn	c	= new ClientConn(ip);
+					if(!clientIDs.contains(id)) 
+						clientIDs.add(id);
+					connMap.put(id, c);
+					ipMap.put(id, ip);				
+				}
 			}
 		}
 	}
+
+	public void init() {
+		System.out.println("Clientcount: " + clientIDs.size());
+		for(long id : clientIDs) {
+			System.out.println(id);
+			connMap.get(id).init();
+		}
+	}
+
+
+	public void rec() {
+		for(long id : clientIDs) {
+			connMap.get(id).rec();
+		}
+	}
+
+
+	public void stop() {
+		for(long id : clientIDs) {
+			connMap.get(id).stop();
+		}
+	}
+
+
+	public void reset() {
+		for(long id : clientIDs) {
+			connMap.get(id).reset();
+		}
+	}
+
 
 	public Boolean hasID(long id) {
 		return clientIDs.contains(id);
@@ -55,6 +89,8 @@ public class NetConnections {
 	}
 
 	public void setIP(long id, InetAddress ip) {
+		if(! clientIDs.contains(id))
+			clientIDs.add(id);
 		ClientConn c = new ClientConn(ip);
 		connMap.put(id, c);
 		ipMap.put(id, ip);
@@ -67,7 +103,7 @@ public class NetConnections {
 		}
 		return statusMap.get(id);
 	}
-	
+
 	public String getRecTime(long id) {
 		if(! recTimeMap.containsKey(id)) {
 			getRecTime();
@@ -78,6 +114,7 @@ public class NetConnections {
 
 	public ClientStatus getStatus() {
 		ClientStatus out = new ClientStatus();
+		out.setNone(false);
 		int numThreads = clientIDs.size() > cores ? cores : clientIDs.size();
 		if(numThreads > 0) {
 			Collection<Callable<IdTouple>> tasks = new ArrayList<>();

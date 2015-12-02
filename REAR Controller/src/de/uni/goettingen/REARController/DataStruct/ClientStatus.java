@@ -203,4 +203,13 @@ public class ClientStatus implements Serializable {
 			return true;
 		return false;
 	}
+	
+	public String toString() {
+		String out = "[" + String.valueOf(none);
+		out += ", " + String.valueOf(init);
+		out += ", " + String.valueOf(rec);
+		out += ", " + String.valueOf(upload);
+		out += ", " + String.valueOf(done) + "]";
+		return out;
+	}
 }

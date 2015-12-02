@@ -88,7 +88,7 @@ public class ClientConn {
 		
 	private String getReply(String c) {
 		try {
-			System.out.println("> " + c);
+			System.out.println("> " + c.trim());
 			out.writeBytes(c);
 			String reply = in.readLine();
 			System.out.println("< " + reply);
@@ -103,7 +103,7 @@ public class ClientConn {
 	private boolean sendAuthCommand(String c) {
 		try {
 			String command = c.trim() + " ";
-			System.out.println("> " + command);
+			System.out.println("> " + command + "[TOKEN]");
 			command += token.getToken(c, salt) + "\n";			
 			out.writeBytes(command);
 			String reply = in.readLine();
