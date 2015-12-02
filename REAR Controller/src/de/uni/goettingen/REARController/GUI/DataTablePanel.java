@@ -23,12 +23,13 @@ import de.uni.goettingen.REARController.DataStruct.AreaTreeNode;
 import de.uni.goettingen.REARController.DataStruct.MachinesTable;
 import de.uni.goettingen.REARController.DataStruct.Serializable.SerMachinesTable;
 import de.uni.goettingen.REARController.Net.ClientStatus;
+import de.uni.goettingen.REARController.Net.IPreachable;
 
 import javax.swing.JScrollPane;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.net.InetAddress;
 import java.util.Vector;
 
 @SuppressWarnings("serial")
@@ -73,7 +74,7 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 	public void initTable(TableModel m) {
 		table.setModel(m);
 		table.setDefaultRenderer(AreaTreeNode.class, new AreaTreeNodeRenderer());
-		table.setDefaultRenderer(InetAddress.class, new IpRenderer());
+		table.setDefaultRenderer(IPreachable.class, new IpRenderer());
 		table.setDefaultRenderer(ClientStatus.class, new StatusRenderer());
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
@@ -190,8 +191,12 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 			super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 			if(value != null) {
-				InetAddress a = (InetAddress) value;
-				this.setText(a.getHostAddress());
+				IPreachable a = (IPreachable) value;
+				if(a.isReachable())
+					this.setForeground(Color.GREEN);
+				else
+					this.setForeground(Color.RED);
+				this.setText(a.getAddress().getHostAddress());
 			}
 			return this;
 		}

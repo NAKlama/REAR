@@ -9,6 +9,7 @@ import javax.swing.table.TableModel;
 import de.uni.goettingen.REARController.DataStruct.Serializable.SerMachinesTable;
 import de.uni.goettingen.REARController.GUI.IDfactory;
 import de.uni.goettingen.REARController.Net.ClientStatus;
+import de.uni.goettingen.REARController.Net.IPreachable;
 
 @SuppressWarnings("serial")
 public class MachinesTable extends AbstractTableModel implements TableModel {
@@ -27,7 +28,7 @@ public class MachinesTable extends AbstractTableModel implements TableModel {
 	private final static Class<?>[] COLUMN_CLASSES =
 		{	String.class,
 			AreaTreeNode.class,
-			InetAddress.class,
+			IPreachable.class,
 			String.class,
 			ClientStatus.class,
 			String.class,
@@ -156,7 +157,7 @@ public class MachinesTable extends AbstractTableModel implements TableModel {
 		Machine m = new Machine(
 				(String) 		o.get(0),
 				(Area) 			((AreaTreeNode) o.get(1)).getUserObject(),
-				(InetAddress)	o.get(2),
+				(InetAddress)	((IPreachable) o.get(2)).getAddress(),
 				(String) 		o.get(3),
 				(ClientStatus)	o.get(4),
 				(String) 		o.get(5));
