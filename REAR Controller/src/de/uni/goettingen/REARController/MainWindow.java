@@ -44,7 +44,7 @@ public class MainWindow {
 	public  static final String PROGRAM_NAME	= "REAR Controller";
 	private static final int	MajorVersion 	= 0;
 	private static final int	MedVersion		= 1;
-	private static final int	MinorVersion	= 2;
+	private static final int	MinorVersion	= 3;
 
 	private JFrame frmRemoteAudioRecorder;
 
@@ -371,24 +371,29 @@ public class MainWindow {
 
 			switch(step) {
 			case 0:
-				if(mode.isUninitialized())
+				if(mode.isUninitialized()) {
 					btnNextStep.setEnabled(true);
+					btnEditMode.setEnabled(true);
+				}
 				else
 					btnNextStep.setEnabled(false);
 				break;
 			case 1:
+				btnEditMode.setEnabled(false);
 				if(mode.isInitialized())
 					btnNextStep.setEnabled(true);
 				else
 					btnNextStep.setEnabled(false);
 				break;
 			case 2:
+				btnEditMode.setEnabled(false);
 				if(mode.isRec())
 					btnNextStep.setEnabled(true);
 				else
 					btnNextStep.setEnabled(false);
 				break;
 			case 3:
+				btnEditMode.setEnabled(false);
 				if(mode.isDone())
 					btnNextStep.setEnabled(true);
 				else
