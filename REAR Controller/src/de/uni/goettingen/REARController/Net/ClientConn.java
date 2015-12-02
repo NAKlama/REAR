@@ -68,6 +68,10 @@ public class ClientConn {
 		return getReply("ID\n").trim();
 	}
 	
+	public String getTime() {
+		return getReply("RECTIME\n").trim();
+	}
+	
 	public boolean init() {
 		return sendAuthCommand("INIT");
 	}

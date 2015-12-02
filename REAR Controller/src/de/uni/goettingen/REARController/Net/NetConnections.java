@@ -53,6 +53,42 @@ public class NetConnections {
 		return out;
 	}
 	
+	public void getRecTime() {
+		int numThreads = clients.size() > cores ? cores : clients.size();
+		Collection<Callable<String>> tasks = new ArrayList<>();
+		for(ClientConn c : clients)
+			tasks.add(new GetRecTimeThread(c));
+		ExecutorService exec = Executors.newFixedThreadPool(numThreads);
+		List<Future<String>> results;
+		try {
+			results = exec.invokeAll(tasks);
+			for(Future<String> r : results) {
+				r.get();
+			}
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	private class GetRecTimeThread implements Callable<String> {
+		private ClientConn conn;
+		
+		public GetRecTimeThread(ClientConn c) {
+			conn = c;
+		}
+
+		@Override
+		public String call() throws Exception {
+			String time = conn.getTime();
+			conn.getMachine().setRecTime(time);
+			return time;
+		}
+	}
+	
 	private class GetClientStatusThread implements Callable<ClientStatus> {
 		private ClientConn conn;
 		

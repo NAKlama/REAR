@@ -207,6 +207,10 @@ public class StatusWindow extends JFrame {
 	public int getMode() {
 		return mode;
 	}
+	
+	public String getTime() {
+		return String.format("%d:%02d:%02d", h, m, s);
+	}
 
 	public boolean timerEvent() {
 		levelMic.setLevel(micStreamLevel.getLevel());

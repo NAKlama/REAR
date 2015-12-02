@@ -40,6 +40,10 @@ public class SignalObject {
 		return win.getID();
 	}
 	
+	public String getTime() {
+		return win.getTime();
+	}
+	
 	public void setID(String id) {
 		win.setID(id);
 	}

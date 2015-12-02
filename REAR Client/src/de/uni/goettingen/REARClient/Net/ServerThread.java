@@ -64,6 +64,9 @@ public class ServerThread implements Runnable {
 				else if(message[0].equals("ID"))
 					setID(message);
 				
+				else if(message[0].equals("RECTIME"))
+					out.writeBytes(signal.getTime() + "\n");
+				
 				else if(message[0].equals("STATUS"))
 					out.writeBytes(String.valueOf(signal.getMode()));
 				
