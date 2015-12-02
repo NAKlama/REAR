@@ -106,6 +106,22 @@ public class MachinesTable extends AbstractTableModel implements TableModel {
 		return o;
 	}
 	
+	public void setStatus(int r, ClientStatus cs) {
+		if(cs != null)
+			setValueAt(cs, r, 4);
+	}
+	
+	public void setRecTime(int r, String t) {
+		if(t != null)
+			setValueAt(t, r, 5);
+	}
+	
+	public void setReachable(int r, Boolean b) {
+		IPreachable ipr = (IPreachable) getValueAt(r, 2);
+		ipr.setReachable(b);
+		setValueAt(ipr, r, 2);
+	}
+	
 	@Override
 	public int getColumnCount() {
 		return COL_NUM;
@@ -153,13 +169,22 @@ public class MachinesTable extends AbstractTableModel implements TableModel {
 	}
 	
 	private Machine objVectorToMachine(Vector<Object> o) {
+		AreaTreeNode 	atn	= (AreaTreeNode) o.get(1);
+		Area			a	= null;
+		IPreachable		ipr = (IPreachable) o.get(2);
+		InetAddress		ip	= null;
+		if(atn != null)
+			a = (Area) atn.getUserObject();
+		if(ipr != null)
+			ip = (InetAddress) ipr.getAddress();
 		Machine m = new Machine(
 				(String) 		o.get(0),
-				(Area) 			((AreaTreeNode) o.get(1)).getUserObject(),
-				(InetAddress)	((IPreachable) o.get(2)).getAddress(),
+				(Area) 			a,
+				(InetAddress)	ip,
 				(String) 		o.get(3),
 				(ClientStatus)	o.get(4),
-				(String) 		o.get(5));
+				(String) 		o.get(5),
+				(Long)			o.get(7));
 		return m;
 	}
 }

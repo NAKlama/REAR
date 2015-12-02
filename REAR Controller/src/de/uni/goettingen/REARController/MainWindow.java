@@ -395,6 +395,7 @@ public class MainWindow {
 					btnNextStep.setEnabled(false);
 				break;
 			}
+			table.timerEvent();
 		}
 	}
 

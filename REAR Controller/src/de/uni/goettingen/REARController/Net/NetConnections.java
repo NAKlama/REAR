@@ -103,6 +103,12 @@ public class NetConnections {
 		}
 		return statusMap.get(id);
 	}
+	
+	public Boolean isReachabel(long id) {
+		if( connMap.containsKey(id) )
+			return connMap.get(id).isReachable();
+		return false;
+	}
 
 	public String getRecTime(long id) {
 		if(! recTimeMap.containsKey(id)) {
