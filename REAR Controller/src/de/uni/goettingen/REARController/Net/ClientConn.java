@@ -88,8 +88,11 @@ public class ClientConn {
 		
 	private String getReply(String c) {
 		try {
+			System.out.println("> " + c);
 			out.writeBytes(c);
-			return in.readLine();
+			String reply = in.readLine();
+			System.out.println("< " + reply);
+			return reply;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -100,9 +103,11 @@ public class ClientConn {
 	private boolean sendAuthCommand(String c) {
 		try {
 			String command = c.trim() + " ";
+			System.out.println("> " + command);
 			command += token.getToken(c, salt) + "\n";			
 			out.writeBytes(command);
 			String reply = in.readLine();
+			System.out.println("< " + reply);
 			if(reply.trim().equals("OK"))
 				return true;
 		} catch (IOException e) {

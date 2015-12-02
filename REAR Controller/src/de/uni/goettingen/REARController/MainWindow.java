@@ -212,7 +212,7 @@ public class MainWindow {
 		btnNextStep.addActionListener(listener);
 		toolBarMain.add(btnNextStep);
 		btnNextStep.setIcon(iconNext);
-		
+
 		chckbxAllowStopp = new JCheckBox("Allow Stopp Exam");
 		chckbxAllowStopp.setVisible(false);
 		toolBarMain.add(chckbxAllowStopp);
@@ -326,72 +326,73 @@ public class MainWindow {
 	}
 
 	public void timerEvent() {
-		mode = table.getStatus();
-		if(mode.getNone() && mode.getInit())
-			lblArrowUnInitToStopped.setIcon(iconRightArrow);
-		else
-			lblArrowUnInitToStopped.setIcon(iconRightArrowGray);
+		if(!editMode) {
+			mode = table.getStatus();
+			if(mode.getNone() && mode.getInit())
+				lblArrowUnInitToStopped.setIcon(iconRightArrow);
+			else
+				lblArrowUnInitToStopped.setIcon(iconRightArrowGray);
 
-		if(mode.getInit()) 
-			lblStoppedState.setIcon(iconStopped);
-		else
-			lblStoppedState.setIcon(iconStoppedGray);
+			if(mode.getInit()) 
+				lblStoppedState.setIcon(iconStopped);
+			else
+				lblStoppedState.setIcon(iconStoppedGray);
 
-		if(mode.getInit() && mode.getRec())
-			lblArrowToRec.setIcon(iconRightArrow);
-		else
-			lblArrowToRec.setIcon(iconRightArrowGray);
+			if(mode.getInit() && mode.getRec())
+				lblArrowToRec.setIcon(iconRightArrow);
+			else
+				lblArrowToRec.setIcon(iconRightArrowGray);
 
-		if(mode.getRec())
-			lblRec.setIcon(iconRec);
-		else
-			lblRec.setIcon(iconRecGray);
-		
-		if(mode.getRec() && (mode.getUpload() || mode.getDone()))
-			lblArrowToUpload.setIcon(iconRightArrow);
-		else
-			lblArrowToUpload.setIcon(iconRightArrowGray);
-		
-		if(mode.getUpload())
-			lblUpload.setIcon(iconUpload);
-		else
-			lblUpload.setIcon(iconUploadGray);
-		
-		if((mode.getRec() || mode.getUpload()) && mode.getDone())
-			lblArrowToDone.setIcon(iconRightArrow);
-		else
-			lblArrowToDone.setIcon(iconRightArrowGray);
-		
-		if(mode.getDone())
-			lblDone.setIcon(iconOk);
-		else
-			lblDone.setIcon(iconOkGray);
-		
-		switch(step) {
-		case 0:
-			if(mode.isUninitialized())
-				btnNextStep.setEnabled(true);
+			if(mode.getRec())
+				lblRec.setIcon(iconRec);
 			else
-				btnNextStep.setEnabled(false);
-			break;
-		case 1:
-			if(mode.isInitialized())
-				btnNextStep.setEnabled(true);
+				lblRec.setIcon(iconRecGray);
+
+			if(mode.getRec() && (mode.getUpload() || mode.getDone()))
+				lblArrowToUpload.setIcon(iconRightArrow);
 			else
-				btnNextStep.setEnabled(false);
-			break;
-		case 2:
-			if(mode.isRec())
-				btnNextStep.setEnabled(true);
+				lblArrowToUpload.setIcon(iconRightArrowGray);
+
+			if(mode.getUpload())
+				lblUpload.setIcon(iconUpload);
 			else
-				btnNextStep.setEnabled(false);
-		case 3:
-			if(mode.isDone())
-				btnNextStep.setEnabled(true);
+				lblUpload.setIcon(iconUploadGray);
+
+			if((mode.getRec() || mode.getUpload()) && mode.getDone())
+				lblArrowToDone.setIcon(iconRightArrow);
 			else
-				btnNextStep.setEnabled(false);
+				lblArrowToDone.setIcon(iconRightArrowGray);
+
+			if(mode.getDone())
+				lblDone.setIcon(iconOk);
+			else
+				lblDone.setIcon(iconOkGray);
+
+			switch(step) {
+			case 0:
+				if(mode.isUninitialized())
+					btnNextStep.setEnabled(true);
+				else
+					btnNextStep.setEnabled(false);
+				break;
+			case 1:
+				if(mode.isInitialized())
+					btnNextStep.setEnabled(true);
+				else
+					btnNextStep.setEnabled(false);
+				break;
+			case 2:
+				if(mode.isRec())
+					btnNextStep.setEnabled(true);
+				else
+					btnNextStep.setEnabled(false);
+			case 3:
+				if(mode.isDone())
+					btnNextStep.setEnabled(true);
+				else
+					btnNextStep.setEnabled(false);
+			}
 		}
-				
 	}
 
 	private void next() {
@@ -414,12 +415,12 @@ public class MainWindow {
 				chckbxAllowStopp.setVisible(false);
 				// Send STOP Signal to hosts
 			}
-			
+
 			break;
 		case 3:
 			btnNextStep.setIcon(iconNext);
 			btnNextStep.setEnabled(false);
-		
+
 			// Send Restart Signal to hosts
 			break;
 		}

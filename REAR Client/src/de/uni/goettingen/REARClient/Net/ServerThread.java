@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketException;
 
@@ -42,6 +43,9 @@ public class ServerThread implements Runnable {
 			while(!quit) {
 				String msg = in.readLine();
 				String[] message = msg.trim().split(" ");
+				
+				if(REARclient.DEBUG)
+					System.out.println("< " + msg);
 
 				if(allowShutdown && !message[0].equals("SHUTDOWN"))
 					allowShutdown = false;
