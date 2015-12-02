@@ -25,7 +25,7 @@ import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.image.ImageTranscoder;
 
 import de.codecentric.centerdevice.javafxsvg.BufferedImageTranscoder;
-import de.uni.goettingen.REARClient.RemoteAudioRecorderClient;
+import de.uni.goettingen.REARClient.REARclient;
 import de.uni.goettingen.REARClient.SignalObject;
 import de.uni.goettingen.REARClient.Audio.AudioLevel;
 import de.uni.goettingen.REARClient.Audio.MicrophoneLine;
@@ -91,15 +91,15 @@ public class StatusWindow extends JFrame {
 		win.setLayout(new BoxLayout(win, BoxLayout.PAGE_AXIS));
 
 		iconPanel.setLayout(new BoxLayout(iconPanel, BoxLayout.LINE_AXIS));
-		if(RemoteAudioRecorderClient.DEBUG_GUI)
+		if(REARclient.DEBUG_GUI)
 			iconPanel.setBackground(Color.ORANGE);
 
 		statusPanel.setLayout(new BoxLayout(statusPanel, BoxLayout.LINE_AXIS));
-		if(RemoteAudioRecorderClient.DEBUG_GUI)
+		if(REARclient.DEBUG_GUI)
 			statusPanel.setBackground(Color.CYAN);
 
 		idPanel.setLayout(new BoxLayout(idPanel, BoxLayout.LINE_AXIS));
-		if(RemoteAudioRecorderClient.DEBUG_GUI)
+		if(REARclient.DEBUG_GUI)
 			idPanel.setBackground(Color.GREEN);
 
 		timerLabel.setFont(timerLabel.getFont().deriveFont(30.0f));

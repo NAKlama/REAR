@@ -7,7 +7,7 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 import java.net.SocketException;
 
-import de.uni.goettingen.REARClient.RemoteAudioRecorderClient;
+import de.uni.goettingen.REARClient.REARclient;
 import de.uni.goettingen.REARClient.SignalObject;
 
 public class ServerThread implements Runnable {
@@ -36,7 +36,7 @@ public class ServerThread implements Runnable {
 			in			= new BufferedReader(new InputStreamReader(conn.getInputStream()));
 			out			= new DataOutputStream(conn.getOutputStream());
 			remoteAddr	= conn.getInetAddress().toString() + ":" + conn.getPort();
-			if(RemoteAudioRecorderClient.DEBUG)
+			if(REARclient.DEBUG)
 				System.out.println("Running connection thread connected to " + remoteAddr + "#\n");
 
 			while(!quit) {

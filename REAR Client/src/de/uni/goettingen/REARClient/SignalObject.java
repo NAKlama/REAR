@@ -53,7 +53,7 @@ public class SignalObject {
 	}
 	
 	public void startRecording() {
-		File outFile    	= new File(RemoteAudioRecorderClient.DEFAULT_PATH + win.getID() + ".flac");
+		File outFile    	= new File(REARclient.DEFAULT_PATH + win.getID() + ".flac");
 		rec					= new Recorder(micLine, outFile);
 		Thread recThread	= new Thread(rec);
 		recThread.start();
