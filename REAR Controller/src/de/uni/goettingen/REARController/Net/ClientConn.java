@@ -54,6 +54,10 @@ public class ClientConn {
 		return ip;
 	}
 	
+	public Boolean isReachable() {
+		return sock.isConnected();
+	}
+	
 	private String getSalt() {
 		return getReply("GETSALT\n").trim();
 	}

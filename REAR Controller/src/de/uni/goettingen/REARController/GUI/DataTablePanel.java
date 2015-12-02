@@ -21,6 +21,7 @@ import de.uni.goettingen.REARController.MainWindow;
 import de.uni.goettingen.REARController.DataStruct.Area;
 import de.uni.goettingen.REARController.DataStruct.AreaTreeNode;
 import de.uni.goettingen.REARController.DataStruct.ClientStatus;
+import de.uni.goettingen.REARController.DataStruct.Machine;
 import de.uni.goettingen.REARController.DataStruct.MachinesTable;
 import de.uni.goettingen.REARController.DataStruct.Serializable.SerMachinesTable;
 import de.uni.goettingen.REARController.Net.IPreachable;
@@ -153,6 +154,25 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 		mainTable = machines.getSaveObject();
 		connections.update(mainTable);
 		updateConn();
+	}
+	
+	public void timerEvent() {
+		MachinesTable tab = (MachinesTable) table.getModel();
+		for(int i = 0; i < tab.getRowCount(); i++) {
+			Machine	m	= tab.getLine(i);
+			long	id	= m.getID();
+			if(m.getComputerID() != "" && m.getArea() != null && m.getIP() != null) {
+				tab.setStatus(i, connections.getStatus(id));
+				tab.setRecTime(i, connections.getRecTime(id));
+			}
+		}
+		for(Vector<Object> line : mainTable.data) {
+			long id = (long) line.get(7);
+			if((String) line.get(0) != "" && line.get(1) != null && line.get(2) != null) {
+				line.set(4, connections.getStatus(id));
+				line.set(4, connections.getRecTime(id));
+			}
+		}
 	}
 
 	public MachinesTable getTableModel() {
