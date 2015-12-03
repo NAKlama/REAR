@@ -4,7 +4,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Vector;
 
-import de.uni.goettingen.REARController.GUI.IDfactory;
+import de.uni.goettingen.REARController.GUI.Tools.IDfactory;
 import de.uni.goettingen.REARController.Net.IPreachable;
 
 public class Machine {

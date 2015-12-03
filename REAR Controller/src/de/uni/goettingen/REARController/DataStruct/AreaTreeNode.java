@@ -9,7 +9,7 @@ import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
 
 import de.uni.goettingen.REARController.DataStruct.Serializable.SerAreaTree;
-import de.uni.goettingen.REARController.GUI.IDfactory;
+import de.uni.goettingen.REARController.GUI.Tools.IDfactory;
 
 @SuppressWarnings("serial")
 public class AreaTreeNode extends DefaultMutableTreeNode implements Cloneable, MutableTreeNode, Serializable, TreeNode, Comparator<AreaTreeNode> {

@@ -24,6 +24,7 @@ import de.uni.goettingen.REARController.DataStruct.ClientStatus;
 import de.uni.goettingen.REARController.DataStruct.Machine;
 import de.uni.goettingen.REARController.DataStruct.MachinesTable;
 import de.uni.goettingen.REARController.DataStruct.Serializable.SerMachinesTable;
+import de.uni.goettingen.REARController.GUI.Tools.TreeChangeListener;
 import de.uni.goettingen.REARController.Net.IPreachable;
 import de.uni.goettingen.REARController.Net.NetConnections;
 

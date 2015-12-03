@@ -7,7 +7,8 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 
 import de.uni.goettingen.REARController.DataStruct.Serializable.SerMachinesTable;
-import de.uni.goettingen.REARController.GUI.IDfactory;
+import de.uni.goettingen.REARController.DummyClasses.DelButton;
+import de.uni.goettingen.REARController.GUI.Tools.IDfactory;
 import de.uni.goettingen.REARController.Net.IPreachable;
 
 @SuppressWarnings("serial")

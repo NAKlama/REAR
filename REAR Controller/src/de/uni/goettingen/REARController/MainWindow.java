@@ -9,11 +9,11 @@ import de.uni.goettingen.REARController.DataStruct.ClientStatus;
 import de.uni.goettingen.REARController.DataStruct.FileDataObject;
 import de.uni.goettingen.REARController.DataStruct.MachinesTable;
 import de.uni.goettingen.REARController.GUI.DataTablePanel;
-import de.uni.goettingen.REARController.GUI.IDfactory;
-import de.uni.goettingen.REARController.GUI.InfoDialog;
-import de.uni.goettingen.REARController.GUI.RearFileFilter;
 import de.uni.goettingen.REARController.GUI.TreePanel;
-import de.uni.goettingen.REARController.GUI.UpdateMainWindow;
+import de.uni.goettingen.REARController.GUI.Dialogs.InfoDialog;
+import de.uni.goettingen.REARController.GUI.Tools.IDfactory;
+import de.uni.goettingen.REARController.GUI.Tools.RearFileFilter;
+import de.uni.goettingen.REARController.GUI.Tools.UpdateMainWindow;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;

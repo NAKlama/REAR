@@ -1,4 +1,4 @@
-package de.uni.goettingen.REARController.GUI;
+package de.uni.goettingen.REARController.GUI.Tools;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

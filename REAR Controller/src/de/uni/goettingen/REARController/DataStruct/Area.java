@@ -3,7 +3,7 @@ package de.uni.goettingen.REARController.DataStruct;
 import java.awt.Color;
 import java.io.Serializable;
 
-import de.uni.goettingen.REARController.GUI.IDfactory;
+import de.uni.goettingen.REARController.GUI.Tools.IDfactory;
 
 @SuppressWarnings("serial")
 public class Area implements Serializable {
