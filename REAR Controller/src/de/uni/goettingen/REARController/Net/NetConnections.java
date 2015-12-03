@@ -50,11 +50,19 @@ public class NetConnections {
 		}
 	}
 
-	public void init() {
+	public void init(ConcurrentHashMap<Long, String> ids) {
 		System.out.println("Clientcount: " + clientIDs.size());
 		for(long id : clientIDs) {
-			System.out.println(id);
-			connMap.get(id).init();
+			if(ids.containsKey(id)) {
+				System.out.println(id);
+				ClientConn c = connMap.get(id);
+				boolean idSet = false;
+				for(int i = 0; i < 5 && !idSet; i++) {
+					idSet = c.setID(ids.get(id));
+				}
+				if(idSet)
+					c.init();
+			}
 		}
 	}
 
@@ -78,7 +86,14 @@ public class NetConnections {
 			connMap.get(id).reset();
 		}
 	}
-
+	
+	public void clearData() {
+		clientIDs	= new Vector<Long>();
+		ipMap		= new ConcurrentHashMap<Long, InetAddress>();
+		connMap		= new ConcurrentHashMap<Long, ClientConn>();
+		recTimeMap	= new ConcurrentHashMap<Long, String>();
+		statusMap	= new ConcurrentHashMap<Long, ClientStatus>();
+	}
 
 	public Boolean hasID(long id) {
 		return clientIDs.contains(id);

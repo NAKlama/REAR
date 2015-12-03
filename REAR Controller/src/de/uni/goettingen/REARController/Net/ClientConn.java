@@ -70,6 +70,13 @@ public class ClientConn {
 		return getReply("ID\n").trim();
 	}
 	
+	public boolean setID(String id) {
+		String reply = getReply("ID " + id + "\n").trim();
+		if(reply.equals("OK"))
+			return true;
+		return false;
+	}
+	
 	public String getTime() {
 		return getReply("RECTIME\n").trim();
 	}
