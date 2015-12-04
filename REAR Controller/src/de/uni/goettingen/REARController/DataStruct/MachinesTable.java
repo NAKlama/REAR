@@ -78,16 +78,7 @@ public class MachinesTable extends AbstractTableModel implements TableModel {
 		for(Vector<Object> line : table) {
 			Vector<Object> l = new Vector<Object>();
 			for(int i = 0; i < COL_NUM + 1; i++) { // + 1
-				if(i==3)
-					l.addElement("");
-				else if(i==4)
-					l.addElement(new ClientStatus());
-				else if(i==5)
-					l.addElement("0:00:00");
-				else if(i==6)
-					l.addElement(null);
-				else
-					l.addElement(line.get(i));
+				l.addElement(line.get(i));
 			}
 			o.data.addElement(l);
 		}

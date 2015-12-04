@@ -455,7 +455,7 @@ public class MainWindow {
 			ObjectOutputStream	objOut	= new ObjectOutputStream(fileOut);
 			FileDataObject o = new FileDataObject();
 			o.tree	= panelTree.getRoot().getSaveObject();
-			o.table	= table.getMainTable();
+			o.table	= table.getMainTable().cleanForSerialize();
 			objOut.writeObject(o);
 			objOut.close();
 			fileOut.close();
