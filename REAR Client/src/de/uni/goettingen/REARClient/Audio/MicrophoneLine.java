@@ -7,12 +7,21 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.TargetDataLine;
 
 public class MicrophoneLine {
+	private static final float	SAMPLERATE		= 44100.0f;
+	private static final int	BITWIDTH		= 16;
+	private static final int	CHANNELS		= 1;
+	
 	private TargetDataLine tDataLine;
 	
 	public MicrophoneLine() {
 		AudioFormat	audioFormat = new AudioFormat(
 				AudioFormat.Encoding.PCM_SIGNED, 
-				44100.0f, 16, 1, 2, 44100.0f, false);
+				SAMPLERATE,
+				BITWIDTH,
+				CHANNELS, 
+				(BITWIDTH / 8) * CHANNELS,
+				SAMPLERATE, 
+				false);
 		
 		DataLine.Info	info = new DataLine.Info(TargetDataLine.class, audioFormat);
 		tDataLine = null;

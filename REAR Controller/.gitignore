@@ -1,3 +1,5 @@
 /miglayout-src.zip
 bin/*
 *.rear
+jar-in-jar-loader.zip
+REAR\ Controller.jar

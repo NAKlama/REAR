@@ -5,13 +5,15 @@ import javax.swing.JFrame;
 import javax.swing.JToolBar;
 
 import de.uni.goettingen.REARController.DataStruct.AreaTreeNode;
+import de.uni.goettingen.REARController.DataStruct.ClientStatus;
 import de.uni.goettingen.REARController.DataStruct.FileDataObject;
 import de.uni.goettingen.REARController.DataStruct.MachinesTable;
 import de.uni.goettingen.REARController.GUI.DataTablePanel;
-import de.uni.goettingen.REARController.GUI.IDfactory;
-import de.uni.goettingen.REARController.GUI.InfoDialog;
-import de.uni.goettingen.REARController.GUI.RearFileFilter;
 import de.uni.goettingen.REARController.GUI.TreePanel;
+import de.uni.goettingen.REARController.GUI.Dialogs.InfoDialog;
+import de.uni.goettingen.REARController.GUI.Tools.IDfactory;
+import de.uni.goettingen.REARController.GUI.Tools.RearFileFilter;
+import de.uni.goettingen.REARController.GUI.Tools.UpdateMainWindow;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -30,24 +32,29 @@ import java.io.ObjectOutputStream;
 import javax.swing.JPanel;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
+import javax.swing.Timer;
 import net.miginfocom.swing.MigLayout;
 import javax.swing.Box;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Dimension;
+import javax.swing.JCheckBox;
 
 public class MainWindow {
 	public  static final String PROGRAM_NAME	= "REAR Controller";
 	private static final int	MajorVersion 	= 0;
 	private static final int	MedVersion		= 1;
-	private static final int	MinorVersion	= 2;
+	private static final int	MinorVersion	= 3;
 
 	private JFrame frmRemoteAudioRecorder;
 
 	private DataTablePanel	table;
 
 	//	private int 		mode; // 0 = Uninitialized; 1 = Initialized pre-Exam; 2 = Recording; 3 = Uploading & Done
-	private int 		mode; // 0 = Uninitialized; 1 = Initialized pre-Exam; 3 = Recording; 5 = Uploading & Done
+	// private int 		mode; // 0 = Uninitialized; 1 = Initialized pre-Exam; 3 = Recording; 5 = Uploading & Done
+	private int step;
+	private ClientStatus	mode;
+
 	private Boolean		editMode = true;		
 
 	private JToolBar	toolBarMain;
@@ -78,6 +85,8 @@ public class MainWindow {
 
 	private File		file;
 
+	private Timer		timer;
+
 	@SuppressWarnings("unused")
 	private IDfactory 	idFactory;
 
@@ -94,6 +103,9 @@ public class MainWindow {
 	private static final ImageIcon	iconNext			= new ImageIcon(MainWindow.class.getResource("/icons/32/next.png"));
 	private static final ImageIcon	iconRestart			= new ImageIcon(MainWindow.class.getResource("/icons/32/reload.png"));
 	private static final ImageIcon	iconStop			= new ImageIcon(MainWindow.class.getResource("/icons/32/stop.png"));
+	private JLabel lblArrowUnInitToStopped;
+	private Component horizontalStrut_6;
+	private JCheckBox chckbxAllowStopp;
 
 
 	/**
@@ -201,6 +213,10 @@ public class MainWindow {
 		toolBarMain.add(btnNextStep);
 		btnNextStep.setIcon(iconNext);
 
+		chckbxAllowStopp = new JCheckBox("Allow Stopp Exam");
+		chckbxAllowStopp.setVisible(false);
+		toolBarMain.add(chckbxAllowStopp);
+
 		Component horizontalGlue_2 = Box.createHorizontalGlue();
 		toolBarMain.add(horizontalGlue_2);
 
@@ -220,6 +236,13 @@ public class MainWindow {
 
 		Component horizontalGlue_1 = Box.createHorizontalGlue();
 		panelProgress.add(horizontalGlue_1);
+
+		lblArrowUnInitToStopped = new JLabel("");
+		lblArrowUnInitToStopped.setIcon(iconRightArrowGray);
+		panelProgress.add(lblArrowUnInitToStopped);
+
+		horizontalStrut_6 = Box.createHorizontalStrut(20);
+		panelProgress.add(horizontalStrut_6);
 
 		lblStoppedState = new JLabel("");
 		lblStoppedState.setIcon(iconStoppedGray);
@@ -269,6 +292,11 @@ public class MainWindow {
 
 		Component horizontalGlue = Box.createHorizontalGlue();
 		panelProgress.add(horizontalGlue);
+
+		UpdateMainWindow umw = new UpdateMainWindow(this);
+		timer = new Timer(5000, null);
+		timer.addActionListener(umw);
+		timer.start();
 	}
 
 	private void toggleEdit() {
@@ -297,49 +325,120 @@ public class MainWindow {
 		return editMode;
 	}
 
+	public void timerEvent() {
+		if(!editMode) {
+			mode = table.getStatus();
+			System.out.println(mode);
+			if(mode.getNone() && mode.getInit())
+				lblArrowUnInitToStopped.setIcon(iconRightArrow);
+			else
+				lblArrowUnInitToStopped.setIcon(iconRightArrowGray);
+
+			if(mode.getInit()) 
+				lblStoppedState.setIcon(iconStopped);
+			else
+				lblStoppedState.setIcon(iconStoppedGray);
+
+			if(mode.getInit() && mode.getRec())
+				lblArrowToRec.setIcon(iconRightArrow);
+			else
+				lblArrowToRec.setIcon(iconRightArrowGray);
+
+			if(mode.getRec())
+				lblRec.setIcon(iconRec);
+			else
+				lblRec.setIcon(iconRecGray);
+
+			if(mode.getRec() && (mode.getUpload() || mode.getDone()))
+				lblArrowToUpload.setIcon(iconRightArrow);
+			else
+				lblArrowToUpload.setIcon(iconRightArrowGray);
+
+			if(mode.getUpload())
+				lblUpload.setIcon(iconUpload);
+			else
+				lblUpload.setIcon(iconUploadGray);
+
+			if((mode.getRec() || mode.getUpload()) && mode.getDone())
+				lblArrowToDone.setIcon(iconRightArrow);
+			else
+				lblArrowToDone.setIcon(iconRightArrowGray);
+
+			if(mode.getDone())
+				lblDone.setIcon(iconOk);
+			else
+				lblDone.setIcon(iconOkGray);
+
+			switch(step) {
+			case 0:
+				if(mode.isUninitialized()) {
+					btnNextStep.setEnabled(true);
+					btnEditMode.setEnabled(true);
+				}
+				else
+					btnNextStep.setEnabled(false);
+				break;
+			case 1:
+				btnEditMode.setEnabled(false);
+				if(mode.isInitialized())
+					btnNextStep.setEnabled(true);
+				else
+					btnNextStep.setEnabled(false);
+				break;
+			case 2:
+				btnEditMode.setEnabled(false);
+				if(mode.isRec())
+					btnNextStep.setEnabled(true);
+				else
+					btnNextStep.setEnabled(false);
+				break;
+			case 3:
+				btnEditMode.setEnabled(false);
+				if(mode.isDone())
+					btnNextStep.setEnabled(true);
+				else
+					btnNextStep.setEnabled(false);
+				break;
+			}
+			table.timerEvent();
+		}
+	}
+
 	private void next() {
-		switch(mode) {
-		case 0:
-			btnEditMode.setEnabled(false);
-			lblStoppedState.setIcon(iconStopped);
+		boolean nextStep = true;
+		switch(step) {
+		case 0:	
 			btnNextStep.setIcon(iconRec);
-			// Send Signal to hosts
+			btnNextStep.setEnabled(false);
+			table.init();
 			break;
 		case 1:
-			btnNextStep.setIcon(iconNext);
-			lblArrowToRec.setIcon(iconRightArrow);
-			lblRec.setIcon(iconRec);
+			btnNextStep.setIcon(iconStop);
+			btnNextStep.setEnabled(false);
+			chckbxAllowStopp.setVisible(true);
+			table.rec();
 			break;
 		case 2:
-			btnNextStep.setIcon(iconStop);
-			lblStoppedState.setIcon(iconStoppedGray);
-			lblArrowToRec.setIcon(iconRightArrowGray);
+			if(chckbxAllowStopp.isSelected()) {
+				btnNextStep.setIcon(iconRestart);
+				btnNextStep.setEnabled(false);
+				chckbxAllowStopp.setVisible(false);
+				table.stop();
+			}
+			else
+				nextStep = false;
 			break;
 		case 3:
 			btnNextStep.setIcon(iconNext);
-			lblArrowToUpload.setIcon(iconRightArrow);
-			lblUpload.setIcon(iconUpload);
-			lblArrowToDone.setIcon(iconRightArrow);
-			break;
-		case 4:
-			lblRec.setIcon(iconRecGray);
-			lblArrowToUpload.setIcon(iconRightArrowGray);
-			lblDone.setIcon(iconOk);
-			break;
-		case 5:
-			lblUpload.setIcon(iconUploadGray);
-			lblArrowToDone.setIcon(iconRightArrowGray);
-			btnNextStep.setIcon(iconRestart);
-			break;
-		case 6:
-			lblDone.setIcon(iconOkGray);
-			btnEditMode.setEnabled(true);
-			btnNextStep.setIcon(iconNext);
+			btnNextStep.setEnabled(false);
+			table.reset();
 			break;
 		}
-		mode++;
-		if(mode > 6)
-			mode = 0;
+		if(nextStep) {
+			step++;
+			if(step > 3)
+				step = 0;
+		}
 		frmRemoteAudioRecorder.repaint();
 	}
 

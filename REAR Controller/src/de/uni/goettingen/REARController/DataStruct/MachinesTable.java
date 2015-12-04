@@ -7,28 +7,30 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 
 import de.uni.goettingen.REARController.DataStruct.Serializable.SerMachinesTable;
-import de.uni.goettingen.REARController.GUI.IDfactory;
+import de.uni.goettingen.REARController.DummyClasses.DelButton;
+import de.uni.goettingen.REARController.GUI.Tools.IDfactory;
+import de.uni.goettingen.REARController.Net.IPreachable;
 
 @SuppressWarnings("serial")
 public class MachinesTable extends AbstractTableModel implements TableModel {
 	private final static int		COL_NUM			= 7;
 	private final static String []	COLUMN_NAMES 	=
-		{	"Computer ID",
-			"Area",
-			"IP Address",
-			"Student ID",
-			"Status",
-			"Rec. Time",
-			"Del",
-			"ID"
+		{	"Computer ID",	// 0
+			"Area",			// 1
+			"IP Address",	// 2
+			"Student ID",	// 3
+			"Status",		// 4
+			"Rec. Time",	// 5
+			"Del",			// 6
+			"ID"			// 7
 		};
 	
 	private final static Class<?>[] COLUMN_CLASSES =
 		{	String.class,
 			AreaTreeNode.class,
-			InetAddress.class,
+			IPreachable.class,
 			String.class,
-			Status.class,
+			ClientStatus.class,
 			String.class,
 			DelButton.class,
 			Long.class
@@ -79,7 +81,7 @@ public class MachinesTable extends AbstractTableModel implements TableModel {
 				if(i==3)
 					l.addElement("");
 				else if(i==4)
-					l.addElement(new Status());
+					l.addElement(new ClientStatus());
 				else if(i==5)
 					l.addElement("0:00:00");
 				else if(i==6)
@@ -103,6 +105,22 @@ public class MachinesTable extends AbstractTableModel implements TableModel {
 				o.table.addElement(newLine);
 			}
 		return o;
+	}
+	
+	public void setStatus(int r, ClientStatus cs) {
+		if(cs != null)
+			setValueAt(cs, r, 4);
+	}
+	
+	public void setRecTime(int r, String t) {
+		if(t != null)
+			setValueAt(t, r, 5);
+	}
+	
+	public void setReachable(int r, Boolean b) {
+		IPreachable ipr = (IPreachable) getValueAt(r, 2);
+		ipr.setReachable(b);
+		setValueAt(ipr, r, 2);
 	}
 	
 	@Override
@@ -152,13 +170,22 @@ public class MachinesTable extends AbstractTableModel implements TableModel {
 	}
 	
 	private Machine objVectorToMachine(Vector<Object> o) {
+		AreaTreeNode 	atn	= (AreaTreeNode) o.get(1);
+		Area			a	= null;
+		IPreachable		ipr = (IPreachable) o.get(2);
+		InetAddress		ip	= null;
+		if(atn != null)
+			a = (Area) atn.getUserObject();
+		if(ipr != null)
+			ip = (InetAddress) ipr.getAddress();
 		Machine m = new Machine(
-				(String) o.get(0),
-				(Area) ((AreaTreeNode) o.get(1)).getUserObject(),
-				(InetAddress) o.get(2),
-				(String) o.get(3),
-				(Status) o.get(4),
-				(String) o.get(5));
+				(String) 		o.get(0),
+				(Area) 			a,
+				(InetAddress)	ip,
+				(String) 		o.get(3),
+				(ClientStatus)	o.get(4),
+				(String) 		o.get(5),
+				(Long)			o.get(7));
 		return m;
 	}
 }

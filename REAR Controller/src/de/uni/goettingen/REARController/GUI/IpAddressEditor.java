@@ -6,6 +6,8 @@ import java.net.UnknownHostException;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JTextField;
 
+import de.uni.goettingen.REARController.Net.IPreachable;
+
 @SuppressWarnings("serial")
 public class IpAddressEditor extends DefaultCellEditor {
 	public IpAddressEditor(JTextField textField) {
@@ -20,6 +22,6 @@ public class IpAddressEditor extends DefaultCellEditor {
 		} catch (UnknownHostException e) {
 			addr = null;
 		}
-		return addr;
+		return new IPreachable(addr);
 	}
 }

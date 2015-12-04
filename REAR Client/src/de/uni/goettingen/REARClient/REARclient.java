@@ -15,7 +15,7 @@ import de.uni.goettingen.REARClient.Net.ServerThread;
 import de.uni.goettingen.REARClient.Net.SSH.SSHconnection;
 import de.uni.goettingen.REARClient.Net.SSH.SSHkey;
 
-public class RemoteAudioRecorderClient {
+public class REARclient {
 	public static final boolean DEBUG					= true;
 	public static final boolean DEBUG_GUI				= true;
 	public static final String	DEFAULT_PATH			= "C:\\tmp\\audio\\";

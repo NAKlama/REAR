@@ -23,6 +23,8 @@ import javax.swing.tree.TreeSelectionModel;
 import de.uni.goettingen.REARController.MainWindow;
 import de.uni.goettingen.REARController.DataStruct.Area;
 import de.uni.goettingen.REARController.DataStruct.AreaTreeNode;
+import de.uni.goettingen.REARController.GUI.Dialogs.NewAreaDialog;
+import de.uni.goettingen.REARController.GUI.Tools.TreeChangeListener;
 
 import java.awt.Component;
 

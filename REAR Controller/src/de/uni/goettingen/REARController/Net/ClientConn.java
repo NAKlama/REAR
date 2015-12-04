@@ -7,10 +7,9 @@ import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.Socket;
 
-import de.uni.goettingen.REARController.DataStruct.Machine;
+import de.uni.goettingen.REARController.DataStruct.ClientStatus;
 
 public class ClientConn {
-	private Machine				machine;
 	private InetAddress			ip;
 	private Socket				sock;
 	private DataOutputStream	out;
@@ -18,9 +17,8 @@ public class ClientConn {
 	private AuthToken			token;
 	private String				salt;
 	
-	public ClientConn(Machine m) {
-		machine = m;
-		ip = m.getIP();
+	public ClientConn(InetAddress i) {
+		ip = i;
 		token = new AuthToken();
 		try {
 			sock	= new Socket(ip, 15000);
@@ -34,15 +32,30 @@ public class ClientConn {
 		}
 	}
 	
-	public Machine getMachine() {
-		return machine;
+	public ClientStatus status() {
+		String reply = getReply("STATUS\n");
+		int st = Integer.parseInt(reply);
+		switch(st) {
+		case 0:
+			return new ClientStatus(true,  false, false, false, false);
+		case 1:
+			return new ClientStatus(false, true,  false, false, false);
+		case 2:
+			return new ClientStatus(false, false, true,  false, false);
+		case 3:
+			return new ClientStatus(false, false, false, true,  false);
+		case 4:
+			return new ClientStatus(false, false, false, false, true );
+		}
+		return null;		
 	}
 	
-	public int status() {
-		String reply = getReply("STATUS\n");
-		if(reply != null)
-			return Integer.parseInt(reply);
-		return -1;		
+	public InetAddress getIP() {
+		return ip;
+	}
+	
+	public Boolean isReachable() {
+		return sock.isConnected();
 	}
 	
 	private String getSalt() {
@@ -55,6 +68,10 @@ public class ClientConn {
 	
 	public String getID() {
 		return getReply("ID\n").trim();
+	}
+	
+	public String getTime() {
+		return getReply("RECTIME\n").trim();
 	}
 	
 	public boolean init() {
@@ -75,8 +92,11 @@ public class ClientConn {
 		
 	private String getReply(String c) {
 		try {
+			System.out.println("> " + c.trim());
 			out.writeBytes(c);
-			return in.readLine();
+			String reply = in.readLine();
+			System.out.println("< " + reply);
+			return reply;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -87,9 +107,11 @@ public class ClientConn {
 	private boolean sendAuthCommand(String c) {
 		try {
 			String command = c.trim() + " ";
+			System.out.println("> " + command + "[TOKEN]");
 			command += token.getToken(c, salt) + "\n";			
 			out.writeBytes(command);
 			String reply = in.readLine();
+			System.out.println("< " + reply);
 			if(reply.trim().equals("OK"))
 				return true;
 		} catch (IOException e) {

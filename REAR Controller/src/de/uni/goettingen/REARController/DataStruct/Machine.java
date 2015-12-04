@@ -4,34 +4,35 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Vector;
 
-import de.uni.goettingen.REARController.GUI.IDfactory;
+import de.uni.goettingen.REARController.GUI.Tools.IDfactory;
+import de.uni.goettingen.REARController.Net.IPreachable;
 
 public class Machine {
 	private long			id;
 	private String			computerID;
 	private AreaTreeNode	aNode;
 	private Area			area;
-	private InetAddress		ip;
+	private IPreachable		ip;
 	private String			studentID;
-	private Status			status;
+	private ClientStatus	status;
 	private String			recTime;
 	private Boolean			delete;
 	
 	public Machine(Machine m) {
 		computerID	= m.getComputerID();
 		area		= m.getArea();
-		ip			= m.getIP();
+		ip			= new IPreachable(m.getIP());
 		studentID	= m.getStudentID();
-		status		= m.getStatus();
+		status		= m.getClientStatus();
 		recTime		= m.getRecTime();
 		delete		= false;
 		id			= new IDfactory().getID();
 	}
 	
-	public Machine(String cid, Area a, InetAddress i, String studID, Status s, String rTime, long idIn) {
+	public Machine(String cid, Area a, InetAddress i, String studID, ClientStatus s, String rTime, long idIn) {
 		computerID	= cid;
 		area		= a;
-		ip			= i;
+		ip			= new IPreachable(i);
 		studentID	= studID;
 		status		= s;
 		recTime		= rTime;
@@ -39,10 +40,10 @@ public class Machine {
 		id			= idIn;
 	}
 	
-	public Machine(String cid, Area a, InetAddress i, String studID, Status s, String rTime) {
+	public Machine(String cid, Area a, InetAddress i, String studID, ClientStatus s, String rTime) {
 		computerID	= cid;
 		area		= a;
-		ip			= i;
+		ip			= new IPreachable(i);
 		studentID	= studID;
 		status		= s;
 		recTime		= rTime;
@@ -53,9 +54,9 @@ public class Machine {
 	public Machine(String cid, Area a, InetAddress i) {
 		computerID	= cid;
 		area		= a;
-		ip			= i;
+		ip			= new IPreachable(i);
 		studentID	= "";
-		status		= new Status(StatusEnum.UNINITIALIZED);
+		status		= new ClientStatus(StatusEnum.UNINITIALIZED);
 		recTime		= "0:00:00";
 		delete		= false;
 		id			= new IDfactory().getID();
@@ -66,7 +67,7 @@ public class Machine {
 		area		= a;
 		ip			= null;
 		studentID	= "";
-		status		= new Status(StatusEnum.UNINITIALIZED);
+		status		= new ClientStatus(StatusEnum.UNINITIALIZED);
 		recTime		= "0:00:00";
 		delete		= false;
 		id			= new IDfactory().getID();
@@ -77,7 +78,7 @@ public class Machine {
 		area		= null;
 		ip			= null;
 		studentID	= "";
-		status		= new Status(StatusEnum.UNINITIALIZED);
+		status		= new ClientStatus(StatusEnum.UNINITIALIZED);
 		recTime		= "0:00:00";
 		delete		= false;
 		id			= new IDfactory().getID();
@@ -97,15 +98,19 @@ public class Machine {
 	}
 	
 	public void setIP(InetAddress i) {
-		ip = i;
+		ip = new IPreachable(i);
 	}
 	
 	public void setStudentID(String sid) {
 		studentID = sid;
 	}
 	
-	public void setStatus(Status s) {
+	public void setStatus(ClientStatus s) {
 		status = s;
+	}
+	
+	public void setStatus(StatusEnum s) {
+		status = new ClientStatus(s);
 	}
 	
 	public void setRecTime(String t) {
@@ -130,7 +135,7 @@ public class Machine {
 			break;
 		case 2:
 			try {
-				ip = InetAddress.getByName((String) o);
+				ip = new IPreachable(InetAddress.getByName((String) o));
 			} catch (UnknownHostException e) {
 				ip = null;
 			}
@@ -139,7 +144,7 @@ public class Machine {
 			studentID = (String) o;
 			break;
 		case 4:
-			status = (Status) o;
+			status = (ClientStatus) o;
 			break;
 		case 5:
 			recTime = (String) o;
@@ -163,14 +168,22 @@ public class Machine {
 	}
 	
 	public InetAddress getIP() {
-		return ip;
+		return ip.getAddress();
+	}
+	
+	public Boolean getReachable() {
+		return ip.isReachable();
 	}
 	
 	public String getStudentID() {
 		return studentID;
 	}
 	
-	public Status getStatus() {
+	public StatusEnum getStatus() {
+		return status.getStatus();
+	}
+	
+	public ClientStatus getClientStatus() {
 		return status;
 	}
 	
@@ -193,7 +206,7 @@ public class Machine {
 		case 1:
 			return area.getName();
 		case 2:
-			return ip.getHostAddress();
+			return ip.getAddress().getHostAddress();
 		case 3:
 			return studentID;
 		case 4:

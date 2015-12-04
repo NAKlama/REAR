@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="create_run_jar" name="Create Runnable Jar for Project REAR Client with Jar-in-Jar Loader">
+    <!--this file was created by Eclipse Runnable JAR file Export Wizard-->
+    <!--ANT 1.7 is required-->
+    <!--define folder properties-->
+    <property name="dir.buildfile" value="."/>
+    <property name="dir.workspace" value="C:/Users/Frederik Klama/workspace"/>
+    <property name="dir.jarfile" value="${dir.buildfile}"/>
+    <target name="create_run_jar">
+        <jar destfile="${dir.jarfile}/REAR Client.jar">
+            <manifest>
+                <attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"/>
+                <attribute name="Rsrc-Main-Class" value="de.uni.goettingen.REARClient.REARclient"/>
+                <attribute name="Class-Path" value="."/>
+                <attribute name="Rsrc-Class-Path" value="./ javaFlacEncoder-0.3.1.jar jsch-0.1.53.jar batik-anim-1.8.jar batik-awt-util-1.8.jar batik-bridge-1.8.jar batik-codec-1.8.jar batik-css-1.8.jar batik-dom-1.8.jar batik-ext-1.8.jar batik-gvt-1.8.jar batik-parser-1.8.jar batik-script-1.8.jar batik-svg-dom-1.8.jar batik-transcoder-1.8.jar batik-util-1.8.jar batik-xml-1.8.jar xml-apis-ext-1.3.04.jar xmlgraphics-commons-2.0.jar"/>
+            </manifest>
+            <zipfileset src="jar-in-jar-loader.zip"/>
+            <fileset dir="${dir.jarfile}/bin"/>
+            <zipfileset dir="C:/Users/Frederik Klama/git/REAR/lib" includes="javaFlacEncoder-0.3.1.jar"/>
+            <zipfileset dir="C:/Users/Frederik Klama/git/REAR/lib" includes="jsch-0.1.53.jar"/>
+            <zipfileset dir="C:/Users/Frederik Klama/git/REAR/lib/batik" includes="batik-anim-1.8.jar"/>
+            <zipfileset dir="C:/Users/Frederik Klama/git/REAR/lib/batik" includes="batik-awt-util-1.8.jar"/>
+            <zipfileset dir="C:/Users/Frederik Klama/git/REAR/lib/batik" includes="batik-bridge-1.8.jar"/>
+            <zipfileset dir="C:/Users/Frederik Klama/git/REAR/lib/batik" includes="batik-codec-1.8.jar"/>
+            <zipfileset dir="C:/Users/Frederik Klama/git/REAR/lib/batik" includes="batik-css-1.8.jar"/>
+            <zipfileset dir="C:/Users/Frederik Klama/git/REAR/lib/batik" includes="batik-dom-1.8.jar"/>
+            <zipfileset dir="C:/Users/Frederik Klama/git/REAR/lib/batik" includes="batik-ext-1.8.jar"/>
+            <zipfileset dir="C:/Users/Frederik Klama/git/REAR/lib/batik" includes="batik-gvt-1.8.jar"/>
+            <zipfileset dir="C:/Users/Frederik Klama/git/REAR/lib/batik" includes="batik-parser-1.8.jar"/>
+            <zipfileset dir="C:/Users/Frederik Klama/git/REAR/lib/batik" includes="batik-script-1.8.jar"/>
+            <zipfileset dir="C:/Users/Frederik Klama/git/REAR/lib/batik" includes="batik-svg-dom-1.8.jar"/>
+            <zipfileset dir="C:/Users/Frederik Klama/git/REAR/lib/batik" includes="batik-transcoder-1.8.jar"/>
+            <zipfileset dir="C:/Users/Frederik Klama/git/REAR/lib/batik" includes="batik-util-1.8.jar"/>
+            <zipfileset dir="C:/Users/Frederik Klama/git/REAR/lib/batik" includes="batik-xml-1.8.jar"/>
+            <zipfileset dir="C:/Users/Frederik Klama/git/REAR/lib/batik" includes="xml-apis-ext-1.3.04.jar"/>
+            <zipfileset dir="C:/Users/Frederik Klama/git/REAR/lib/batik" includes="xmlgraphics-commons-2.0.jar"/>
+        </jar>
+    </target>
+</project>

@@ -40,6 +40,10 @@ public class SignalObject {
 		return win.getID();
 	}
 	
+	public String getTime() {
+		return win.getTime();
+	}
+	
 	public void setID(String id) {
 		win.setID(id);
 	}
@@ -53,7 +57,7 @@ public class SignalObject {
 	}
 	
 	public void startRecording() {
-		File outFile    	= new File(RemoteAudioRecorderClient.DEFAULT_PATH + win.getID() + ".flac");
+		File outFile    	= new File(REARclient.DEFAULT_PATH + win.getID() + ".flac");
 		rec					= new Recorder(micLine, outFile);
 		Thread recThread	= new Thread(rec);
 		recThread.start();

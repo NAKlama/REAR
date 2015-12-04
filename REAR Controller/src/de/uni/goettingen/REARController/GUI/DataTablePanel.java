@@ -20,12 +20,17 @@ import javax.swing.table.TableModel;
 import de.uni.goettingen.REARController.MainWindow;
 import de.uni.goettingen.REARController.DataStruct.Area;
 import de.uni.goettingen.REARController.DataStruct.AreaTreeNode;
+import de.uni.goettingen.REARController.DataStruct.ClientStatus;
+import de.uni.goettingen.REARController.DataStruct.Machine;
 import de.uni.goettingen.REARController.DataStruct.MachinesTable;
-import de.uni.goettingen.REARController.DataStruct.Status;
 import de.uni.goettingen.REARController.DataStruct.Serializable.SerMachinesTable;
+import de.uni.goettingen.REARController.GUI.Tools.TreeChangeListener;
+import de.uni.goettingen.REARController.Net.IPreachable;
+import de.uni.goettingen.REARController.Net.NetConnections;
 
 import javax.swing.JScrollPane;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.net.InetAddress;
@@ -47,10 +52,12 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 	private JComboBox<AreaTreeNode>		areaSelector;
 
 	private SerMachinesTable			mainTable;
+	private NetConnections				connections;
 
 	public DataTablePanel(TreePanel t) {
-		tree = t;
-		mainTable = new SerMachinesTable();
+		tree		= t;
+		mainTable	= new SerMachinesTable();
+		connections	= new NetConnections();
 
 		t.addTreeChangeListener(new DataTableTreeChangeListener());
 		setLayout(new MigLayout("", "[fill]", "[fill]"));
@@ -73,8 +80,8 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 	public void initTable(TableModel m) {
 		table.setModel(m);
 		table.setDefaultRenderer(AreaTreeNode.class, new AreaTreeNodeRenderer());
-		table.setDefaultRenderer(InetAddress.class, new IpRenderer());
-		table.setDefaultRenderer(Status.class, new StatusRenderer());
+		table.setDefaultRenderer(IPreachable.class, new IpRenderer());
+		table.setDefaultRenderer(ClientStatus.class, new StatusRenderer());
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
 		TableColumn statusCol;
@@ -86,6 +93,26 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 
 		TableColumn ipColumn = table.getColumnModel().getColumn(2);
 		ipColumn.setCellEditor(new IpAddressEditor(new JTextField()));
+	}
+
+	public void init() {
+		connections.init();
+	}
+
+	public void rec() {
+		connections.rec();
+	}
+
+	public void stop() {
+		connections.stop();
+	}
+
+	public void reset() {
+		connections.reset();
+	}
+
+	public ClientStatus getStatus() {
+		return connections.getStatus();
 	}
 
 	public void setFilter(AreaTreeNode n) {
@@ -114,6 +141,7 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 	public void newEmpty() {
 		machines = new MachinesTable();
 		addListener();
+		connections.update(mainTable);
 		machines.addBlankLine();
 		initTable(machines);
 	}
@@ -125,6 +153,27 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 			machines.addBlankLine();
 		initTable(machines);
 		mainTable = machines.getSaveObject();
+		connections.update(mainTable);
+		updateConn();
+	}
+	
+	public void timerEvent() {
+		MachinesTable tab = (MachinesTable) table.getModel();
+		for(int i = 0; i < tab.getRowCount(); i++) {
+			Machine	m	= tab.getLine(i);
+			long	id	= m.getID();
+			if(m.getComputerID() != "" && m.getArea() != null && m.getIP() != null) {
+				tab.setStatus(i, connections.getStatus(id));
+				tab.setRecTime(i, connections.getRecTime(id));
+			}
+		}
+		for(Vector<Object> line : mainTable.data) {
+			long id = (long) line.get(7);
+			if((String) line.get(0) != "" && line.get(1) != null && line.get(2) != null) {
+				line.set(4, connections.getStatus(id));
+				line.set(4, connections.getRecTime(id));
+			}
+		}
 	}
 
 	public MachinesTable getTableModel() {
@@ -146,7 +195,26 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 		MachinesTable tm = this.getTableModel();
 		SerMachinesTable ser = tm.getSaveObject();
 		mainTable.update(ser);
+		connections.update(mainTable);
+		updateConn();
 	}
+
+	private void updateConn() {
+		for(Vector<Object> line : mainTable.data) {
+			long id = (long) line.get(7);
+			if(line.get(2) != null)
+				if(connections.hasID(id)) {
+					IPreachable ipr	= (IPreachable) line.get(2);
+					if(ipr != null) {
+						InetAddress ip	= ipr.getAddress();
+						if(!ip.equals(connections.getIP(id))) {
+							connections.setIP(id, ip);
+						}
+					}
+				}
+		}
+	}
+
 
 	public void setEditMode(Boolean e) {
 		editMode = e;
@@ -167,16 +235,16 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 			super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 			String text = "";
 			if(editMode == false) {
-				Status status = (Status) value;
+				ClientStatus status = (ClientStatus) value;
 				if(status.isUninitialized())
 				{}
-				else if(status.isStopped())
+				else if(status.getInit())
 					this.setIcon(stoppedIcon);
-				else if(status.isRecording())
+				else if(status.getRec())
 					this.setIcon(recIcon);
-				else if(status.isUploading())
+				else if(status.getUpload())
 					this.setIcon(uploadIcon);
-				else if(status.isDone())
+				else if(status.getDone())
 					this.setIcon(okIcon);
 			}
 			this.setText(text);
@@ -190,8 +258,12 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 			super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 			if(value != null) {
-				InetAddress a = (InetAddress) value;
-				this.setText(a.getHostAddress());
+				IPreachable a = (IPreachable) value;
+				if(a.isReachable())
+					this.setForeground(Color.GREEN);
+				else
+					this.setForeground(Color.RED);
+				this.setText(a.getAddress().getHostAddress());
 			}
 			return this;
 		}

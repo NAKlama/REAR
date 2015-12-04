@@ -1,4 +1,4 @@
-package de.uni.goettingen.REARController.GUI;
+package de.uni.goettingen.REARController.GUI.Dialogs;
 
 import java.io.IOException;
 import java.io.InputStream;

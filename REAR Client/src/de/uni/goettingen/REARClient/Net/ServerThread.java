@@ -7,7 +7,7 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 import java.net.SocketException;
 
-import de.uni.goettingen.REARClient.RemoteAudioRecorderClient;
+import de.uni.goettingen.REARClient.REARclient;
 import de.uni.goettingen.REARClient.SignalObject;
 
 public class ServerThread implements Runnable {
@@ -36,12 +36,15 @@ public class ServerThread implements Runnable {
 			in			= new BufferedReader(new InputStreamReader(conn.getInputStream()));
 			out			= new DataOutputStream(conn.getOutputStream());
 			remoteAddr	= conn.getInetAddress().toString() + ":" + conn.getPort();
-			if(RemoteAudioRecorderClient.DEBUG)
+			if(REARclient.DEBUG)
 				System.out.println("Running connection thread connected to " + remoteAddr + "#\n");
 
 			while(!quit) {
 				String msg = in.readLine();
 				String[] message = msg.trim().split(" ");
+				
+				if(REARclient.DEBUG)
+					System.out.println("< " + msg);
 
 				if(allowShutdown && !message[0].equals("SHUTDOWN"))
 					allowShutdown = false;
@@ -64,8 +67,11 @@ public class ServerThread implements Runnable {
 				else if(message[0].equals("ID"))
 					setID(message);
 				
+				else if(message[0].equals("RECTIME"))
+					out.writeBytes(signal.getTime() + "\n");
+				
 				else if(message[0].equals("STATUS"))
-					out.writeBytes(String.valueOf(signal.getMode()));
+					out.writeBytes(String.valueOf(signal.getMode()) + "\n");
 				
 				else if(message[0].equals("GETSALT"))
 					out.writeBytes(remoteAddr + "\n");

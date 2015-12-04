@@ -6,7 +6,7 @@ import java.awt.Graphics;
 
 import javax.swing.JPanel;
 
-import de.uni.goettingen.REARClient.RemoteAudioRecorderClient;
+import de.uni.goettingen.REARClient.REARclient;
 
 @SuppressWarnings("serial")
 public class LevelMeter extends JPanel {
@@ -15,7 +15,7 @@ public class LevelMeter extends JPanel {
 	public LevelMeter() {
 		setPreferredSize(new Dimension(60, 20));
 		setMaximumSize(new Dimension(60, 20));
-		if(RemoteAudioRecorderClient.DEBUG)
+		if(REARclient.DEBUG)
 			setBackground(Color.BLUE);
 	}
 
