@@ -57,7 +57,11 @@ public class SignalObject {
 	}
 	
 	public void startRecording() {
-		File outFile    	= new File(REARclient.DEFAULT_PATH + win.getID() + ".flac");
+		File outFile;
+		if(win.getID() != null && ! win.getID().equals(""))
+			outFile				= new File(REARclient.DEFAULT_PATH + win.getID() + ".flac");
+		else
+			outFile				= new File(REARclient.DEFAULT_FILE);
 		rec					= new Recorder(micLine, outFile);
 		Thread recThread	= new Thread(rec);
 		recThread.start();
