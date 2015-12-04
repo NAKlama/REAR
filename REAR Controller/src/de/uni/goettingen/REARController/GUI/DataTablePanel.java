@@ -35,6 +35,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.net.InetAddress;
 import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
 
 @SuppressWarnings("serial")
 public class DataTablePanel extends JPanel implements TableModelListener {
@@ -96,7 +97,22 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 	}
 
 	public void init() {
-		connections.init();
+		MachinesTable tm = this.getTableModel();
+		SerMachinesTable ser = tm.getSaveObject();
+		mainTable.update(ser);
+		ConcurrentHashMap<Long, String> studIDs = new ConcurrentHashMap<Long, String>();
+		for(Vector<Object> line : mainTable.data) {
+			String 	studID	= (String) 	line.get(3);
+			long	id		= (long)	line.get(7);
+			System.out.println(id + ": " + studID);
+			if(studID != null && ! studID.trim().equals("")) {
+				studIDs.put(id, studID);
+
+			}
+		}
+ 		connections.init(studIDs);
+ 		if(!editMode)
+			((MachinesTable) table.getModel()).setExamMode(!editMode, true);
 	}
 
 	public void rec() {
@@ -109,6 +125,8 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 
 	public void reset() {
 		connections.reset();
+		if(!editMode)
+			((MachinesTable) table.getModel()).setExamMode(false, false);
 	}
 
 	public ClientStatus getStatus() {
@@ -218,8 +236,10 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 
 	public void setEditMode(Boolean e) {
 		editMode = e;
+		MachinesTable mt = (MachinesTable) table.getModel();
+		mt.setExamMode(!editMode, false);
 	}
-
+	
 	private void updateComboBox() {
 		TableColumn areaColumn = table.getColumnModel().getColumn(1);
 		areaSelector = new JComboBox<AreaTreeNode>();
