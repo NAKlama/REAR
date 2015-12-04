@@ -30,7 +30,6 @@ public class Recorder implements Runnable {
 	{
 		try
 		{
-//			line.start();
 			AudioSystem.write(aInputStream, FLACFileWriter.FLAC, outFile);
 		}
 		catch (IOException e)

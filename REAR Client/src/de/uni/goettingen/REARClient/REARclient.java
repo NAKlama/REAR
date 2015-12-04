@@ -37,7 +37,7 @@ public class REARclient {
 		MicrophoneLine	micLine			= new MicrophoneLine();
 		StatusWindow	win				= new StatusWindow(micLine);
 		
-		File outFile = new File(DEFAULT_FILE);
+		File outFile = new File(DEFAULT_PATH);
 		outFile.mkdirs();
 
 		SSHkey			sshKey			= new SSHkey(new JSch());
