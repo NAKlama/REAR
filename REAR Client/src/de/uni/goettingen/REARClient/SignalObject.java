@@ -58,8 +58,18 @@ public class SignalObject {
 	
 	public void startRecording() {
 		File outFile;
+		String path;
+		if(win.getExamID() != null && ! win.getExamID().equals("")) {
+			path = REARclient.DEFAULT_PATH + win.getExamID() + "\\";
+			File p = new File(path);
+			p.mkdirs();
+		}
+		else 
+			path = REARclient.DEFAULT_PATH;
+		System.out.println(path);
+		System.out.println(win.getExamID());
 		if(win.getID() != null && ! win.getID().equals(""))
-			outFile				= new File(REARclient.DEFAULT_PATH + win.getID() + ".flac");
+			outFile				= new File(path + win.getID() + ".flac");
 		else
 			outFile				= new File(REARclient.DEFAULT_FILE);
 		rec					= new Recorder(micLine, outFile);
@@ -71,11 +81,19 @@ public class SignalObject {
 	public void stopRecording() {
 		rec.stopRecording();
 		win.setUpload();
-		// Upload File
+		// TODO Upload File
 	}
 	
 	public void reset() {
 		win.reset();
 	}
-	
+
+	public void setExamID(String id) {
+		win.setExamID(id);
+		
+	}
+
+	public String getExamID() {
+		return win.getExamID();
+	}	
 }

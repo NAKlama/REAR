@@ -10,6 +10,7 @@ import de.uni.goettingen.REARController.DataStruct.FileDataObject;
 import de.uni.goettingen.REARController.DataStruct.MachinesTable;
 import de.uni.goettingen.REARController.GUI.DataTablePanel;
 import de.uni.goettingen.REARController.GUI.TreePanel;
+import de.uni.goettingen.REARController.GUI.Dialogs.ExamStartDialog;
 import de.uni.goettingen.REARController.GUI.Dialogs.InfoDialog;
 import de.uni.goettingen.REARController.GUI.Tools.IDfactory;
 import de.uni.goettingen.REARController.GUI.Tools.RearFileFilter;
@@ -86,6 +87,10 @@ public class MainWindow {
 	private File		file;
 
 	private Timer		timer;
+	
+	private BtnListener listener;
+	
+	private ExamStartDialog esd;
 
 	@SuppressWarnings("unused")
 	private IDfactory 	idFactory;
@@ -138,7 +143,7 @@ public class MainWindow {
 	 */
 	private void initialize() {
 		mainLayout = new MigLayout("", "[200px][grow]", "[39px][grow][1px]");
-		BtnListener listener = new BtnListener();
+		listener = new BtnListener();
 
 		frmRemoteAudioRecorder = new JFrame();
 		frmRemoteAudioRecorder.setTitle(PROGRAM_NAME);
@@ -408,9 +413,12 @@ public class MainWindow {
 		boolean nextStep = true;
 		switch(step) {
 		case 0:	
-			btnNextStep.setIcon(iconRec);
-			btnNextStep.setEnabled(false);
-			table.init();
+			int studCount = table.studentCount();
+			if(studCount > 0) {
+				esd = new ExamStartDialog(studCount);
+				esd.addListener(listener);
+				esd.setVisible(true);
+			}
 			break;
 		case 1:
 			btnNextStep.setIcon(iconStop);
@@ -545,6 +553,18 @@ public class MainWindow {
 				saveFile();
 			else if(cmd.equals("SaveAsFile"))
 				saveAsFile();
+			else if(cmd.equals("ExamID_OK")) {
+				String examID = esd.getExamID();
+				esd.setVisible(false);
+				if(examID != null && ! examID.equals("")) {
+					table.setExamID(examID);
+					btnNextStep.setIcon(iconRec);
+					btnNextStep.setEnabled(false);
+					table.init();
+				}
+			}
+			else if(cmd.equals("ExamID_Cancel"))
+				esd.setVisible(false);
 		}
 	}
 }

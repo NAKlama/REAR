@@ -77,6 +77,13 @@ public class ClientConn {
 		return false;
 	}
 	
+	public boolean setExamID(String eID) {
+		String reply = getReply("EXAMID " + eID + "\n").trim();
+		if(reply.equals("OK"))
+			return true;
+		return false;		
+	}
+	
 	public String getTime() {
 		return getReply("RECTIME\n").trim();
 	}
@@ -127,6 +134,4 @@ public class ClientConn {
 		}
 		return false;
 	}
-
-	
 }
