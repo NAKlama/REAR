@@ -52,13 +52,11 @@ public class StatusWindow extends JFrame {
 	private ImageIcon	micIcon;
 
 	private LevelMeter	levelMic;
-
 	private Timer		timer;
 	private String		studentID;
-
+	private String		examID;
 	private Date		recStarted;
-
-	private AudioLevel micStreamLevel;
+	private AudioLevel	micStreamLevel;
 
 	private int h, m, s;
 	private int mode; // 0 = invisible; 1 = stopped; 2 = recording; 3 = transferring; 4 = done
@@ -67,6 +65,8 @@ public class StatusWindow extends JFrame {
 
 	public StatusWindow(MicrophoneLine ml)
 	{
+		studentID			= "";
+		examID				= "";
 		micStreamLevel		= new AudioLevel(ml.getLine());
 		h = m = s 			= 0;
 		mode 				= 0;
@@ -244,5 +244,13 @@ public class StatusWindow extends JFrame {
 		}
 
 		return transcoder.getBufferedImage();
+	}
+
+	public void setExamID(String id) {
+		examID = id;		
+	}
+
+	public String getExamID() {
+		return examID;
 	}
 }

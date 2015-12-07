@@ -235,4 +235,12 @@ public class NetConnections {
 		public long id;
 		public Object o;
 	}
+
+	public void setExamID(String eID) {
+		System.out.println(clientIDs);
+		for(long id : clientIDs) {
+			connMap.get(id).setExamID(eID);
+		}
+		
+	}
 }

@@ -96,6 +96,19 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 		ipColumn.setCellEditor(new IpAddressEditor(new JTextField()));
 	}
 
+	public int studentCount() {
+		MachinesTable tm = this.getTableModel();
+		SerMachinesTable ser = tm.getSaveObject();
+		mainTable.update(ser);
+		int c = 0;
+		for(Vector<Object> line : mainTable.data) {
+			String 	studID	= (String) 	line.get(3);
+			if(studID != null && ! studID.trim().equals(""))
+				c++;
+		}
+		return c;
+	}
+	
 	public void init() {
 		MachinesTable tm = this.getTableModel();
 		SerMachinesTable ser = tm.getSaveObject();
@@ -104,7 +117,7 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 		for(Vector<Object> line : mainTable.data) {
 			String 	studID	= (String) 	line.get(3);
 			long	id		= (long)	line.get(7);
-			System.out.println(id + ": " + studID);
+//			System.out.println(id + ": " + studID);
 			if(studID != null && ! studID.trim().equals("")) {
 				studIDs.put(id, studID);
 
@@ -113,6 +126,11 @@ public class DataTablePanel extends JPanel implements TableModelListener {
  		connections.init(studIDs);
  		if(!editMode)
 			((MachinesTable) table.getModel()).setExamMode(!editMode, true);
+	}
+	
+	public void setExamID(String eID)
+	{
+		connections.setExamID(eID);
 	}
 
 	public void rec() {

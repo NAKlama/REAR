@@ -67,6 +67,9 @@ public class ServerThread implements Runnable {
 				else if(message[0].equals("ID"))
 					setID(message);
 				
+				else if(message[0].equals("EXAMID"))
+					examID(message);
+				
 				else if(message[0].equals("RECTIME"))
 					out.writeBytes(signal.getTime() + "\n");
 				
@@ -239,6 +242,23 @@ public class ServerThread implements Runnable {
 		}
 		else {
 			out.writeBytes(signal.getID());
+		}
+	}
+	
+	private void examID(String[] message) throws IOException {
+		if(message.length > 1) {
+			synchronized(signal) {
+				if(signal.getMode() == 0) {
+					signal.setExamID(message[1]);
+					out.writeBytes("OK\n");
+				}
+				else {
+					out.writeBytes("Can only change ExamID in uninitialized client\n");
+				}
+			}
+		}
+		else {
+			out.writeBytes(signal.getExamID());
 		}
 	}
 	
