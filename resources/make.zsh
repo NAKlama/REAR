@@ -1,6 +1,7 @@
 #!/usr/bin/zsh
 for i in 16 32 64
 do 
+	mkdir -p icons/${i}/gray
 	for f in icons/svg/*
 	do
 		w=${i}
