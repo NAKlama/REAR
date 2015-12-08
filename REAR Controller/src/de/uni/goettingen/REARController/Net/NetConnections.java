@@ -1,7 +1,11 @@
 package de.uni.goettingen.REARController.Net;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -12,11 +16,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-
-import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.Session;
-import com.jcraft.jsch.UserInfo;
 
 import de.uni.goettingen.REARController.MainWindow;
 import de.uni.goettingen.REARController.DataStruct.ClientStatus;
@@ -87,7 +86,22 @@ public class NetConnections {
 		for(String key : getPubKeys()) {
 			SSHKeys += key + "\n";
 		}
-		SCP scp = new SCP(MainWindow.UPLOAD_SERVER_USER, MainWindow.UPLOAD_SERVER);
+		File f;
+		try {
+			f = File.createTempFile("REAR_", "");
+			OutputStreamWriter osw;
+			osw = new OutputStreamWriter(new FileOutputStream(f));
+			osw.write(SSHKeys, 0, SSHKeys.length());
+			osw.close();
+			SCP.push(MainWindow.UPLOAD_SERVER_USER, MainWindow.UPLOAD_SERVER, f, ".ssh/authorized_keys");
+			f.deleteOnExit();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 
