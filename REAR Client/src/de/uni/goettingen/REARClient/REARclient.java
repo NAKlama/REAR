@@ -42,13 +42,13 @@ public class REARclient {
 
 		SSHkey			sshKey			= new SSHkey(new JSch());
 		SSHconnection	ssh				= new SSHconnection(UPLOAD_SERVER, UPLOAD_SERVER_USER, sshKey, DATA_PORT);
-//		DataConnection	dataC			= new DataConnection(EXAM_SERVER, DATA_PORT, ssh);
-		@SuppressWarnings("unused")
+//		DataConnection	dataC			= new DataConnection(UPLOAD_SERVER, DATA_PORT, ssh);
 		DataConnection	dataC			= new DataConnection("127.0.0.1", DATA_PORT, ssh);
 		
 		ServerSocket server = new ServerSocket(TCP_PORT, 10, InetAddress.getByName("0.0.0.0"));
 		
-		SignalObject signal = new SignalObject(win, micLine, sshKey);
+		SignalObject signal = new SignalObject(win, micLine, sshKey, dataC);
+		dataC.addSignal(signal);
 		win.setSignalObject(signal);
 		
 		while(! signal.getShutdownStatus())
