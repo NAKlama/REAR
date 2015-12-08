@@ -22,10 +22,10 @@ public class REARclient {
 	public static final String	DEFAULT_FILE			= "C:\\tmp\\audio\\default.flac";
 	
 	private static final int	TCP_PORT				= 15000;	
-	private static final int	DATA_PORT				= 15001;
+	private static final int	DATA_PORT				= 28947;
 //	private static final String	UPLOAD_SERVER			= "134.76.187.188";
 	private static final String	UPLOAD_SERVER			= "192.168.246.132";
-	private static final String	UPLOAD_SERVER_USER		= "audioUpload";
+	private static final String	UPLOAD_SERVER_USER		= "REAR";
 	
 	public static void main(String[] args) throws Exception
 	{
