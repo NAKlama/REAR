@@ -5,7 +5,9 @@ import java.awt.event.ActionListener;
 
 import com.jcraft.jsch.UserInfo;
 
+import de.uni.goettingen.REARController.GUI.Dialogs.MessageDialog;
 import de.uni.goettingen.REARController.GUI.Dialogs.PasswordDialog;
+import de.uni.goettingen.REARController.GUI.Dialogs.YesNoDialog;
 
 public class SSHUserInfo implements UserInfo {
 	private String	passwd;
@@ -30,6 +32,14 @@ public class SSHUserInfo implements UserInfo {
 
 	@Override
 	public boolean promptPassphrase(String question) {
+		PasswordDialog pwd = new PasswordDialog(question, true);
+		pwd.addListener(new BtnListener());
+		pwd.setVisible(true);
+		return ret;
+	}
+
+	@Override
+	public boolean promptPassword(String question) {
 		PasswordDialog pwd = new PasswordDialog(question, false);
 		pwd.addListener(new BtnListener());
 		pwd.setVisible(true);
@@ -37,21 +47,17 @@ public class SSHUserInfo implements UserInfo {
 	}
 
 	@Override
-	public boolean promptPassword(String arg0) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean promptYesNo(String question) {
+		YesNoDialog ynd = new YesNoDialog(question);
+		ynd.addListener(new BtnListener());
+		ynd.setVisible(true);
+		return ret;
 	}
 
 	@Override
-	public boolean promptYesNo(String arg0) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public void showMessage(String arg0) {
-		// TODO Auto-generated method stub
-
+	public void showMessage(String message) {
+		MessageDialog md = new MessageDialog(message);
+		md.setVisible(true);
 	}
 
 	public class BtnListener  implements ActionListener {
@@ -69,6 +75,28 @@ public class SSHUserInfo implements UserInfo {
 				passwd = null;
 				ret = false;
 				((PasswordDialog) e.getSource()).setVisible(false);
+			}
+			if(cmd.equals("PPH_OK"))
+			{
+				ret = true;
+				passphrase = ((PasswordDialog) e.getSource()).getPassword();
+				((PasswordDialog) e.getSource()).setVisible(false);
+			}
+			else if(cmd.equals("PPH_Cancel"))
+			{
+				passphrase = null;
+				ret = false;
+				((PasswordDialog) e.getSource()).setVisible(false);
+			}
+			else if(cmd.equals("Yes"))
+			{
+				ret = true;
+				((YesNoDialog) e.getSource()).setVisible(false);
+			}
+			else if(cmd.equals("No"))
+			{
+				ret = false;
+				((YesNoDialog) e.getSource()).setVisible(false);
 			}
 		}
 	}

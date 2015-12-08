@@ -25,8 +25,6 @@ public class PasswordDialog extends JDialog {
 	
 	private boolean passphrase;
 	
-	private ActionListener listener;
-	
 	public PasswordDialog(String label, Boolean passphr) {
 		passphrase = passphr;
 		setTitle(label);
