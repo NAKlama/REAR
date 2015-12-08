@@ -46,6 +46,13 @@ public class MainWindow {
 	private static final int	MajorVersion 	= 0;
 	private static final int	MedVersion		= 1;
 	private static final int	MinorVersion	= 4;
+	
+	public static final String	UPLOAD_SERVER			= "134.76.187.188";
+//	public static final String	UPLOAD_SERVER			= "192.168.246.132";
+	public static final String	UPLOAD_SERVER_USER		= "REAR";
+	
+	public static final File	TEMP_DIR				= new File("C:\\tmp");
+
 
 	private JFrame frmRemoteAudioRecorder;
 
@@ -117,6 +124,7 @@ public class MainWindow {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+		TEMP_DIR.mkdirs();
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {

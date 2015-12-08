@@ -84,6 +84,10 @@ public class ClientConn {
 		return false;		
 	}
 	
+	public String getSSHkey() {
+		return getReply("GETPUBKEY\n").trim();
+	}
+	
 	public String getTime() {
 		return getReply("RECTIME\n").trim();
 	}

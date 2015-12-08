@@ -1,5 +1,10 @@
 package de.uni.goettingen.REARController.Net;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,6 +17,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import de.uni.goettingen.REARController.MainWindow;
 import de.uni.goettingen.REARController.DataStruct.ClientStatus;
 import de.uni.goettingen.REARController.DataStruct.Serializable.SerMachinesTable;
 
@@ -21,15 +27,17 @@ public class NetConnections {
 	private ConcurrentHashMap<Long, ClientConn> 	connMap;
 	private ConcurrentHashMap<Long, String> 		recTimeMap;
 	private ConcurrentHashMap<Long, ClientStatus>	statusMap;
+	private ConcurrentHashMap<Long, String>			clientSSHkeys;
 	private int										cores;
 
 	public NetConnections() {
-		cores		= Runtime.getRuntime().availableProcessors();
-		clientIDs	= new Vector<Long>();
-		connMap		= new ConcurrentHashMap<Long, ClientConn>();
-		ipMap		= new ConcurrentHashMap<Long, InetAddress>();
-		recTimeMap	= new ConcurrentHashMap<Long, String>();
-		statusMap	= new ConcurrentHashMap<Long, ClientStatus>();
+		cores			= Runtime.getRuntime().availableProcessors();
+		clientIDs		= new Vector<Long>();
+		connMap			= new ConcurrentHashMap<Long, ClientConn>();
+		ipMap			= new ConcurrentHashMap<Long, InetAddress>();
+		recTimeMap		= new ConcurrentHashMap<Long, String>();
+		statusMap		= new ConcurrentHashMap<Long, ClientStatus>();
+		clientSSHkeys	= new ConcurrentHashMap<Long, String>();
 	}
 
 	public void update(SerMachinesTable mList) {
@@ -44,10 +52,19 @@ public class NetConnections {
 					if(!clientIDs.contains(id)) 
 						clientIDs.add(id);
 					connMap.put(id, c);
-					ipMap.put(id, ip);				
+					ipMap.put(id, ip);
+					clientSSHkeys.put(id, c.getSSHkey());
 				}
 			}
 		}
+	}
+	
+	private Vector<String> getPubKeys() {
+		Vector<String> out = new Vector<String>();
+		for(long id : clientIDs) {
+			out.add(clientSSHkeys.get(id));
+		}
+		return out;
 	}
 
 	public void init(ConcurrentHashMap<Long, String> ids) {
@@ -60,9 +77,30 @@ public class NetConnections {
 				for(int i = 0; i < 5 && !idSet; i++) {
 					idSet = c.setID(ids.get(id));
 				}
-				if(idSet)
+				if(idSet) {
 					c.init();
+				}
 			}
+		}
+		String SSHKeys = "";
+		for(String key : getPubKeys()) {
+			SSHKeys += key + "\n";
+		}
+		File f;
+		try {
+			f = File.createTempFile("REAR_", "");
+			OutputStreamWriter osw;
+			osw = new OutputStreamWriter(new FileOutputStream(f));
+			osw.write(SSHKeys, 0, SSHKeys.length());
+			osw.close();
+			SCP.push(MainWindow.UPLOAD_SERVER_USER, MainWindow.UPLOAD_SERVER, f, ".ssh/authorized_keys");
+			f.deleteOnExit();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
