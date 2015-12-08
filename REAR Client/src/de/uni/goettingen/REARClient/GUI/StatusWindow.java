@@ -193,6 +193,7 @@ public class StatusWindow extends JFrame {
 		icon.setIcon(stoppedIcon);
 		statusLabel.setText("Waiting for start of exam signal.");
 		timerLabel.setText("  0:00:00");
+		setVisible(false);
 	}
 
 	public void setID(String idStr) {
