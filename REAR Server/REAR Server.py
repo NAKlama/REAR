@@ -2,9 +2,14 @@
 
 import socketserver
 import threading
+import os.path as path
+import subprocess
+import datetime
+import os
 
-STORE_DIR = "/home/examScreenshot/"
-PORT_NUM  = 31338
+STORE_DIR   = "/home/REAR/flac"
+ENCODE_DIR  = "/home/REAR/mp3"
+PORT_NUM    = 28947
 
 
 class Connection:
@@ -64,10 +69,35 @@ class ClientThread(socketserver.BaseRequestHandler):
     c = Connection(self.request)
     # c.sendStr("Connected\n")
     filename = c.recvLine()
+    examID   = c.recvLine()
+    today    = date.today()
+    dateStr  = today.strftime("%Y%m%d")
+    os.mkdir(STORE_DIR, mode=0o775)
+    os.mkdir(path.join(STORE_DIR, dateStr), mode=0o775)
+    os.mkdir(path.join(STORE_DIR, dateStr, examID), mode 0o775)
+    outFile  = path.join(STORE_DIR, dateStr, examID, filename + ".flac")
     print("Writing to file {}".format(filename))
-    c.storeAll(STORE_DIR + filename)
+    c.storeAll(outFile)
     print("Done")
     self.request.close()
+
+    os.mkdir(ENCODE_DIR, mode=0o775)
+    os.mkdir(path.join(ENCODE_DIR, dateStr), mode=0o775)
+    os.mkdir(path.join(ENCODE_DIR, dateStr, examID), mode 0o775)
+    title  = "S:" + filename
+    artist = "E: " + examID
+    mp3File  = path.join(ENCODE_DIR, dateStr, examID, filename + ".mp3")
+    command  = "flac -s -d -c \""
+    command += outDir
+    command += "\" | lame -m m --replaygain-accurate -S --abr 64"
+    command += " -tt " + title
+    command += " -ta " + artist
+    command += " -ty " + today.strftime("%Y")
+    command += " --add-id3v2 - - > "
+    command += "\"" + mp3File
+    subprocess.check_call(command, shell=True)
+
+
 
 print("Started server")
 #server = socketserver.TCPServer(("127.0.0.1", PORT_NUM), ClientThread)
