@@ -7,7 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
-import org.apache.commons.lang3.SystemUtils;
+//import org.apache.commons.lang3.SystemUtils;
 
 import de.uni.goettingen.REARController.MainWindow;
 
@@ -16,27 +16,27 @@ public class PropertiesStore {
 	
 	private static final String	DEFAULT_UPLOAD_SERVER			= "134.76.187.188";
 	private static final String	DEFAULT_UPLOAD_USER				= "REAR";
-	private static final String	DEFAULT_TEMP_DIR_WIN			= "C:\\tmp";
-	private static final String	DEFAULT_TEMP_DIR_LINUX			= "/tmp";
-	
-	private boolean windows	= false;
-	private boolean unix	= false;
+//	private static final String	DEFAULT_TEMP_DIR_WIN			= "C:\\tmp";
+//	private static final String	DEFAULT_TEMP_DIR_LINUX			= "/tmp";
+//	
+//	private boolean windows	= false;
+//	private boolean unix	= false;
 	
 	Properties	prop;
 	
 	public PropertiesStore() {
-		windows = SystemUtils.IS_OS_WINDOWS;
-		unix	= SystemUtils.IS_OS_UNIX;
-		if(!windows && !unix) {
-			// No clue what OS we are using
-			// TODO do something here
-		}
+//		windows = SystemUtils.IS_OS_WINDOWS;
+//		unix	= SystemUtils.IS_OS_UNIX;
+//		if(!windows && !unix) {
+//			// No clue what OS we are using
+//			// TODO do something here
+//		}
 		
 		prop = new Properties();
-		if(windows)
-			prop.setProperty("tmpDir", DEFAULT_TEMP_DIR_WIN);
-		else if(unix)
-			prop.setProperty("tmpDir", DEFAULT_TEMP_DIR_LINUX);
+//		if(windows)
+//			prop.setProperty("tmpDir", DEFAULT_TEMP_DIR_WIN);
+//		else if(unix)
+//			prop.setProperty("tmpDir", DEFAULT_TEMP_DIR_LINUX);
 		prop.setProperty("serverAddr", DEFAULT_UPLOAD_SERVER);
 		prop.setProperty("serverUser", DEFAULT_UPLOAD_USER);
 		
@@ -84,10 +84,10 @@ public class PropertiesStore {
 		save();
 	}
 	
-	public void setTmpDir(String dir) {
-		prop.setProperty("tmpDir", dir);
-		save();
-	}
+//	public void setTmpDir(String dir) {
+//		prop.setProperty("tmpDir", dir);
+//		save();
+//	}
 	
 	public String getUploadServer() {
 		return prop.getProperty("serverAddr");
@@ -97,7 +97,7 @@ public class PropertiesStore {
 		return prop.getProperty("serverUser");
 	}
 	
-	public File getTmpDir() {
-		return new File(prop.getProperty("tmpDir"));
-	}
+//	public File getTmpDir() {
+//		return new File(prop.getProperty("tmpDir"));
+//	}
 }

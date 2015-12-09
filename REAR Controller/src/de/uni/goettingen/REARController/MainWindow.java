@@ -13,6 +13,7 @@ import de.uni.goettingen.REARController.GUI.DataTablePanel;
 import de.uni.goettingen.REARController.GUI.TreePanel;
 import de.uni.goettingen.REARController.GUI.Dialogs.ExamStartDialog;
 import de.uni.goettingen.REARController.GUI.Dialogs.InfoDialog;
+import de.uni.goettingen.REARController.GUI.Dialogs.SettingsDialog;
 import de.uni.goettingen.REARController.GUI.Tools.IDfactory;
 import de.uni.goettingen.REARController.GUI.Tools.RearFileFilter;
 import de.uni.goettingen.REARController.GUI.Tools.UpdateMainWindow;
@@ -114,7 +115,7 @@ public class MainWindow {
 	private JCheckBox chckbxAllowStopp;
 
 	private static PropertiesStore prop;
-	private JButton button;
+	private JButton btnSettings;
 	private Component horizontalStrut_9;
 
 	/**
@@ -122,7 +123,6 @@ public class MainWindow {
 	 */
 	public static void main(String[] args) {
 		prop = new PropertiesStore();
-		prop.getTmpDir().mkdirs();
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -235,11 +235,13 @@ public class MainWindow {
 		btnInfo.setActionCommand("Info");
 		btnInfo.addActionListener(listener);
 		
-		button = new JButton("");
-		button.setActionCommand("Settings");
-		button.setToolTipText("Properties");
-		button.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/32/settings.png")));
-		toolBarMain.add(button);
+		btnSettings = new JButton("");
+		btnSettings.setActionCommand("Settings");
+		btnSettings.setToolTipText("Properties");
+		btnSettings.addActionListener(listener);
+		btnSettings.setActionCommand("Settings");
+		btnSettings.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/32/settings.png")));
+		toolBarMain.add(btnSettings);
 		
 		horizontalStrut_9 = Box.createHorizontalStrut(20);
 		toolBarMain.add(horizontalStrut_9);
@@ -586,10 +588,20 @@ public class MainWindow {
 			else if(cmd.equals("ExamID_Cancel"))
 				esd.setVisible(false);
 			else if(cmd.equals("Settings")) {
-				
+				SettingsDialog sd = new SettingsDialog(prop);
+				sd.addListener(this);
+				sd.setVisible(true);
 			}
-			else if(cmd.equals("Settings_OK")) {}
-			else if(cmd.equals("Settings_Cancel")) {}
+			else if(cmd.equals("Settings_OK")) {
+				SettingsDialog sd = (SettingsDialog) e.getSource();
+				prop.setUploadServer(sd.getServer());
+				prop.setUploadUser(sd.getUser());
+				sd.setVisible(false);
+			}
+			else if(cmd.equals("Settings_Cancel")) {
+				SettingsDialog sd = (SettingsDialog) e.getSource();
+				sd.setVisible(false);
+			}
  		}
 	}
 }
