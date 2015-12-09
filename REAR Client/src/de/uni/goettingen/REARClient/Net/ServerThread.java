@@ -91,6 +91,13 @@ public class ServerThread implements Runnable {
 				else if(message[0].equals("SHUTDOWN") && checkShutdownToken(message))
 					shutdown = true;
 				
+				else if(message[0].equals("UPLOADSERVER"))
+					uploadServer(message);
+				
+				else if(message[0].equals("UPLOADUSER"))
+					uploadUser(message);
+				
+				
 			}
 		} catch(NullPointerException e) {
 			; // Do nothing
@@ -260,6 +267,46 @@ public class ServerThread implements Runnable {
 		else {
 			out.writeBytes(signal.getExamID());
 		}
+	}
+	
+	private void uploadServer(String[] message) throws IOException {
+		if(message.length > 1) {
+			synchronized(signal) {
+				if(signal.getMode() == 0) {
+					AuthToken token = new AuthToken();
+					if(message.length > 2 && token.isValid(message[2].trim(), message[0], remoteAddr)) {
+						signal.setUploadServer(message[1]);
+						out.writeBytes("OK\n");
+					}
+					else
+						out.writeBytes("Token Error\n");
+				}
+				else
+					out.writeBytes("Can only change upload server in uninitialized client\n");
+			}
+		}
+		else
+			out.writeBytes(signal.getUploadServer());
+	}
+	
+	private void uploadUser(String[] message) throws IOException {
+		if(message.length > 1) {
+			synchronized(signal) {
+				if(signal.getMode() == 0) {
+					AuthToken token = new AuthToken();
+					if(message.length > 2 && token.isValid(message[2].trim(), message[0], remoteAddr)) {
+						signal.setUploadServer(message[1]);
+						out.writeBytes("OK\n");
+					}
+					else
+						out.writeBytes("Token Error\n");
+				}
+				else
+					out.writeBytes("Can only change upload user in uninitialized client\n");
+			}
+		}
+		else
+			out.writeBytes(signal.getUploadUser());
 	}
 	
 	private Boolean checkShutdownToken(String[] message) {

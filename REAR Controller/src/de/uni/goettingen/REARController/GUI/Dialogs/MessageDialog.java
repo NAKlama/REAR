@@ -13,8 +13,6 @@ import javax.swing.BoxLayout;
 import java.awt.Component;
 import javax.swing.Box;
 import javax.swing.JLabel;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 public class MessageDialog extends JDialog {
 

@@ -6,6 +6,7 @@ import de.uni.goettingen.REARClient.Audio.MicrophoneLine;
 import de.uni.goettingen.REARClient.Audio.Recorder;
 import de.uni.goettingen.REARClient.GUI.StatusWindow;
 import de.uni.goettingen.REARClient.Net.DataConnection;
+import de.uni.goettingen.REARClient.Net.SSH.SSHconnection;
 import de.uni.goettingen.REARClient.Net.SSH.SSHkey;
 
 public class SignalObject {
@@ -18,16 +19,42 @@ public class SignalObject {
 	private DataConnection	dataC;
 	private String			studentID;
 	private String			examID;
+	private SSHconnection	ssh;
+	private String			uploadServer;
+	private String			uploadUser;
 
-	public SignalObject(StatusWindow w, MicrophoneLine ml, SSHkey ssh, DataConnection dc) {
+	public SignalObject(StatusWindow w, MicrophoneLine ml, SSHkey ssh) {
 		shutdownServer	= false;
 		win				= w;
 		micLine			= ml;
 		sshKey			= ssh;
 		outFile			= null;
-		dataC			= dc;
+		dataC			= null;
+		ssh				= null;
 		studentID		= "";
 		examID			= "";
+		uploadServer	= REARclient.UPLOAD_SERVER;
+		uploadUser		= REARclient.UPLOAD_SERVER_USER;
+	}
+
+	public void setUploadServer(String uls) {
+		synchronized(this) {
+			uploadServer = uls;
+		}
+	}
+
+	public String getUploadServer() {
+		return uploadServer;
+	}
+
+	public void setUploadUser(String ulu) {
+		synchronized(this) {
+			uploadUser = ulu;
+		}
+	}
+
+	public String getUploadUser() {
+		return uploadUser;
 	}
 
 	public void shutdown() {
@@ -39,35 +66,37 @@ public class SignalObject {
 	public Boolean getShutdownStatus() {
 		return shutdownServer;
 	}
-	
+
 	public int getMode() {
 		return win.getMode();
 	}
-	
+
 	public String getID() {
 		studentID =  win.getID();
 		return studentID;
 	}
-	
+
 	public String getTime() {
 		return win.getTime();
 	}
-	
+
 	public void setID(String id) {
 		win.setID(id);
 		studentID = id;
 	}
 
 	public void initClient() {
+		ssh				= new SSHconnection(uploadServer, uploadUser, sshKey, REARclient.DATA_PORT);
+		dataC			= new DataConnection("127.0.0.1", REARclient.DATA_PORT, ssh);
 		win.init();
 	}
-	
+
 	public String getPubKeyString() {
 		return sshKey.getPubKeyString();
 	}
-	
+
 	public void startRecording() {
-		
+
 		String path;
 		if(win.getExamID() != null && ! win.getExamID().equals("")) {
 			path = REARclient.DEFAULT_PATH + win.getExamID() + "\\";
@@ -87,7 +116,7 @@ public class SignalObject {
 		recThread.start();
 		win.setRecording();
 	}
-	
+
 	public void stopRecording() {
 		rec.stopRecording();
 		win.setUpload();
@@ -95,7 +124,7 @@ public class SignalObject {
 			dataC.pushFile(outFile, studentID, examID);
 		}
 	}
-	
+
 	public void reset() {
 		win.reset();
 	}

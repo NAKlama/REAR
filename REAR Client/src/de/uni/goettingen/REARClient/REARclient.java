@@ -10,9 +10,7 @@ import com.jcraft.jsch.JSch;
 
 import de.uni.goettingen.REARClient.Audio.MicrophoneLine;
 import de.uni.goettingen.REARClient.GUI.StatusWindow;
-import de.uni.goettingen.REARClient.Net.DataConnection;
 import de.uni.goettingen.REARClient.Net.ServerThread;
-import de.uni.goettingen.REARClient.Net.SSH.SSHconnection;
 import de.uni.goettingen.REARClient.Net.SSH.SSHkey;
 
 public class REARclient {
@@ -22,10 +20,10 @@ public class REARclient {
 	public static final String	DEFAULT_FILE			= "C:\\tmp\\audio\\default.flac";
 	
 	private static final int	TCP_PORT				= 15000;	
-	private static final int	DATA_PORT				= 28947;
-	private static final String	UPLOAD_SERVER			= "134.76.187.188";
+	public  static final int	DATA_PORT				= 28947;
+	public  static final String	UPLOAD_SERVER			= "134.76.187.188";
 //	private static final String	UPLOAD_SERVER			= "192.168.246.132";
-	private static final String	UPLOAD_SERVER_USER		= "REAR";
+	public  static final String	UPLOAD_SERVER_USER		= "REAR";
 	
 	public static void main(String[] args) throws Exception
 	{
@@ -41,14 +39,10 @@ public class REARclient {
 		outFile.mkdirs();
 
 		SSHkey			sshKey			= new SSHkey(new JSch());
-		SSHconnection	ssh				= new SSHconnection(UPLOAD_SERVER, UPLOAD_SERVER_USER, sshKey, DATA_PORT);
-//		DataConnection	dataC			= new DataConnection(UPLOAD_SERVER, DATA_PORT, ssh);
-		DataConnection	dataC			= new DataConnection("127.0.0.1", DATA_PORT, ssh);
 		
 		ServerSocket server = new ServerSocket(TCP_PORT, 10, InetAddress.getByName("0.0.0.0"));
 		
-		SignalObject signal = new SignalObject(win, micLine, sshKey, dataC);
-		dataC.addSignal(signal);
+		SignalObject signal = new SignalObject(win, micLine, sshKey);
 		win.setSignalObject(signal);
 		
 		while(! signal.getShutdownStatus())
