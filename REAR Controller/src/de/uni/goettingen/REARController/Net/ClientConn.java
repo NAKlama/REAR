@@ -107,6 +107,13 @@ public class ClientConn {
 	public boolean reset() {
 		return sendAuthCommand("RESET");
 	}
+	
+	public boolean setServer(String uploadServer, String uploadUser) {
+		boolean a, b;
+		a = sendAuthParCommand("UPLOADSERVER", uploadServer);
+		b = sendAuthParCommand("UPLOADUSER", uploadUser);
+		return a && b;
+	}
 		
 	private String getReply(String c) {
 		try {
@@ -126,7 +133,25 @@ public class ClientConn {
 		try {
 			String command = c.trim() + " ";
 			System.out.println("> " + command + "[TOKEN]");
-			command += token.getToken(c, salt) + "\n";			
+			command += token.getToken(c.trim(), salt) + "\n";			
+			out.writeBytes(command);
+			String reply = in.readLine();
+			System.out.println("< " + reply);
+			if(reply.trim().equals("OK"))
+				return true;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	private boolean sendAuthParCommand(String c, String par) {
+		try {
+			String command = c.trim() + " ";
+			System.out.println("> " + command + "[TOKEN]");
+			command += par + " ";
+			command += token.getToken(c.trim(), salt) + "\n";			
 			out.writeBytes(command);
 			String reply = in.readLine();
 			System.out.println("< " + reply);

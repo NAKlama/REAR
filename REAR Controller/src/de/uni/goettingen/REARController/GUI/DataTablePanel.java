@@ -344,4 +344,8 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 			return this;
 		}
 	}
+
+	public void setServer(String uploadServer, String uploadUser) {
+		connections.setServer(uploadServer, uploadUser);		
+	}
 }

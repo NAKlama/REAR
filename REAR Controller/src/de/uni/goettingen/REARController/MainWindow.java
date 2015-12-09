@@ -118,6 +118,9 @@ public class MainWindow {
 	private JLabel lblArrowUnInitToStopped;
 	private Component horizontalStrut_6;
 	private JCheckBox chckbxAllowStopp;
+	
+	private String uploadServer = UPLOAD_SERVER;
+	private String uploadUser	= UPLOAD_SERVER_USER;
 
 
 	/**
@@ -566,6 +569,7 @@ public class MainWindow {
 				esd.setVisible(false);
 				if(examID != null && ! examID.equals("")) {
 					table.setExamID(examID);
+					table.setServer(uploadServer, uploadUser);
 					btnNextStep.setIcon(iconRec);
 					btnNextStep.setEnabled(false);
 					table.init();

@@ -281,4 +281,10 @@ public class NetConnections {
 		}
 		
 	}
+
+	public void setServer(String uploadServer, String uploadUser) {
+		for(long id : clientIDs) {
+			connMap.get(id).setServer(uploadServer, uploadUser);
+		}
+	}
 }
