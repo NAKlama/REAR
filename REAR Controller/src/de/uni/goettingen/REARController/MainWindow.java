@@ -8,10 +8,12 @@ import de.uni.goettingen.REARController.DataStruct.AreaTreeNode;
 import de.uni.goettingen.REARController.DataStruct.ClientStatus;
 import de.uni.goettingen.REARController.DataStruct.FileDataObject;
 import de.uni.goettingen.REARController.DataStruct.MachinesTable;
+import de.uni.goettingen.REARController.DataStruct.PropertiesStore;
 import de.uni.goettingen.REARController.GUI.DataTablePanel;
 import de.uni.goettingen.REARController.GUI.TreePanel;
 import de.uni.goettingen.REARController.GUI.Dialogs.ExamStartDialog;
 import de.uni.goettingen.REARController.GUI.Dialogs.InfoDialog;
+import de.uni.goettingen.REARController.GUI.Dialogs.SettingsDialog;
 import de.uni.goettingen.REARController.GUI.Tools.IDfactory;
 import de.uni.goettingen.REARController.GUI.Tools.RearFileFilter;
 import de.uni.goettingen.REARController.GUI.Tools.UpdateMainWindow;
@@ -47,13 +49,6 @@ public class MainWindow {
 	private static final int	MedVersion		= 1;
 	private static final int	MinorVersion	= 6;
 	
-	public static final String	UPLOAD_SERVER			= "134.76.187.188";
-//	public static final String	UPLOAD_SERVER			= "192.168.246.132";
-	public static final String	UPLOAD_SERVER_USER		= "REAR";
-	
-	public static final File	TEMP_DIR				= new File("C:\\tmp");
-
-
 	private JFrame frmRemoteAudioRecorder;
 
 	private DataTablePanel	table;
@@ -118,16 +113,16 @@ public class MainWindow {
 	private JLabel lblArrowUnInitToStopped;
 	private Component horizontalStrut_6;
 	private JCheckBox chckbxAllowStopp;
-	
-	private String uploadServer = UPLOAD_SERVER;
-	private String uploadUser	= UPLOAD_SERVER_USER;
 
+	private static PropertiesStore prop;
+	private JButton btnSettings;
+	private Component horizontalStrut_9;
 
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-		TEMP_DIR.mkdirs();
+		prop = new PropertiesStore();
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -239,6 +234,17 @@ public class MainWindow {
 		btnInfo = new JButton((String) null);
 		btnInfo.setActionCommand("Info");
 		btnInfo.addActionListener(listener);
+		
+		btnSettings = new JButton("");
+		btnSettings.setActionCommand("Settings");
+		btnSettings.setToolTipText("Properties");
+		btnSettings.addActionListener(listener);
+		btnSettings.setActionCommand("Settings");
+		btnSettings.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/32/settings.png")));
+		toolBarMain.add(btnSettings);
+		
+		horizontalStrut_9 = Box.createHorizontalStrut(20);
+		toolBarMain.add(horizontalStrut_9);
 		btnInfo.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/32/info.png")));
 		btnInfo.setToolTipText("About this Program");
 		toolBarMain.add(btnInfo);
@@ -542,6 +548,10 @@ public class MainWindow {
 		return ver;
 	}
 
+	public static PropertiesStore getProp() {
+		return prop;
+	}
+	
 	private class BtnListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -569,7 +579,7 @@ public class MainWindow {
 				esd.setVisible(false);
 				if(examID != null && ! examID.equals("")) {
 					table.setExamID(examID);
-					table.setServer(uploadServer, uploadUser);
+					table.setServer(prop.getUploadServer(), prop.getUploadUser());
 					btnNextStep.setIcon(iconRec);
 					btnNextStep.setEnabled(false);
 					table.init();
@@ -577,6 +587,21 @@ public class MainWindow {
 			}
 			else if(cmd.equals("ExamID_Cancel"))
 				esd.setVisible(false);
-		}
+			else if(cmd.equals("Settings")) {
+				SettingsDialog sd = new SettingsDialog(prop);
+				sd.addListener(this);
+				sd.setVisible(true);
+			}
+			else if(cmd.equals("Settings_OK")) {
+				SettingsDialog sd = (SettingsDialog) e.getSource();
+				prop.setUploadServer(sd.getServer());
+				prop.setUploadUser(sd.getUser());
+				sd.setVisible(false);
+			}
+			else if(cmd.equals("Settings_Cancel")) {
+				SettingsDialog sd = (SettingsDialog) e.getSource();
+				sd.setVisible(false);
+			}
+ 		}
 	}
 }
