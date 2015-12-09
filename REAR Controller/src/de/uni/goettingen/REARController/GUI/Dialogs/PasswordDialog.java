@@ -12,6 +12,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JTextField;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
+import javax.swing.JPasswordField;
 
 public class PasswordDialog extends JDialog {
 	private static final long serialVersionUID = -8859697181882364644L;
@@ -20,10 +21,10 @@ public class PasswordDialog extends JDialog {
 
 	private JButton okButton;
 	private JButton cancelButton;
-	private JTextField textField;
 	private JLabel lblPleaseEnterPassword;
 	
 	private boolean passphrase;
+	private JPasswordField passwordField;
 	
 	public PasswordDialog(String label, Boolean passphr) {
 		passphrase = passphr;
@@ -38,9 +39,8 @@ public class PasswordDialog extends JDialog {
 			contentPanel.add(lblPleaseEnterPassword);
 		}
 		{
-			textField = new JTextField();
-			contentPanel.add(textField);
-			textField.setColumns(10);
+			passwordField = new JPasswordField();
+			contentPanel.add(passwordField);
 		}
 		{
 			JPanel buttonPane = new JPanel();
@@ -67,7 +67,7 @@ public class PasswordDialog extends JDialog {
 	}
 	
 	public String getPassword() {
-		return textField.getText();
+		return new String(passwordField.getPassword());
 	}
 	
 	public void addListener(ActionListener l) {
