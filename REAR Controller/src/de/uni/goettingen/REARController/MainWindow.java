@@ -8,6 +8,7 @@ import de.uni.goettingen.REARController.DataStruct.AreaTreeNode;
 import de.uni.goettingen.REARController.DataStruct.ClientStatus;
 import de.uni.goettingen.REARController.DataStruct.FileDataObject;
 import de.uni.goettingen.REARController.DataStruct.MachinesTable;
+import de.uni.goettingen.REARController.DataStruct.PropertiesStore;
 import de.uni.goettingen.REARController.GUI.DataTablePanel;
 import de.uni.goettingen.REARController.GUI.TreePanel;
 import de.uni.goettingen.REARController.GUI.Dialogs.ExamStartDialog;
@@ -111,16 +112,17 @@ public class MainWindow {
 	private JLabel lblArrowUnInitToStopped;
 	private Component horizontalStrut_6;
 	private JCheckBox chckbxAllowStopp;
-	
-	private String uploadServer = UPLOAD_SERVER;
-	private String uploadUser	= UPLOAD_SERVER_USER;
 
+	private static PropertiesStore prop;
+	private JButton button;
+	private Component horizontalStrut_9;
 
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-		TEMP_DIR.mkdirs();
+		prop = new PropertiesStore();
+		prop.getTmpDir().mkdirs();
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -232,6 +234,15 @@ public class MainWindow {
 		btnInfo = new JButton((String) null);
 		btnInfo.setActionCommand("Info");
 		btnInfo.addActionListener(listener);
+		
+		button = new JButton("");
+		button.setActionCommand("Settings");
+		button.setToolTipText("Properties");
+		button.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/32/settings.png")));
+		toolBarMain.add(button);
+		
+		horizontalStrut_9 = Box.createHorizontalStrut(20);
+		toolBarMain.add(horizontalStrut_9);
 		btnInfo.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/32/info.png")));
 		btnInfo.setToolTipText("About this Program");
 		toolBarMain.add(btnInfo);
@@ -535,6 +546,10 @@ public class MainWindow {
 		return ver;
 	}
 
+	public static PropertiesStore getProp() {
+		return prop;
+	}
+	
 	private class BtnListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -562,7 +577,7 @@ public class MainWindow {
 				esd.setVisible(false);
 				if(examID != null && ! examID.equals("")) {
 					table.setExamID(examID);
-					table.setServer(uploadServer, uploadUser);
+					table.setServer(prop.getUploadServer(), prop.getUploadUser());
 					btnNextStep.setIcon(iconRec);
 					btnNextStep.setEnabled(false);
 					table.init();
@@ -570,6 +585,11 @@ public class MainWindow {
 			}
 			else if(cmd.equals("ExamID_Cancel"))
 				esd.setVisible(false);
-		}
+			else if(cmd.equals("Settings")) {
+				
+			}
+			else if(cmd.equals("Settings_OK")) {}
+			else if(cmd.equals("Settings_Cancel")) {}
+ 		}
 	}
 }

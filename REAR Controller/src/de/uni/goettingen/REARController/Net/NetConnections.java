@@ -93,7 +93,11 @@ public class NetConnections {
 			osw = new OutputStreamWriter(new FileOutputStream(f));
 			osw.write(SSHKeys, 0, SSHKeys.length());
 			osw.close();
-			SCP.push(MainWindow.UPLOAD_SERVER_USER, MainWindow.UPLOAD_SERVER, f, ".ssh/authorized_keys");
+			SCP.push(
+					MainWindow.getProp().getUploadUser(), 
+					MainWindow.getProp().getUploadServer(), 
+					f, 
+					".ssh/authorized_keys");
 			f.deleteOnExit();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
