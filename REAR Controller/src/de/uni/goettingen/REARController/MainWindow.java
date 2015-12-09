@@ -45,7 +45,7 @@ public class MainWindow {
 	public  static final String PROGRAM_NAME	= "REAR Controller";
 	private static final int	MajorVersion 	= 0;
 	private static final int	MedVersion		= 1;
-	private static final int	MinorVersion	= 5;
+	private static final int	MinorVersion	= 6;
 	
 	public static final String	UPLOAD_SERVER			= "134.76.187.188";
 //	public static final String	UPLOAD_SERVER			= "192.168.246.132";
