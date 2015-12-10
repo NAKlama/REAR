@@ -49,7 +49,7 @@ public class MainWindow {
 	private static final int	MedVersion		= 1;
 	private static final int	MinorVersion	= 6;
 	
-	private JFrame frmRemoteAudioRecorder;
+	private JFrame frmREAR;
 
 	private DataTablePanel	table;
 
@@ -127,7 +127,7 @@ public class MainWindow {
 			public void run() {
 				try {
 					MainWindow window = new MainWindow();
-					window.frmRemoteAudioRecorder.setVisible(true);
+					window.frmREAR.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -151,15 +151,15 @@ public class MainWindow {
 		mainLayout = new MigLayout("", "[200px][grow]", "[39px][grow][1px]");
 		listener = new BtnListener();
 
-		frmRemoteAudioRecorder = new JFrame();
-		frmRemoteAudioRecorder.setTitle(PROGRAM_NAME);
-		frmRemoteAudioRecorder.setBounds(100, 100, 1106, 717);
-		frmRemoteAudioRecorder.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frmRemoteAudioRecorder.getContentPane().setLayout(mainLayout);
+		frmREAR = new JFrame();
+		frmREAR.setTitle(PROGRAM_NAME);
+		frmREAR.setBounds(100, 100, 1106, 717);
+		frmREAR.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frmREAR.getContentPane().setLayout(mainLayout);
 
 		toolBarMain = new JToolBar();
 		toolBarMain.setAlignmentX(Component.LEFT_ALIGNMENT);
-		frmRemoteAudioRecorder.getContentPane().add(toolBarMain, "flowx,cell 0 0 2 1,grow");
+		frmREAR.getContentPane().add(toolBarMain, "flowx,cell 0 0 2 1,grow");
 
 		btnNewFile = new JButton("");
 		btnNewFile.setToolTipText("New File");
@@ -248,12 +248,12 @@ public class MainWindow {
 		btnInfo.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/32/info.png")));
 		btnInfo.setToolTipText("About this Program");
 		toolBarMain.add(btnInfo);
-		frmRemoteAudioRecorder.getContentPane().add(table, "cell 1 1 1 2,grow");
-		frmRemoteAudioRecorder.getContentPane().add(panelTree, "cell 0 1 1 2,alignx left,growy");
+		frmREAR.getContentPane().add(table, "cell 1 1 1 2,grow");
+		frmREAR.getContentPane().add(panelTree, "cell 0 1 1 2,alignx left,growy");
 
 		panelProgress = new JPanel();
 		panelProgress.setVisible(false);
-		frmRemoteAudioRecorder.getContentPane().add(panelProgress, "cell 1 2,grow");
+		frmREAR.getContentPane().add(panelProgress, "cell 1 2,grow");
 		panelProgress.setLayout(new BoxLayout(panelProgress, BoxLayout.LINE_AXIS));
 
 		Component horizontalGlue_1 = Box.createHorizontalGlue();
@@ -464,7 +464,7 @@ public class MainWindow {
 			if(step > 3)
 				step = 0;
 		}
-		frmRemoteAudioRecorder.repaint();
+		frmREAR.repaint();
 	}
 
 	public void newFile() {
