@@ -7,8 +7,8 @@ import subprocess
 import datetime
 import os
 
-STORE_DIR   = "/home/REAR/flac"
-ENCODE_DIR  = "/home/REAR/mp3"
+STORE_DIR   = "/tmp/flac"
+ENCODE_DIR  = "/tmp/mp3"
 PORT_NUM    = 28947
 
 
@@ -74,7 +74,7 @@ class ClientThread(socketserver.BaseRequestHandler):
     dateStr  = today.strftime("%Y%m%d")
     os.mkdir(STORE_DIR, mode=0o775)
     os.mkdir(path.join(STORE_DIR, dateStr), mode=0o775)
-    os.mkdir(path.join(STORE_DIR, dateStr, examID), mode 0o775)
+    os.mkdir(path.join(STORE_DIR, dateStr, examID), mode=0o775)
     outFile  = path.join(STORE_DIR, dateStr, examID, filename + ".flac")
     print("Writing to file {}".format(filename))
     c.storeAll(outFile)
@@ -83,7 +83,7 @@ class ClientThread(socketserver.BaseRequestHandler):
 
     os.mkdir(ENCODE_DIR, mode=0o775)
     os.mkdir(path.join(ENCODE_DIR, dateStr), mode=0o775)
-    os.mkdir(path.join(ENCODE_DIR, dateStr, examID), mode 0o775)
+    os.mkdir(path.join(ENCODE_DIR, dateStr, examID), mode=0o775)
     title  = "S:" + filename
     artist = "E: " + examID
     mp3File  = path.join(ENCODE_DIR, dateStr, examID, filename + ".mp3")
