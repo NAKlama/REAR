@@ -16,7 +16,6 @@ import de.uni.goettingen.REARController.GUI.Dialogs.InfoDialog;
 import de.uni.goettingen.REARController.GUI.Dialogs.SettingsDialog;
 import de.uni.goettingen.REARController.GUI.Tools.IDfactory;
 import de.uni.goettingen.REARController.GUI.Tools.RearFileFilter;
-import de.uni.goettingen.REARController.GUI.Tools.UpdateMainWindow;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -43,7 +42,7 @@ import java.awt.event.ActionEvent;
 import java.awt.Dimension;
 import javax.swing.JCheckBox;
 
-public class MainWindow {
+public class MainWindow implements ActionListener {
 	public  static final String PROGRAM_NAME	= "REAR Controller";
 	private static final int	MajorVersion 	= 0;
 	private static final int	MedVersion		= 1;
@@ -314,10 +313,9 @@ public class MainWindow {
 
 		Component horizontalGlue = Box.createHorizontalGlue();
 		panelProgress.add(horizontalGlue);
-
-		UpdateMainWindow umw = new UpdateMainWindow(this);
+		
 		timer = new Timer(5000, null);
-		timer.addActionListener(umw);
+		timer.addActionListener(this);
 		timer.start();
 	}
 
@@ -345,85 +343,6 @@ public class MainWindow {
 
 	public Boolean isEdit() {
 		return editMode;
-	}
-
-	public void timerEvent() {
-		if(!editMode) {
-			mode = table.getStatus();
-			System.out.println(mode);
-			if(mode.getNone() && mode.getInit())
-				lblArrowUnInitToStopped.setIcon(iconRightArrow);
-			else
-				lblArrowUnInitToStopped.setIcon(iconRightArrowGray);
-
-			if(mode.getInit()) 
-				lblStoppedState.setIcon(iconStopped);
-			else
-				lblStoppedState.setIcon(iconStoppedGray);
-
-			if(mode.getInit() && mode.getRec())
-				lblArrowToRec.setIcon(iconRightArrow);
-			else
-				lblArrowToRec.setIcon(iconRightArrowGray);
-
-			if(mode.getRec())
-				lblRec.setIcon(iconRec);
-			else
-				lblRec.setIcon(iconRecGray);
-
-			if(mode.getRec() && (mode.getUpload() || mode.getDone()))
-				lblArrowToUpload.setIcon(iconRightArrow);
-			else
-				lblArrowToUpload.setIcon(iconRightArrowGray);
-
-			if(mode.getUpload())
-				lblUpload.setIcon(iconUpload);
-			else
-				lblUpload.setIcon(iconUploadGray);
-
-			if((mode.getRec() || mode.getUpload()) && mode.getDone())
-				lblArrowToDone.setIcon(iconRightArrow);
-			else
-				lblArrowToDone.setIcon(iconRightArrowGray);
-
-			if(mode.getDone())
-				lblDone.setIcon(iconOk);
-			else
-				lblDone.setIcon(iconOkGray);
-
-			switch(step) {
-			case 0:
-				if(mode.isUninitialized()) {
-					btnNextStep.setEnabled(true);
-					btnEditMode.setEnabled(true);
-				}
-				else
-					btnNextStep.setEnabled(false);
-				break;
-			case 1:
-				btnEditMode.setEnabled(false);
-				if(mode.isInitialized())
-					btnNextStep.setEnabled(true);
-				else
-					btnNextStep.setEnabled(false);
-				break;
-			case 2:
-				btnEditMode.setEnabled(false);
-				if(mode.isRec())
-					btnNextStep.setEnabled(true);
-				else
-					btnNextStep.setEnabled(false);
-				break;
-			case 3:
-				btnEditMode.setEnabled(false);
-				if(mode.isDone())
-					btnNextStep.setEnabled(true);
-				else
-					btnNextStep.setEnabled(false);
-				break;
-			}
-			table.timerEvent();
-		}
 	}
 
 	private void next() {
@@ -553,6 +472,8 @@ public class MainWindow {
 	}
 	
 	private class BtnListener implements ActionListener {
+		private SettingsDialog sd;
+		
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			String cmd = e.getActionCommand();
@@ -588,20 +509,98 @@ public class MainWindow {
 			else if(cmd.equals("ExamID_Cancel"))
 				esd.setVisible(false);
 			else if(cmd.equals("Settings")) {
-				SettingsDialog sd = new SettingsDialog(prop);
+				sd = new SettingsDialog(prop);
 				sd.addListener(this);
 				sd.setVisible(true);
 			}
 			else if(cmd.equals("Settings_OK")) {
-				SettingsDialog sd = (SettingsDialog) e.getSource();
 				prop.setUploadServer(sd.getServer());
 				prop.setUploadUser(sd.getUser());
 				sd.setVisible(false);
 			}
 			else if(cmd.equals("Settings_Cancel")) {
-				SettingsDialog sd = (SettingsDialog) e.getSource();
 				sd.setVisible(false);
 			}
  		}
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		if(!editMode) {
+			mode = table.getStatus();
+			System.out.println(mode);
+			if(mode.getNone() && mode.getInit())
+				lblArrowUnInitToStopped.setIcon(iconRightArrow);
+			else
+				lblArrowUnInitToStopped.setIcon(iconRightArrowGray);
+
+			if(mode.getInit()) 
+				lblStoppedState.setIcon(iconStopped);
+			else
+				lblStoppedState.setIcon(iconStoppedGray);
+
+			if(mode.getInit() && mode.getRec())
+				lblArrowToRec.setIcon(iconRightArrow);
+			else
+				lblArrowToRec.setIcon(iconRightArrowGray);
+
+			if(mode.getRec())
+				lblRec.setIcon(iconRec);
+			else
+				lblRec.setIcon(iconRecGray);
+
+			if(mode.getRec() && (mode.getUpload() || mode.getDone()))
+				lblArrowToUpload.setIcon(iconRightArrow);
+			else
+				lblArrowToUpload.setIcon(iconRightArrowGray);
+
+			if(mode.getUpload())
+				lblUpload.setIcon(iconUpload);
+			else
+				lblUpload.setIcon(iconUploadGray);
+
+			if((mode.getRec() || mode.getUpload()) && mode.getDone())
+				lblArrowToDone.setIcon(iconRightArrow);
+			else
+				lblArrowToDone.setIcon(iconRightArrowGray);
+
+			if(mode.getDone())
+				lblDone.setIcon(iconOk);
+			else
+				lblDone.setIcon(iconOkGray);
+
+			switch(step) {
+			case 0:
+				if(mode.isUninitialized()) {
+					btnNextStep.setEnabled(true);
+					btnEditMode.setEnabled(true);
+				}
+				else
+					btnNextStep.setEnabled(false);
+				break;
+			case 1:
+				btnEditMode.setEnabled(false);
+				if(mode.isInitialized())
+					btnNextStep.setEnabled(true);
+				else
+					btnNextStep.setEnabled(false);
+				break;
+			case 2:
+				btnEditMode.setEnabled(false);
+				if(mode.isRec())
+					btnNextStep.setEnabled(true);
+				else
+					btnNextStep.setEnabled(false);
+				break;
+			case 3:
+				btnEditMode.setEnabled(false);
+				if(mode.isDone())
+					btnNextStep.setEnabled(true);
+				else
+					btnNextStep.setEnabled(false);
+				break;
+			}
+			table.timerEvent();
+		}
 	}
 }

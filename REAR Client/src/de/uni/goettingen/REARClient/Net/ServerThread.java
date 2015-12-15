@@ -70,11 +70,17 @@ public class ServerThread implements Runnable {
 				else if(message[0].equals("EXAMID"))
 					examID(message);
 				
-				else if(message[0].equals("RECTIME"))
-					out.writeBytes(signal.getTime() + "\n");
+				else if(message[0].equals("RECTIME")) {
+					String outStr = signal.getTime() + "\n";
+					System.out.println("> " + outStr.trim());
+					out.writeBytes(outStr);
+				}
 				
-				else if(message[0].equals("STATUS"))
-					out.writeBytes(String.valueOf(signal.getMode()) + "\n");
+				else if(message[0].equals("STATUS")) {
+					String outStr = String.valueOf(signal.getMode()) + "\n";
+					System.out.println("> " + outStr.trim());
+					out.writeBytes(outStr);
+				}
 				
 				else if(message[0].equals("GETSALT"))
 					out.writeBytes(remoteAddr + "\n");
@@ -295,7 +301,7 @@ public class ServerThread implements Runnable {
 				if(signal.getMode() == 0) {
 					AuthToken token = new AuthToken();
 					if(message.length > 2 && token.isValid(message[2].trim(), message[0], remoteAddr)) {
-						signal.setUploadServer(message[1]);
+						signal.setUploadUser(message[1]);
 						out.writeBytes("OK\n");
 					}
 					else

@@ -19,8 +19,8 @@ public class SCP {
 		try {
 			Session		session	= jsch.getSession(user, server, 22);
 			UserInfo	ui		= new SSHUserInfo();
-			session.setUserInfo(ui);	
 			session.setUserInfo(ui);
+			session.setConfig("StrictHostKeyChecking", "no");
 			session.connect();
 
 			boolean ptimestamp = true;
@@ -63,11 +63,11 @@ public class SCP {
 //				System.exit(0);
 			}
 
-			// send a content of lfile
 			FileInputStream fis=new FileInputStream(f);
 			byte[] buf=new byte[1024];
 			while(true){
 				int len=fis.read(buf, 0, buf.length);
+				System.out.println(buf);
 				if(len<=0) break;
 				out.write(buf, 0, len); //out.flush();
 			}
