@@ -83,7 +83,8 @@ public class NetConnections {
 			osw = new OutputStreamWriter(new FileOutputStream(f));
 			osw.write(SSHKeys, 0, SSHKeys.length());
 			osw.close();
-			SCP.push(
+			PushSSHkeys sshPush = new PushSSHkeys();
+			sshPush.push(
 					MainWindow.getProp().getUploadUser(), 
 					MainWindow.getProp().getUploadServer(), 
 					f, 
