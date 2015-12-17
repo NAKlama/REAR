@@ -11,6 +11,10 @@ STORE_DIR   = "/tmp/flac"
 ENCODE_DIR  = "/tmp/mp3"
 PORT_NUM    = 28947
 
+LAME_MODE     = "m"  # Mono
+LAME_BITRATE  = 64
+LAME_ABR      = True
+
 def mkDir(path, mode=0o775):
   try:
     os.mkdir(path, mode)
@@ -117,7 +121,10 @@ class ClientThread(socketserver.BaseRequestHandler):
       mp3File  = path.join(ENCODE_DIR, dateStr, examID, filename + ".mp3")
       command  = "flac -s -d -c \""
       command += outFile
-      command += "\" | lame -m m --replaygain-accurate -S --abr 64"
+      brSwitch = "--cbr "
+      if LAME_ABR:
+        brSwitch = "--abr "
+      command += "\" | lame -m " +LAME_MODE+ " --replaygain-accurate -S " + brSwitch + LAME_BITRATEE
       # command  = "lame -m m --replaygain-accurate -S --abr 64"
       command += " --tt \"" + title + "\""
       command += " --ta \"" + artist + "\""
