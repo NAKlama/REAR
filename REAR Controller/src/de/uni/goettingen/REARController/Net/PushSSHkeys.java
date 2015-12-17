@@ -18,23 +18,25 @@ public class PushSSHkeys implements Runnable {
 	
 	public PushSSHkeys() {
 		jsch=new JSch();
+		ssh = null;
 	}
 	
 	public void push(String user, String server, File f, String to) {
 		file = f;
-		try {
-			ssh	= jsch.getSession(user, server, 22);
-			UserInfo	ui		= new SSHUserInfo();
-			ssh.setUserInfo(ui);
-			ssh.setConfig("StrictHostKeyChecking", "no");
-			ssh.setPortForwardingL(28947, "127.0.0.1", 28947);
-			ssh.connect();
-			Thread t = new Thread(this);
-			t.start();
-		} catch (JSchException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		if(ssh == null)
+			try {
+				ssh	= jsch.getSession(user, server, 22);
+				UserInfo	ui		= new SSHUserInfo();
+				ssh.setUserInfo(ui);
+				ssh.setConfig("StrictHostKeyChecking", "no");
+				ssh.setPortForwardingL(28947, "127.0.0.1", 28947);
+				ssh.connect();
+			} catch (JSchException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		Thread t = new Thread(this);
+		t.start();
 	}
 
 	public void run() {
@@ -58,6 +60,7 @@ public class PushSSHkeys implements Runnable {
 			Thread.sleep(3000);
 			out.close();
 			sock.close();
+			ssh.disconnect();
 
 //			System.out.println("  closing Thread");
 		}

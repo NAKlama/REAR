@@ -154,7 +154,6 @@ public class StatusWindow extends JFrame {
 	}
 
 	public void setUpload() {
-		timer.stop();
 		synchronized(signal) {
 			mode = 3;
 		}
@@ -179,6 +178,7 @@ public class StatusWindow extends JFrame {
 		icon.setIcon(stoppedIcon);
 		statusLabel.setText("Waiting for start of exam signal.");
 		timerLabel.setText("  0:00:00");
+		h = m = s = 0;
 		setVisible(false);
 	}
 
@@ -213,7 +213,7 @@ public class StatusWindow extends JFrame {
 			timerLabel.setText(String.format("  %d:%02d:%02d", h, m, s));
 			return true;
 		}
-		return false;
+		return true;
 	}
 
 	private BufferedImage createImageFromSVG(InputStream svgStream, int w, int h) {

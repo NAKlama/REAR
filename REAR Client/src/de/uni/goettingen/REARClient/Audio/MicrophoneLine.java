@@ -14,6 +14,10 @@ public class MicrophoneLine {
 	private TargetDataLine tDataLine;
 	
 	public MicrophoneLine() {
+		open();
+	}
+	
+	public void open() {
 		AudioFormat	audioFormat = new AudioFormat(
 				AudioFormat.Encoding.PCM_SIGNED, 
 				SAMPLERATE,

@@ -132,6 +132,7 @@ public class SignalObject {
 
 	public void reset() {
 		win.reset();
+		micLine.open();
 	}
 
 	public void setExamID(String id) {
