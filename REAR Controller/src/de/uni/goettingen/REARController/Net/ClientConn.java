@@ -73,7 +73,8 @@ public class ClientConn {
 	}
 	
 	public boolean setID(String id) {
-		String reply = getReply("ID " + id + "\n").trim();
+		String sendID = id.replaceAll("\\s", "_");
+		String reply = getReply("ID " + sendID + "\n").trim();
 		if(reply.equals("OK"))
 			return true;
 		return false;

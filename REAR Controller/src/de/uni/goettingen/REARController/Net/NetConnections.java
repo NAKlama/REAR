@@ -200,8 +200,9 @@ public class NetConnections {
 
 	public void setExamID(String eID) {
 //		System.out.println(clientIDs);
+		String str = eID.replaceAll("\\s", "_");
 		for(long id : clientIDs) {
-			connMap.get(id).setExamID(eID);
+			connMap.get(id).setExamID(str);
 		}
 		
 	}
