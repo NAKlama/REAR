@@ -118,8 +118,8 @@ public class StatusWindow extends JFrame {
 		win.add(statusPanel);
 		win.add(Box.createVerticalGlue());
 
-//		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		//		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
 
 		setTitle("REAR");
