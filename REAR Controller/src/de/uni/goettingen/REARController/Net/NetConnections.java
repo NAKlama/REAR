@@ -164,6 +164,8 @@ public class NetConnections {
 		if(! statusMap.containsKey(id)) {	
 			return null;
 		}
+		if(connMap.get(id).isReachable())
+			ipMap.get(id).setReachable(true);
 		return statusMap.get(id);
 	}
 	
