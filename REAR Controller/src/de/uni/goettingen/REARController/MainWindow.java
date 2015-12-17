@@ -355,6 +355,8 @@ public class MainWindow implements ActionListener {
 				esd.addListener(listener);
 				esd.setVisible(true);
 			}
+			else
+				nextStep = false;
 			break;
 		case 1:
 			btnNextStep.setIcon(iconStop);
