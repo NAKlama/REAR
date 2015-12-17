@@ -175,6 +175,7 @@ public class StatusWindow extends JFrame {
 		synchronized(signal) {
 			mode = 0;
 		}
+		recStarted = null;
 		icon.setIcon(stoppedIcon);
 		statusLabel.setText("Waiting for start of exam signal.");
 		timerLabel.setText("  0:00:00");
