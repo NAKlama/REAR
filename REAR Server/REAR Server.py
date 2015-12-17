@@ -124,7 +124,7 @@ class ClientThread(socketserver.BaseRequestHandler):
       brSwitch = "--cbr "
       if LAME_ABR:
         brSwitch = "--abr "
-      command += "\" | lame -m " +LAME_MODE+ " --replaygain-accurate -S " + brSwitch + LAME_BITRATEE
+      command += "\" | lame -m " +LAME_MODE+ " --replaygain-accurate -S " + brSwitch + LAME_BITRATE
       # command  = "lame -m m --replaygain-accurate -S --abr 64"
       command += " --tt \"" + title + "\""
       command += " --ta \"" + artist + "\""
