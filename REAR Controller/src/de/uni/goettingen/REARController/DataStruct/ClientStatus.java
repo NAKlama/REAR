@@ -12,7 +12,7 @@ public class ClientStatus implements Serializable {
 	private Boolean done;
 	
 	public ClientStatus() {
-		none	= true;
+		none	= false;
 		init	= false;
 		rec		= false;
 		upload	= false;

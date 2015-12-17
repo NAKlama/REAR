@@ -27,7 +27,6 @@ import org.apache.batik.transcoder.image.ImageTranscoder;
 import de.codecentric.centerdevice.javafxsvg.BufferedImageTranscoder;
 import de.uni.goettingen.REARClient.REARclient;
 import de.uni.goettingen.REARClient.SignalObject;
-import de.uni.goettingen.REARClient.Audio.AudioLevel;
 import de.uni.goettingen.REARClient.Audio.MicrophoneLine;
 
 @SuppressWarnings("serial")
@@ -43,20 +42,16 @@ public class StatusWindow extends JFrame {
 	private JLabel idLabel;
 	private JLabel id;
 	private JLabel icon;
-	private JLabel micIconL;
 
 	private ImageIcon	stoppedIcon;
 	private ImageIcon	recIcon;
 	private ImageIcon	uploadIcon;
 	private ImageIcon	okIcon;
-	private ImageIcon	micIcon;
-
-	private LevelMeter	levelMic;
 	private Timer		timer;
 	private String		studentID;
 	private String		examID;
 	private Date		recStarted;
-	private AudioLevel	micStreamLevel;
+//	private AudioLevel	micStreamLevel;
 
 	private int h, m, s;
 	private int mode; // 0 = invisible; 1 = stopped; 2 = recording; 3 = transferring; 4 = done
@@ -67,26 +62,23 @@ public class StatusWindow extends JFrame {
 	{
 		studentID			= "";
 		examID				= "";
-		micStreamLevel		= new AudioLevel(ml.getLine());
+//		micStreamLevel		= new AudioLevel(ml.getLine());
 		h = m = s 			= 0;
 		mode 				= 0;
 		stoppedIcon 		= new ImageIcon(createImageFromSVG(getClass().getResourceAsStream("/images/stopped.svg"), 50, 50));
 		recIcon 			= new ImageIcon(createImageFromSVG(getClass().getResourceAsStream("/images/rec.svg"), 50, 50));
 		uploadIcon 			= new ImageIcon(createImageFromSVG(getClass().getResourceAsStream("/images/upload.svg"), 50, 50));
 		okIcon 				= new ImageIcon(createImageFromSVG(getClass().getResourceAsStream("/images/OK.svg"), 50, 50));
-		micIcon 			= new ImageIcon(createImageFromSVG(getClass().getResourceAsStream("/images/microphone.svg"), 20, 20));
 
 		win 				= this.getContentPane();
 		iconPanel			= new JPanel();
 		statusPanel			= new JPanel();
 		idPanel				= new JPanel();
 		icon  				= new JLabel(stoppedIcon);
-		micIconL			= new JLabel(micIcon);
 		timerLabel			= new JLabel("  0:00:00");
 		idLabel				= new JLabel("Student ID:");
 		id 					= new JLabel("NO ID SET");
 		statusLabel			= new JLabel("Waiting for start of exam signal.");
-		levelMic			= new LevelMeter();
 
 		win.setLayout(new BoxLayout(win, BoxLayout.PAGE_AXIS));
 
@@ -116,12 +108,6 @@ public class StatusWindow extends JFrame {
 		iconPanel.add(icon);
 		iconPanel.add(timerLabel);
 		iconPanel.add(Box.createHorizontalGlue());
-
-		statusPanel.add(Box.createRigidArea(new Dimension(5,0)));
-		statusPanel.add(micIconL);
-		statusPanel.add(Box.createRigidArea(new Dimension(2,0)));
-		statusPanel.add(levelMic);
-		statusPanel.add(Box.createRigidArea(new Dimension(5,0)));
 		statusPanel.add(statusLabel);
 		statusPanel.add(Box.createHorizontalGlue());
 
@@ -214,7 +200,7 @@ public class StatusWindow extends JFrame {
 	}
 
 	public boolean timerEvent() {
-		levelMic.setLevel(micStreamLevel.getLevel());
+//		levelMic.setLevel(micStreamLevel.getLevel());
 
 		if(mode == 2) {
 			Date now = new Date();

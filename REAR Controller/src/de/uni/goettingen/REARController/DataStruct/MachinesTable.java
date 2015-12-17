@@ -45,6 +45,7 @@ public class MachinesTable extends AbstractTableModel implements TableModel {
 	}
 	
 	public void setExamMode(Boolean exam, Boolean started) {
+		this.removeEmptyRows();
 		examMode	= exam;
 		examStarted	= started;
 		if(examMode) {
@@ -69,7 +70,8 @@ public class MachinesTable extends AbstractTableModel implements TableModel {
 	}
 	
 	public void addBlankLine() {
-		table.addElement(new Machine().getObjVector());
+		if(!examMode)
+			table.addElement(new Machine().getObjVector());
 	}
 	
 	public SerMachinesTable getSaveObject() {
@@ -111,6 +113,24 @@ public class MachinesTable extends AbstractTableModel implements TableModel {
 		IPreachable ipr = (IPreachable) getValueAt(r, 2);
 		ipr.setReachable(b);
 		setValueAt(ipr, r, 2);
+	}
+	
+	public void removeEmptyRows() {
+		Vector<Vector<Object>> newTable = new Vector<Vector<Object>>();
+		for(int i=0; i < table.size(); i++) {
+			Vector<Object> l = table.get(i);
+			boolean testComputerID	= l.get(0) != null && ! ((String)l.get(0)).equals("");
+			boolean testArea		= l.get(1) != null;
+			boolean testIP			= l.get(2) != null && ! ((IPreachable)l.get(2)).getIPstr().equals("");
+			if(testComputerID && testArea && testIP) 
+				newTable.add(l);
+		}
+		table = newTable;
+	}
+	
+	public void removeRow(int row) {
+		if(row < table.size())
+			table.remove(row);
 	}
 	
 	@Override

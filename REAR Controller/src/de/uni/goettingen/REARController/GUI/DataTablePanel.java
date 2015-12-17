@@ -111,8 +111,9 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 	
 	public void init() {
 		MachinesTable tm = this.getTableModel();
-		SerMachinesTable ser = tm.getSaveObject();
-		mainTable.update(ser);
+		SerMachinesTable ser = tm.getSaveObject().removeEmpty();
+		mainTable = ser;
+		tm.removeEmptyRows();
 		ConcurrentHashMap<Long, String> studIDs = new ConcurrentHashMap<Long, String>();
 		for(Vector<Object> line : mainTable.data) {
 			String 	studID	= (String) 	line.get(3);
@@ -126,6 +127,7 @@ public class DataTablePanel extends JPanel implements TableModelListener {
  		connections.init(studIDs);
  		if(!editMode)
 			((MachinesTable) table.getModel()).setExamMode(!editMode, true);
+ 		
 	}
 	
 	public void setExamID(String eID)
@@ -185,7 +187,7 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 	public void setTable(MachinesTable t) {
 		machines = t;
 		addListener();
-		if(machines.getRowCount() == 0)
+		if(machines.getRowCount() == 0 && editMode)
 			machines.addBlankLine();
 		initTable(machines);
 		mainTable = machines.getSaveObject();

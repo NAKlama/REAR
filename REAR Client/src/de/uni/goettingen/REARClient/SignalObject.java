@@ -88,6 +88,7 @@ public class SignalObject {
 	public void initClient() {
 		ssh				= new SSHconnection(uploadServer, uploadUser, sshKey, REARclient.DATA_PORT);
 		dataC			= new DataConnection("127.0.0.1", REARclient.DATA_PORT, ssh);
+		dataC.addSignal(this);
 		win.init();
 	}
 
@@ -120,9 +121,13 @@ public class SignalObject {
 	public void stopRecording() {
 		rec.stopRecording();
 		win.setUpload();
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {;}
 		if(dataC != null) {
 			dataC.pushFile(outFile, studentID, examID);
 		}
+		
 	}
 
 	public void reset() {

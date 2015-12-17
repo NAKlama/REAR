@@ -22,6 +22,7 @@ public class DataConnection implements Runnable {
 		port 	= p;
 		ssh  	= s;
 		signal  = null;
+		
 	}
 	
 	public void addSignal(SignalObject s) {

@@ -6,6 +6,7 @@ import java.util.Vector;
 import de.uni.goettingen.REARController.DataStruct.Area;
 import de.uni.goettingen.REARController.DataStruct.AreaTreeNode;
 import de.uni.goettingen.REARController.DataStruct.ClientStatus;
+import de.uni.goettingen.REARController.Net.IPreachable;
 
 public class SerMachinesTable implements Serializable {
 	private static final long serialVersionUID = -3241321017722896939L;
@@ -13,6 +14,23 @@ public class SerMachinesTable implements Serializable {
 
 	public SerMachinesTable() {
 		data = new Vector<Vector<Object>>();
+	}
+	
+	public SerMachinesTable removeEmpty() {
+		SerMachinesTable out = new SerMachinesTable();
+		for(Vector<Object> line : data) {
+			boolean testCompID = line.get(0) != null && ! ((String) line.get(0)).equals("");
+			boolean testArea   = line.get(1) != null;
+			boolean testIP     = line.get(2) != null && ! ((IPreachable) line.get(2)).getIPstr().equals("");
+			if(testCompID && testArea && testIP) {
+				Vector<Object> oLine = new Vector<Object>();
+				for(int i=0; i < line.size(); i++) {
+					oLine.add(line.get(i));
+				}
+				out.data.add(oLine);
+			}
+		}
+		return out;
 	}
 	
 	public SerMachinesTable cleanForSerialize() {
