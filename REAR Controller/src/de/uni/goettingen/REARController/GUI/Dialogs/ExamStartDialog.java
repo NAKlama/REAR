@@ -25,6 +25,7 @@ public class ExamStartDialog extends JDialog {
 	 * Create the dialog.
 	 */
 	public ExamStartDialog(int sCount) {
+		setTitle("Initialize Exam");
 		setBounds(100, 100, 337, 141);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));

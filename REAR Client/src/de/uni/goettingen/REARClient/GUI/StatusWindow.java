@@ -122,7 +122,7 @@ public class StatusWindow extends JFrame {
 		//		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
 
-		setTitle("Recording Status");
+		setTitle("REAR");
 		setSize(280, 135);
 		setResizable(false);
 
@@ -140,7 +140,10 @@ public class StatusWindow extends JFrame {
 		synchronized(signal) {
 			mode = 1;
 		}
-		setTitle("Recording Status");
+		if(!examID.equals(""))
+			setTitle("REAR - " + examID);
+		else
+			setTitle("REAR");
 		setVisible(true);
 	}
 
@@ -236,7 +239,7 @@ public class StatusWindow extends JFrame {
 	}
 
 	public void setExamID(String id) {
-		this.setTitle(id);
+		setTitle("REAR - " + id);
 		examID = id;
 		
 	}
