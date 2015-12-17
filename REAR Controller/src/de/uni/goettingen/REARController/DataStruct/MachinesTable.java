@@ -1,6 +1,5 @@
 package de.uni.goettingen.REARController.DataStruct;
 
-import java.net.InetAddress;
 import java.util.Vector;
 
 import javax.swing.table.AbstractTableModel;
@@ -164,15 +163,12 @@ public class MachinesTable extends AbstractTableModel implements TableModel {
 		AreaTreeNode 	atn	= (AreaTreeNode) o.get(1);
 		Area			a	= null;
 		IPreachable		ipr = (IPreachable) o.get(2);
-		InetAddress		ip	= null;
 		if(atn != null)
 			a = (Area) atn.getUserObject();
-		if(ipr != null)
-			ip = (InetAddress) ipr.getAddress();
 		Machine m = new Machine(
 				(String) 		o.get(0),
 				(Area) 			a,
-				(InetAddress)	ip,
+				ipr,
 				(String) 		o.get(3),
 				(ClientStatus)	o.get(4),
 				(String) 		o.get(5),

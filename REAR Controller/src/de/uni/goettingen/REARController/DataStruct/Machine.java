@@ -29,10 +29,10 @@ public class Machine {
 		id			= new IDfactory().getID();
 	}
 	
-	public Machine(String cid, Area a, InetAddress i, String studID, ClientStatus s, String rTime, long idIn) {
+	public Machine(String cid, Area a, IPreachable i, String studID, ClientStatus s, String rTime, long idIn) {
 		computerID	= cid;
 		area		= a;
-		ip			= new IPreachable(i);
+		ip			= i;
 		studentID	= studID;
 		status		= s;
 		recTime		= rTime;
@@ -40,10 +40,10 @@ public class Machine {
 		id			= idIn;
 	}
 	
-	public Machine(String cid, Area a, InetAddress i, String studID, ClientStatus s, String rTime) {
+	public Machine(String cid, Area a, IPreachable i, String studID, ClientStatus s, String rTime) {
 		computerID	= cid;
 		area		= a;
-		ip			= new IPreachable(i);
+		ip			= i;
 		studentID	= studID;
 		status		= s;
 		recTime		= rTime;
@@ -51,10 +51,10 @@ public class Machine {
 		id			= new IDfactory().getID();
 	}
 	
-	public Machine(String cid, Area a, InetAddress i) {
+	public Machine(String cid, Area a, IPreachable i) {
 		computerID	= cid;
 		area		= a;
-		ip			= new IPreachable(i);
+		ip			= i;
 		studentID	= "";
 		status		= new ClientStatus(StatusEnum.UNINITIALIZED);
 		recTime		= "0:00:00";
