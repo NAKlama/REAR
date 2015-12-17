@@ -47,7 +47,7 @@ public class MainWindow {
 	public  static final String PROGRAM_NAME	= "REAR Controller";
 	private static final int	MajorVersion 	= 0;
 	private static final int	MedVersion		= 1;
-	private static final int	MinorVersion	= 6;
+	private static final int	MinorVersion	= 7;
 	
 	private JFrame frmREAR;
 
