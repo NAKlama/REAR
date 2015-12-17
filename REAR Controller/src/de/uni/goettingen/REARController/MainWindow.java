@@ -366,6 +366,7 @@ public class MainWindow implements ActionListener {
 			if(chckbxAllowStopp.isSelected()) {
 				btnNextStep.setIcon(iconRestart);
 				btnNextStep.setEnabled(false);
+				chckbxAllowStopp.setSelected(false);
 				chckbxAllowStopp.setVisible(false);
 				table.stop();
 			}
