@@ -58,12 +58,12 @@ public class PushSSHkeys implements Runnable {
 				total += rsize;
 			}
 			fStr.close();
-			System.out.println("   size " + total);
+//			System.out.println("   size " + total);
 			Thread.sleep(3000);
 			out.close();
 			sock.close();
 
-			System.out.println("  closing Thread");
+//			System.out.println("  closing Thread");
 		}
 		catch(Exception e) {
 			e.printStackTrace();

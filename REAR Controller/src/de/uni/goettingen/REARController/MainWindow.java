@@ -528,7 +528,7 @@ public class MainWindow implements ActionListener {
 	public void actionPerformed(ActionEvent arg0) {
 		if(!editMode) {
 			mode = table.getStatus();
-			System.out.println(mode);
+//			System.out.println(mode);
 			if(mode.getNone() && mode.getInit())
 				lblArrowUnInitToStopped.setIcon(iconRightArrow);
 			else
