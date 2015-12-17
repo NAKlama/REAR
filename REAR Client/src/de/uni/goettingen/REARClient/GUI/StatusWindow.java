@@ -140,6 +140,7 @@ public class StatusWindow extends JFrame {
 		synchronized(signal) {
 			mode = 1;
 		}
+		setTitle("Recording Status");
 		setVisible(true);
 	}
 
@@ -235,7 +236,9 @@ public class StatusWindow extends JFrame {
 	}
 
 	public void setExamID(String id) {
-		examID = id;		
+		this.setTitle(id);
+		examID = id;
+		
 	}
 
 	public String getExamID() {
