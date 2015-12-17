@@ -24,6 +24,7 @@ public class SSHconnection {
 			Properties config = new Properties();
 			config.put("StrictHostKeyChecking", "no");
 			jsch.addIdentity(key.getPrivKey().getAbsolutePath(), SSHkey.PASSPHRASE);
+			System.out.println("Creating SSH session to "+user+"@"+host);
 			ssh = jsch.getSession(user, host);
 			ssh.setConfig(config);
 			System.out.println("Initialized SSH");

@@ -21,7 +21,7 @@ public class Machine {
 	public Machine(Machine m) {
 		computerID	= m.getComputerID();
 		area		= m.getArea();
-		ip			= new IPreachable(m.getIP());
+		ip			= new IPreachable(m.getIPstr());
 		studentID	= m.getStudentID();
 		status		= m.getClientStatus();
 		recTime		= m.getRecTime();
@@ -169,6 +169,10 @@ public class Machine {
 	
 	public InetAddress getIP() {
 		return ip.getAddress();
+	}
+	
+	public String getIPstr() {
+		return ip.getIPstr();
 	}
 	
 	public Boolean getReachable() {

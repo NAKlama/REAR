@@ -34,6 +34,7 @@ public class ClientConn {
 	
 	public ClientStatus status() {
 		String reply = getReply("STATUS\n");
+//		System.out.println("Status reply: " + reply);
 		int st = Integer.parseInt(reply);
 		switch(st) {
 		case 0:
@@ -47,7 +48,8 @@ public class ClientConn {
 		case 4:
 			return new ClientStatus(false, false, false, false, true );
 		}
-		return null;		
+		return new ClientStatus(true,  false, false, false, false);
+//		return null;		
 	}
 	
 	public InetAddress getIP() {
@@ -89,7 +91,7 @@ public class ClientConn {
 	}
 	
 	public String getTime() {
-		return getReply("RECTIME\n").trim();
+		return getReply("RECTIME\n");
 	}
 	
 	public boolean init() {
@@ -120,6 +122,9 @@ public class ClientConn {
 			System.out.println("> " + c.trim());
 			out.writeBytes(c);
 			String reply = in.readLine();
+			while(in.ready()) {
+				in.readLine();
+			}
 			System.out.println("< " + reply);
 			return reply;
 		} catch (IOException e) {

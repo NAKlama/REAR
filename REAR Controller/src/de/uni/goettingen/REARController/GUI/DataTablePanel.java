@@ -298,10 +298,10 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 			if(value != null) {
 				IPreachable a = (IPreachable) value;
 				if(a.isReachable())
-					this.setForeground(Color.GREEN);
+					this.setForeground(Color.decode("#00AA00"));
 				else
 					this.setForeground(Color.RED);
-				this.setText(a.getAddress().getHostAddress());
+				this.setText(a.getIPstr());
 			}
 			return this;
 		}

@@ -4,21 +4,38 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 public class IPreachable implements Serializable {
 
-	private static final long serialVersionUID = 510733392283538305L;
+	private static final long serialVersionUID = 7951754742903794194L;
 	private InetAddress ip;
 	private Boolean		reachable;
+	private String		ipString;
 
 	
-	public IPreachable(InetAddress i) {
+	public IPreachable(String ips) {
+		ipString		= ips;
 		reachable		= false;
-		ip = i;
+		try {
+			ip 			= InetAddress.getByName(ips);
+		} catch (UnknownHostException e) {
+			ip			= null;
+		}
+	}
+	
+	public IPreachable(InetAddress ipArg) {
+		ipString		= ipArg.getHostAddress();
+		reachable		= false;
+		ip				= ipArg;
 	}
 	
 	public InetAddress getAddress() {
 		return ip;
+	}
+	
+	public String getIPstr() {
+		return ipString;
 	}
 	
 	public boolean isReachable() {
