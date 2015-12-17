@@ -4,12 +4,19 @@ import socketserver
 import threading
 import os.path as path
 import subprocess
-import datetime
+from datetime import date
 import os
 
 STORE_DIR   = "/tmp/flac"
 ENCODE_DIR  = "/tmp/mp3"
 PORT_NUM    = 28947
+
+def mkDir(path, mode=0o775):
+  try:
+    os.mkdir(path, mode)
+    print("Making Dir:" + path)
+  except:
+    pass
 
 
 class Connection:
@@ -24,9 +31,21 @@ class Connection:
   def recvLine(self):
     out = ""
     gotName = False
+    restBuffer = bytearray(self.bufferData)
+    for x in range(0, self.bufferData):
+      restBuffer[x] = self.buffer[x]
+    restBufferData = self.bufferData
+    self.buffer = bytearray(1025)
+    self.bufferData = 0
     while(b'\n' not in self.buffer):
       bBuffer = bytearray(1025)
-      count = self.s.recv_into(bBuffer, 1024)
+      if restBufferData > 0:
+        count = restBufferData
+        for x in range(0, restBufferData):
+          bBuffer[x] = restBuffer[x]
+        restBufferData = 0
+      else:
+        count = self.s.recv_into(bBuffer, 1024)
       # print("RAW>", bBuffer)
       # print("count>", count)
       if count > 0:
@@ -38,7 +57,7 @@ class Connection:
               out = str(self.buffer[:i], 'utf-8')
               # print("Out>", out)
               gotName = True
-              self.buffer = bytearray(count - (i+1))
+              self.buffer = bytearray(1025)
             else:
               self.buffer[i] = bBuffer[i]
           else:
@@ -48,8 +67,8 @@ class Connection:
 
   def storeAll(self, filename):
     total = self.bufferData
+    print("self.bufferData =", self.bufferData)
     with open(filename, 'wb') as f:
-      f.write(self.buffer)
       if self.bufferData > 0:
         f.write(self.buffer[:self.bufferData])
       count = -1
@@ -77,32 +96,36 @@ class ClientThread(socketserver.BaseRequestHandler):
       self.request.close()
     else:
       examID   = c.recvLine()
+      print("Got examID:" + examID)
       today    = date.today()
       dateStr  = today.strftime("%Y%m%d")
-      os.mkdir(STORE_DIR, mode=0o775)
-      os.mkdir(path.join(STORE_DIR, dateStr), mode=0o775)
-      os.mkdir(path.join(STORE_DIR, dateStr, examID), mode=0o775)
+      mkDir(STORE_DIR, mode=0o775)
+      mkDir(path.join(STORE_DIR, dateStr), mode=0o775)
+      mkDir(path.join(STORE_DIR, dateStr, examID), mode=0o775)
       outFile  = path.join(STORE_DIR, dateStr, examID, filename + ".flac")
-      print("Writing to file {}".format(filename))
+      # outFile  = path.join(STORE_DIR, dateStr, examID, filename + ".wav")
+      print("Writing to file {}".format(outFile))
       c.storeAll(outFile)
       print("Done")
       self.request.close()
 
-      os.mkdir(ENCODE_DIR, mode=0o775)
-      os.mkdir(path.join(ENCODE_DIR, dateStr), mode=0o775)
-      os.mkdir(path.join(ENCODE_DIR, dateStr, examID), mode=0o775)
-      title  = "S:" + filename
+      mkDir(ENCODE_DIR, mode=0o775)
+      mkDir(path.join(ENCODE_DIR, dateStr), mode=0o775)
+      mkDir(path.join(ENCODE_DIR, dateStr, examID), mode=0o775)
+      title  = "S: " + filename
       artist = "E: " + examID
       mp3File  = path.join(ENCODE_DIR, dateStr, examID, filename + ".mp3")
       command  = "flac -s -d -c \""
-      command += outDir
+      command += outFile
       command += "\" | lame -m m --replaygain-accurate -S --abr 64"
-      command += " -tt " + title
-      command += " -ta " + artist
-      command += " -ty " + today.strftime("%Y")
-      command += " --add-id3v2 - - > "
-      command += "\"" + mp3File
+      # command  = "lame -m m --replaygain-accurate -S --abr 64"
+      command += " --tt \"" + title + "\""
+      command += " --ta \"" + artist + "\""
+      command += " --ty " + today.strftime("%Y")
+      command += " --add-id3v2 - "
+      command += "\"" + mp3File + "\""
       subprocess.check_call(command, shell=True)
+      print("Done encoding")
 
 
 
