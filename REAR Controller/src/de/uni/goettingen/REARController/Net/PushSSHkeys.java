@@ -3,13 +3,8 @@ package de.uni.goettingen.REARController.Net;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.Socket;
 
-import com.jcraft.jsch.Channel;
-import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
@@ -49,13 +44,13 @@ public class PushSSHkeys implements Runnable {
 			FileInputStream		fStr		= new FileInputStream(file);
 			byte[] 				buff 		= new byte[1024];
 			int    				rsize;
-			int					total = 0;
+//			int					total = 0;
 			String pushCommand = "@@@SSH_KEYS@@@";
 			out.write(pushCommand.getBytes(), 0, pushCommand.length());
 			while((rsize = fStr.read(buff, 0, 1024)) > 0) {
 				//					System.out.println("  rsize = " + rsize);
 				out.write(buff, 0, rsize);
-				total += rsize;
+//				total += rsize;
 			}
 			fStr.close();
 //			System.out.println("   size " + total);
