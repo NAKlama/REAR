@@ -34,7 +34,7 @@ public class ClientConn {
 	
 	public ClientStatus status() {
 		String reply = getReply("STATUS\n");
-		System.out.println("Status reply: " + reply);
+//		System.out.println("Status reply: " + reply);
 		int st = Integer.parseInt(reply);
 		switch(st) {
 		case 0:

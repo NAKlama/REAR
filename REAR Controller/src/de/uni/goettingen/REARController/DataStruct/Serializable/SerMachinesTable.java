@@ -44,7 +44,7 @@ public class SerMachinesTable implements Serializable {
 					found = true;
 					for(int i=0; i < 7; i++) {
 						line.set(i, inLine.get(i));
-						System.out.println("Setting col " + i + " to " + inLine.get(i));
+//						System.out.println("Setting col " + i + " to " + inLine.get(i));
 					}
 				}
 			if(!found && (inLine.get(0) != "" || inLine.get(1) != null || inLine.get(2) != null)) {
