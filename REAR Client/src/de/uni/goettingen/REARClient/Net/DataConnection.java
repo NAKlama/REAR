@@ -31,8 +31,8 @@ public class DataConnection implements Runnable {
 	
 	public void pushFile(File f, String sID, String eID) {
 		file		= f;
-		studentID	= sID.trim() + "\n";
-		examID		= eID.trim() + "\n";
+		studentID	= sID.trim().replaceAll("[/\"\'|\\\\:\\*\\?<>]", "-") + "\n";
+		examID		= eID.trim().replaceAll("[/\"\'|\\\\:\\*\\?<>]", "-") + "\n";
 		System.out.println("push " + f.getAbsolutePath());
 		Thread t = new Thread(this);
 		t.start();
