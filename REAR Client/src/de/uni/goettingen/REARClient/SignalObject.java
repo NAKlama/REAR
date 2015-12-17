@@ -100,7 +100,7 @@ public class SignalObject {
 
 		String path;
 		if(win.getExamID() != null && ! win.getExamID().equals("")) {
-			path = REARclient.DEFAULT_PATH + win.getExamID() + "\\";
+			path = REARclient.DEFAULT_PATH + win.getExamID().replaceAll("[/\"\'|\\\\:\\*\\?<>]", "-") + "\\";
 			File p = new File(path);
 			p.mkdirs();
 		}
@@ -109,7 +109,7 @@ public class SignalObject {
 		System.out.println(path);
 		System.out.println(win.getExamID());
 		if(win.getID() != null && ! win.getID().equals(""))
-			outFile				= new File(path + win.getID() + ".flac");
+			outFile				= new File(path + win.getID().replaceAll("[/\"\'|\\\\:\\*\\?<>]", "-") + ".flac");
 		else
 			outFile				= new File(REARclient.DEFAULT_FILE);
 		rec					= new Recorder(micLine, outFile);
@@ -132,6 +132,7 @@ public class SignalObject {
 
 	public void reset() {
 		win.reset();
+		micLine.open();
 	}
 
 	public void setExamID(String id) {

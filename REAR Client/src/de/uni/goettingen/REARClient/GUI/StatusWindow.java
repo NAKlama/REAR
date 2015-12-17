@@ -118,11 +118,11 @@ public class StatusWindow extends JFrame {
 		win.add(statusPanel);
 		win.add(Box.createVerticalGlue());
 
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		//		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+//		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
 
-		setTitle("Recording Status");
+		setTitle("REAR");
 		setSize(280, 135);
 		setResizable(false);
 
@@ -140,6 +140,10 @@ public class StatusWindow extends JFrame {
 		synchronized(signal) {
 			mode = 1;
 		}
+		if(!examID.equals(""))
+			setTitle("REAR - " + examID);
+		else
+			setTitle("REAR");
 		setVisible(true);
 	}
 
@@ -154,7 +158,6 @@ public class StatusWindow extends JFrame {
 	}
 
 	public void setUpload() {
-		timer.stop();
 		synchronized(signal) {
 			mode = 3;
 		}
@@ -176,9 +179,11 @@ public class StatusWindow extends JFrame {
 		synchronized(signal) {
 			mode = 0;
 		}
+		recStarted = null;
 		icon.setIcon(stoppedIcon);
 		statusLabel.setText("Waiting for start of exam signal.");
 		timerLabel.setText("  0:00:00");
+		h = m = s = 0;
 		setVisible(false);
 	}
 
@@ -213,7 +218,7 @@ public class StatusWindow extends JFrame {
 			timerLabel.setText(String.format("  %d:%02d:%02d", h, m, s));
 			return true;
 		}
-		return false;
+		return true;
 	}
 
 	private BufferedImage createImageFromSVG(InputStream svgStream, int w, int h) {
@@ -234,7 +239,9 @@ public class StatusWindow extends JFrame {
 	}
 
 	public void setExamID(String id) {
-		examID = id;		
+		setTitle("REAR - " + id);
+		examID = id;
+		
 	}
 
 	public String getExamID() {

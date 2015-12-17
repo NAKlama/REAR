@@ -20,6 +20,8 @@ public class NetConnections {
 	private ConcurrentHashMap<Long, String> 		recTimeMap;
 	private ConcurrentHashMap<Long, ClientStatus>	statusMap;
 	private ConcurrentHashMap<Long, String>			clientSSHkeys;
+	
+	private PushSSHkeys sshPush;
 
 	public NetConnections() {
 		clientIDs		= new Vector<Long>();
@@ -28,6 +30,7 @@ public class NetConnections {
 		recTimeMap		= new ConcurrentHashMap<Long, String>();
 		statusMap		= new ConcurrentHashMap<Long, ClientStatus>();
 		clientSSHkeys	= new ConcurrentHashMap<Long, String>();
+		sshPush 		= null;
 	}
 
 	public void update(SerMachinesTable mList) {
@@ -88,7 +91,8 @@ public class NetConnections {
 			osw = new OutputStreamWriter(new FileOutputStream(f));
 			osw.write(SSHKeys, 0, SSHKeys.length());
 			osw.close();
-			PushSSHkeys sshPush = new PushSSHkeys();
+			if(sshPush == null)
+				sshPush = new PushSSHkeys();
 			sshPush.push(
 					MainWindow.getProp().getUploadUser(), 
 					MainWindow.getProp().getUploadServer(), 
@@ -160,6 +164,8 @@ public class NetConnections {
 		if(! statusMap.containsKey(id)) {	
 			return null;
 		}
+		if(connMap.get(id).isReachable())
+			ipMap.get(id).setReachable(true);
 		return statusMap.get(id);
 	}
 	
@@ -194,8 +200,9 @@ public class NetConnections {
 
 	public void setExamID(String eID) {
 //		System.out.println(clientIDs);
+		String str = eID.replaceAll("\\s", "_");
 		for(long id : clientIDs) {
-			connMap.get(id).setExamID(eID);
+			connMap.get(id).setExamID(str);
 		}
 		
 	}
