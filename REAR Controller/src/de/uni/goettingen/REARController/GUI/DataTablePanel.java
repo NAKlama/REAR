@@ -301,7 +301,7 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 					this.setForeground(Color.decode("#00AA00"));
 				else
 					this.setForeground(Color.RED);
-				this.setText(a.getAddress().getHostAddress());
+				this.setText(a.getIPstr());
 			}
 			return this;
 		}

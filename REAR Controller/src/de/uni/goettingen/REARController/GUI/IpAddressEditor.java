@@ -1,8 +1,5 @@
 package de.uni.goettingen.REARController.GUI;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-
 import javax.swing.DefaultCellEditor;
 import javax.swing.JTextField;
 
@@ -16,12 +13,6 @@ public class IpAddressEditor extends DefaultCellEditor {
 
 	@Override
 	public Object getCellEditorValue() {
-		InetAddress addr;
-		try {
-			addr = InetAddress.getByName(((JTextField)editorComponent).getText());
-		} catch (UnknownHostException e) {
-			addr = null;
-		}
-		return new IPreachable(addr);
+		return new IPreachable(((JTextField)editorComponent).getText());
 	}
 }
