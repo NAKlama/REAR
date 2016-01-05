@@ -16,6 +16,10 @@ public class SerMachinesTable implements Serializable {
 		data = new Vector<Vector<Object>>();
 	}
 	
+	public int size() {
+		return data.size();
+	}
+	
 	public SerMachinesTable removeEmpty() {
 		SerMachinesTable out = new SerMachinesTable();
 		for(Vector<Object> line : data) {

@@ -403,6 +403,7 @@ public class MainWindow implements ActionListener {
 			FileDataObject o = new FileDataObject();
 			o.tree	= panelTree.getRoot().getSaveObject();
 			o.table	= table.getMainTable().cleanForSerialize();
+			System.out.println(o.table.size());
 			objOut.writeObject(o);
 			objOut.close();
 			fileOut.close();
@@ -424,7 +425,7 @@ public class MainWindow implements ActionListener {
 			file = fileChooser.getSelectedFile();
 			String s = file.getAbsolutePath();
 			if(!s.endsWith(".rear") && !s.endsWith(".REAR"))
-				file = new File(file.getName() + ".rear");
+				file = new File(file.getAbsolutePath() + ".rear");
 		}
 
 		btnSaveFile.setEnabled(true);
@@ -448,6 +449,7 @@ public class MainWindow implements ActionListener {
 				table.setTable(MachinesTable.loadSaveObject(o.table));
 				objIn.close();
 				fileIn.close();
+				System.out.println(o.table.size());
 				btnSaveFile.setEnabled(true);
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
