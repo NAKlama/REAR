@@ -41,6 +41,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Dimension;
 import javax.swing.JCheckBox;
+import javax.swing.SwingConstants;
 
 public class MainWindow implements ActionListener {
 	public  static final String PROGRAM_NAME	= "REAR Controller";
@@ -116,6 +117,8 @@ public class MainWindow implements ActionListener {
 	private static PropertiesStore prop;
 	private JButton btnSettings;
 	private Component horizontalStrut_9;
+	private Component horizontalStrut_10;
+	private JButton btnDeleteRow;
 
 	/**
 	 * Launch the application.
@@ -160,21 +163,27 @@ public class MainWindow implements ActionListener {
 		toolBarMain.setAlignmentX(Component.LEFT_ALIGNMENT);
 		frmREAR.getContentPane().add(toolBarMain, "flowx,cell 0 0 2 1,grow");
 
-		btnNewFile = new JButton("");
+		btnNewFile = new JButton("New");
+		btnNewFile.setVerticalTextPosition(SwingConstants.BOTTOM);
+		btnNewFile.setHorizontalTextPosition(SwingConstants.CENTER);
 		btnNewFile.setToolTipText("New File");
 		btnNewFile.setActionCommand("NewFile");
 		btnNewFile.addActionListener(listener);
 		btnNewFile.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/32/document-new.png")));
 		toolBarMain.add(btnNewFile);
 
-		btnOpenFile = new JButton("");
+		btnOpenFile = new JButton("Open");
+		btnOpenFile.setHorizontalTextPosition(SwingConstants.CENTER);
+		btnOpenFile.setVerticalTextPosition(SwingConstants.BOTTOM);
 		btnOpenFile.setToolTipText("Open File...");
 		btnOpenFile.setActionCommand("OpenFile");
 		btnOpenFile.addActionListener(listener);
 		btnOpenFile.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/32/document-open.png")));
 		toolBarMain.add(btnOpenFile);
 
-		btnSaveFile = new JButton("");
+		btnSaveFile = new JButton("Save");
+		btnSaveFile.setVerticalTextPosition(SwingConstants.BOTTOM);
+		btnSaveFile.setHorizontalTextPosition(SwingConstants.CENTER);
 		btnSaveFile.setToolTipText("Save File");
 		btnSaveFile.setActionCommand("SaveFile");
 		btnSaveFile.addActionListener(listener);
@@ -182,7 +191,9 @@ public class MainWindow implements ActionListener {
 		btnSaveFile.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/32/document-save.png")));
 		toolBarMain.add(btnSaveFile);
 
-		btnSaveAsFile = new JButton("");
+		btnSaveAsFile = new JButton("Save As...");
+		btnSaveAsFile.setHorizontalTextPosition(SwingConstants.CENTER);
+		btnSaveAsFile.setVerticalTextPosition(SwingConstants.BOTTOM);
 		btnSaveAsFile.setToolTipText("SaveAs File...");
 		btnSaveAsFile.setActionCommand("SaveAsFile");
 		btnSaveAsFile.addActionListener(listener);
@@ -197,25 +208,41 @@ public class MainWindow implements ActionListener {
 		table = new DataTablePanel(panelTree);
 		panelTree.setTable(table);
 
-		btnExamMode = new JButton("");
+		btnExamMode = new JButton("Exam Mode");
+		btnExamMode.setVerticalTextPosition(SwingConstants.BOTTOM);
+		btnExamMode.setHorizontalTextPosition(SwingConstants.CENTER);
 		btnExamMode.setToolTipText("Exam Mode");
 		btnExamMode.setActionCommand("ExamMode");
 		btnExamMode.addActionListener(listener);
 		btnExamMode.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/32/computer.png")));
 		toolBarMain.add(btnExamMode);
 
-		btnEditMode = new JButton("");
+		btnEditMode = new JButton("Edit Mode");
+		btnEditMode.setHorizontalTextPosition(SwingConstants.CENTER);
+		btnEditMode.setVerticalTextPosition(SwingConstants.BOTTOM);
 		btnEditMode.setToolTipText("Edit Mode");
 		btnEditMode.setEnabled(false);
 		btnEditMode.setActionCommand("EditMode");
 		btnEditMode.addActionListener(listener);
 		btnEditMode.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/32/stock_edit.png")));
 		toolBarMain.add(btnEditMode);
+		
+		horizontalStrut_10 = Box.createHorizontalStrut(10);
+		toolBarMain.add(horizontalStrut_10);
+		
+		btnDeleteRow = new JButton("Delete Row");
+		btnDeleteRow.setActionCommand("DeleteRow");
+		btnDeleteRow.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/32/stop.png")));
+		btnDeleteRow.setHorizontalTextPosition(SwingConstants.CENTER);
+		btnDeleteRow.setVerticalTextPosition(SwingConstants.BOTTOM);
+		toolBarMain.add(btnDeleteRow);
 
 		Component horizontalStrut_8 = Box.createHorizontalStrut(10);
 		toolBarMain.add(horizontalStrut_8);
 
-		btnNextStep = new JButton("");
+		btnNextStep = new JButton("Start Exam");
+		btnNextStep.setVerticalTextPosition(SwingConstants.BOTTOM);
+		btnNextStep.setHorizontalTextPosition(SwingConstants.CENTER);
 		btnNextStep.setToolTipText("Start Exam");
 		btnNextStep.setEnabled(false);
 		btnNextStep.setActionCommand("Next");
@@ -224,17 +251,23 @@ public class MainWindow implements ActionListener {
 		btnNextStep.setIcon(iconNext);
 
 		chckbxAllowStopp = new JCheckBox("Allow Stopp Exam");
+		chckbxAllowStopp.setVerticalTextPosition(SwingConstants.BOTTOM);
+		chckbxAllowStopp.setHorizontalTextPosition(SwingConstants.CENTER);
 		chckbxAllowStopp.setVisible(false);
 		toolBarMain.add(chckbxAllowStopp);
 
 		Component horizontalGlue_2 = Box.createHorizontalGlue();
 		toolBarMain.add(horizontalGlue_2);
 
-		btnInfo = new JButton((String) null);
+		btnInfo = new JButton("About");
+		btnInfo.setVerticalTextPosition(SwingConstants.BOTTOM);
+		btnInfo.setHorizontalTextPosition(SwingConstants.CENTER);
 		btnInfo.setActionCommand("Info");
 		btnInfo.addActionListener(listener);
 		
-		btnSettings = new JButton("");
+		btnSettings = new JButton("Properties");
+		btnSettings.setHorizontalTextPosition(SwingConstants.CENTER);
+		btnSettings.setVerticalTextPosition(SwingConstants.BOTTOM);
 		btnSettings.setActionCommand("Settings");
 		btnSettings.setToolTipText("Properties");
 		btnSettings.addActionListener(listener);
@@ -403,6 +436,7 @@ public class MainWindow implements ActionListener {
 			FileDataObject o = new FileDataObject();
 			o.tree	= panelTree.getRoot().getSaveObject();
 			o.table	= table.getMainTable().cleanForSerialize();
+			System.out.println(o.table.print());
 			System.out.println(o.table.size());
 			objOut.writeObject(o);
 			objOut.close();
@@ -526,6 +560,12 @@ public class MainWindow implements ActionListener {
 			else if(cmd.equals("Settings_Cancel")) {
 				sd.setVisible(false);
 			}
+			else if(cmd.equals("DeleteRow")) {
+				int[] rows = table.getJTable().getSelectedRows();
+				if(rows.length > 0) 
+					for(int r : rows) 
+						table.getTableModel().removeRow(r);
+			}
  		}
 	}
 
@@ -576,6 +616,8 @@ public class MainWindow implements ActionListener {
 
 			switch(step) {
 			case 0:
+				btnNextStep.setText("Prepare Exam");
+				btnNextStep.setToolTipText("Prepare Exam");
 				if(mode.isUninitialized()) {
 					btnNextStep.setEnabled(true);
 					btnEditMode.setEnabled(true);
@@ -584,6 +626,8 @@ public class MainWindow implements ActionListener {
 					btnNextStep.setEnabled(false);
 				break;
 			case 1:
+				btnNextStep.setText("Start Exam");
+				btnNextStep.setToolTipText("Start Exam");
 				btnEditMode.setEnabled(false);
 				if(mode.isInitialized())
 					btnNextStep.setEnabled(true);
@@ -591,6 +635,8 @@ public class MainWindow implements ActionListener {
 					btnNextStep.setEnabled(false);
 				break;
 			case 2:
+				btnNextStep.setText("Stop Exam");
+				btnNextStep.setToolTipText("Stop Exam");
 				btnEditMode.setEnabled(false);
 				if(mode.isRec())
 					btnNextStep.setEnabled(true);
@@ -598,6 +644,8 @@ public class MainWindow implements ActionListener {
 					btnNextStep.setEnabled(false);
 				break;
 			case 3:
+				btnNextStep.setText("Reset Exam");
+				btnNextStep.setToolTipText("Reset Exam");
 				btnEditMode.setEnabled(false);
 				if(mode.isDone())
 					btnNextStep.setEnabled(true);

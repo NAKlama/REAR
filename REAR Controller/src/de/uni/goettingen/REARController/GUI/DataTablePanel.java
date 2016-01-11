@@ -130,6 +130,10 @@ public class DataTablePanel extends JPanel implements TableModelListener {
  		
 	}
 	
+	public JTable getJTable() {
+		return table;
+	}
+	
 	public void setExamID(String eID)
 	{
 		connections.setExamID(eID);
@@ -346,7 +350,7 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 			return this;
 		}
 	}
-
+	
 	public void setServer(String uploadServer, String uploadUser) {
 		connections.setServer(uploadServer, uploadUser);		
 	}
