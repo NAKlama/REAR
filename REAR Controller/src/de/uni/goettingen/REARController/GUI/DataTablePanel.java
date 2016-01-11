@@ -130,6 +130,10 @@ public class DataTablePanel extends JPanel implements TableModelListener {
  		
 	}
 	
+	public JTable getJTable() {
+		return table;
+	}
+	
 	public void setExamID(String eID)
 	{
 		connections.setExamID(eID);
@@ -245,7 +249,7 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 					IPreachable ipr	= (IPreachable) line.get(2);
 					if(ipr != null) {
 						InetAddress ip	= ipr.getAddress();
-						if(!ip.equals(connections.getIP(id))) {
+						if(connections.isReachabel(id) && !ip.equals(connections.getIP(id))) {
 							connections.setIP(id, ip);
 						}
 					}
@@ -346,7 +350,7 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 			return this;
 		}
 	}
-
+	
 	public void setServer(String uploadServer, String uploadUser) {
 		connections.setServer(uploadServer, uploadUser);		
 	}

@@ -16,6 +16,10 @@ public class SerMachinesTable implements Serializable {
 		data = new Vector<Vector<Object>>();
 	}
 	
+	public int size() {
+		return data.size();
+	}
+	
 	public SerMachinesTable removeEmpty() {
 		SerMachinesTable out = new SerMachinesTable();
 		for(Vector<Object> line : data) {
@@ -48,8 +52,9 @@ public class SerMachinesTable implements Serializable {
 					oLine.add(null);
 				else
 					oLine.add(line.get(i));
-				out.data.add(oLine);
+				
 			}
+			out.data.add(oLine);
 		}
 		return out;
 	}
@@ -58,7 +63,7 @@ public class SerMachinesTable implements Serializable {
 		for(Vector<Object> inLine : t.data) {
 			Boolean found = false;
 			for(Vector<Object> line : data) 
-				if(inLine.get(7) == line.get(7) && inLine.get(1) != null) {
+				if(inLine.get(7) == line.get(7)) {
 					found = true;
 					for(int i=0; i < 7; i++) {
 						line.set(i, inLine.get(i));
@@ -69,7 +74,9 @@ public class SerMachinesTable implements Serializable {
 				data.addElement(inLine);
 			}
 		}
+		System.out.println(this.print()); 
 	}
+	
 
 	public SerMachinesTable filter(Vector<AreaTreeNode> v) {
 		SerMachinesTable out = new SerMachinesTable();
@@ -83,6 +90,30 @@ public class SerMachinesTable implements Serializable {
 						out.data.addElement(line);
 				}
 			}
+		return out;
+	}
+	
+	public String print() {
+		String out = new String();
+		for(Vector<Object> line : data) {
+			out += (String) line.get(0);										// Computer ID
+			if(line.get(1) != null)
+				out += ", " + ((Area) ((AreaTreeNode) line.get(1)).getUserObject()).getName();		// Area
+			else
+				out += ", null";
+			if(line.get(2) != null)
+				out += ", " + ((IPreachable) line.get(2)).getIPstr();				// IP Address
+			else
+				out += ", null";
+			out += ", " + (String) line.get(3);									// Student ID
+			if(line.get(4) != null)
+				out += ", " + ((ClientStatus) line.get(4)).getStatus();				// Status
+			else
+				out += ", null";
+			out += ", " + (String) line.get(5);
+			out += ", " + String.valueOf((Long) line.get(7));
+			out += "\n";
+		}
 		return out;
 	}
 }

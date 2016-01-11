@@ -40,18 +40,19 @@ public class NetConnections {
 			IPreachable ipr = (IPreachable) m.get(2);
 			if(ipr != null) {
 				InetAddress	ip	= ipr.getAddress();
-				if(ip != null && (!clientIDs.contains(id) || !ip.equals(ipMap.get(id).getAddress()))) {
+				if(ip != null && !(clientIDs.contains(id) && ipMap.containsKey(id) && ip.equals(ipMap.get(id).getAddress()))) {
 					if(!clientIDs.contains(id)) 
 						clientIDs.add(id);
 					ClientConn	c = connMap.get(id);
 					if(c == null || !connMap.get(id).isReachable()) {
-						c = new ClientConn(ip);
+						c = new ClientConn(ipr);
 						connMap.put(id, c);
 					}
-					if(c.isReachable())
+					if(c.isReachable()) {
 						ipr.setReachable(true);
-					ipMap.put(id, ipr);
-					clientSSHkeys.put(id, c.getSSHkey());
+						ipMap.put(id, ipr);
+						clientSSHkeys.put(id, c.getSSHkey());
+					}
 				}
 			}
 		}
@@ -142,7 +143,9 @@ public class NetConnections {
 	}
 
 	public InetAddress getIP(long id) {
-		return ipMap.get(id).getAddress();
+		if(connMap.get(id).isReachable())
+			return ipMap.get(id).getAddress();
+		return null;
 	}
 	
 	public IPreachable getIPR(long id) {
@@ -152,11 +155,9 @@ public class NetConnections {
 	public void setIP(long id, InetAddress ip) {
 		if(! clientIDs.contains(id))
 			clientIDs.add(id);
-		ClientConn c = new ClientConn(ip);
-		connMap.put(id, c);
 		IPreachable ipr = new IPreachable(ip);
-		if(c.isReachable())
-			ipr.setReachable(true);
+		ClientConn c = new ClientConn(ipr);
+		connMap.put(id, c);
 		ipMap.put(id, ipr);
 	}
 
