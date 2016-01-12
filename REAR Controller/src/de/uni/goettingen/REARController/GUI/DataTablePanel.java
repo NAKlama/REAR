@@ -25,6 +25,7 @@ import de.uni.goettingen.REARController.DataStruct.Machine;
 import de.uni.goettingen.REARController.DataStruct.MachinesTable;
 import de.uni.goettingen.REARController.DataStruct.Serializable.SerMachinesTable;
 import de.uni.goettingen.REARController.GUI.Tools.TreeChangeListener;
+import de.uni.goettingen.REARController.Net.ClientConn;
 import de.uni.goettingen.REARController.Net.IPreachable;
 import de.uni.goettingen.REARController.Net.NetConnections;
 
@@ -271,6 +272,14 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 		for(AreaTreeNode a : tree.getAreaList())
 			areaSelector.addItem(a);
 		areaColumn.setCellEditor(new DefaultCellEditor(areaSelector));
+	}
+	
+	public Vector<ClientConn> getConnections(int[] lines) {
+		Vector<ClientConn> out = new Vector<ClientConn>();
+		for(int l : lines) {
+			out.addElement(connections.getClientConn((Long) machines.getValueAt(l, 7)));
+		}
+		return out;
 	}
 
 	private class StatusRenderer extends DefaultTableCellRenderer {

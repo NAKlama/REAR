@@ -11,6 +11,7 @@ import de.uni.goettingen.REARController.DataStruct.MachinesTable;
 import de.uni.goettingen.REARController.DataStruct.PropertiesStore;
 import de.uni.goettingen.REARController.GUI.DataTablePanel;
 import de.uni.goettingen.REARController.GUI.TreePanel;
+import de.uni.goettingen.REARController.GUI.Dialogs.DebugSignals;
 import de.uni.goettingen.REARController.GUI.Dialogs.ExamStartDialog;
 import de.uni.goettingen.REARController.GUI.Dialogs.InfoDialog;
 import de.uni.goettingen.REARController.GUI.Dialogs.SettingsDialog;
@@ -119,6 +120,8 @@ public class MainWindow implements ActionListener {
 	private Component horizontalStrut_9;
 	private Component horizontalStrut_10;
 	private JButton btnDeleteRow;
+	private Component horizontalGlue_3;
+	private JButton btnSendManualSignals;
 
 	/**
 	 * Launch the application.
@@ -255,6 +258,21 @@ public class MainWindow implements ActionListener {
 		chckbxAllowStopp.setHorizontalTextPosition(SwingConstants.CENTER);
 		chckbxAllowStopp.setVisible(false);
 		toolBarMain.add(chckbxAllowStopp);
+		
+		horizontalGlue_3 = Box.createHorizontalGlue();
+		toolBarMain.add(horizontalGlue_3);
+		
+		btnSendManualSignals = new JButton("Send Manual Signals");
+		btnSendManualSignals.setActionCommand("DebugSignals");
+		btnSendManualSignals.setToolTipText("Send Manual Signals");
+		btnSendManualSignals.setHorizontalTextPosition(SwingConstants.CENTER);
+		btnSendManualSignals.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/32/gear.png")));
+		btnSendManualSignals.setVerticalTextPosition(SwingConstants.BOTTOM);
+		if(!prop.getDebugMode())
+			btnSendManualSignals.setVisible(false);
+		else
+			btnSendManualSignals.setVisible(true);
+		toolBarMain.add(btnSendManualSignals);
 
 		Component horizontalGlue_2 = Box.createHorizontalGlue();
 		toolBarMain.add(horizontalGlue_2);
@@ -511,7 +529,8 @@ public class MainWindow implements ActionListener {
 	}
 	
 	private class BtnListener implements ActionListener {
-		private SettingsDialog sd;
+		private SettingsDialog	sd;
+		private DebugSignals	dSigs;
 		
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -555,6 +574,7 @@ public class MainWindow implements ActionListener {
 			else if(cmd.equals("Settings_OK")) {
 				prop.setUploadServer(sd.getServer());
 				prop.setUploadUser(sd.getUser());
+				prop.setDebugMode(sd.getDebug());
 				sd.setVisible(false);
 			}
 			else if(cmd.equals("Settings_Cancel")) {
@@ -565,6 +585,21 @@ public class MainWindow implements ActionListener {
 				if(rows.length > 0) 
 					for(int r : rows) 
 						table.getTableModel().removeRow(r);
+			}
+			else if(cmd.equals("DebugSignals")) {
+				int[] rows = table.getJTable().getSelectedRows();
+				if(rows.length > 0) {
+					dSigs = new DebugSignals(table.getConnections(rows));
+					dSigs.addListener(this);
+					dSigs.setVisible(true);
+				}
+			}
+			else if(cmd.equals("Debug_OK")) {
+				dSigs.sendSignals();
+				dSigs.setVisible(false);
+			}
+			else if(cmd.equals("Debug_Cancel")) {
+				dSigs.setVisible(false);
 			}
  		}
 	}
