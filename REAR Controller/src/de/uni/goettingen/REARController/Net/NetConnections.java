@@ -213,4 +213,10 @@ public class NetConnections {
 			connMap.get(id).setServer(uploadServer, uploadUser);
 		}
 	}
+	
+	public ClientConn getClientConn(long id) {
+		if(connMap.containsKey(id))
+			return connMap.get(id);
+		return null;
+	}
 }
