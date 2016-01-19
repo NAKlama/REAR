@@ -47,8 +47,8 @@ import javax.swing.SwingConstants;
 public class MainWindow implements ActionListener {
 	public  static final String PROGRAM_NAME	= "REAR Controller";
 	private static final int	MajorVersion 	= 0;
-	private static final int	MedVersion		= 2;
-	private static final int	MinorVersion	= 4;
+	private static final int	MedVersion		= 9;
+	private static final int	MinorVersion	= 0;
 	
 	private JFrame frmREAR;
 
