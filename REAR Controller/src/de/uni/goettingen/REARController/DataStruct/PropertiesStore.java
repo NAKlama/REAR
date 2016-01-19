@@ -100,7 +100,7 @@ public class PropertiesStore {
 	
 	public Boolean getDebugMode() {
 		String modeStr = prop.getProperty("debugMode");
-		if(modeStr.equals("true"))
+		if(modeStr != null && modeStr.equals("true"))
 			return true;
 		return false;
 	}

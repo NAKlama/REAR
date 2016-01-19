@@ -13,6 +13,7 @@ import de.uni.goettingen.REARController.Net.IPreachable;
 @SuppressWarnings("serial")
 public class MachinesTable extends AbstractTableModel implements TableModel {
 	private final static int		COL_NUM			= 6;
+	private final static int		COL_NUM_REAL	= 8;
 	private final static String []	COLUMN_NAMES 	=
 		{	"Computer ID",	// 0
 			"Area",			// 1
@@ -78,7 +79,7 @@ public class MachinesTable extends AbstractTableModel implements TableModel {
 		SerMachinesTable o = new SerMachinesTable();
 		for(Vector<Object> line : table) {
 			Vector<Object> l = new Vector<Object>();
-			for(int i = 0; i < COL_NUM + 1; i++) { // + 1
+			for(int i = 0; i < COL_NUM_REAL; i++) { // + 1
 				l.addElement(line.get(i));
 			}
 			o.data.addElement(l);
