@@ -276,8 +276,10 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 	
 	public Vector<ClientConn> getConnections(int[] lines) {
 		Vector<ClientConn> out = new Vector<ClientConn>();
-		for(int l : lines) {
-			out.addElement(connections.getClientConn((Long) machines.getValueAt(l, 7)));
+		if(lines.length > 0) {
+			for(int l : lines) {
+				out.addElement(connections.getClientConn((Long) machines.getValueAt(l, 7)));
+			}
 		}
 		return out;
 	}

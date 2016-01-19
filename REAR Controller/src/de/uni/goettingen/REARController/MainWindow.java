@@ -47,8 +47,8 @@ import javax.swing.SwingConstants;
 public class MainWindow implements ActionListener {
 	public  static final String PROGRAM_NAME	= "REAR Controller";
 	private static final int	MajorVersion 	= 0;
-	private static final int	MedVersion		= 9;
-	private static final int	MinorVersion	= 0;
+	private static final int	MedVersion		= 2;
+	private static final int	MinorVersion	= 4;
 	
 	private JFrame frmREAR;
 
@@ -238,6 +238,7 @@ public class MainWindow implements ActionListener {
 		btnDeleteRow.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/32/stop.png")));
 		btnDeleteRow.setHorizontalTextPosition(SwingConstants.CENTER);
 		btnDeleteRow.setVerticalTextPosition(SwingConstants.BOTTOM);
+		btnDeleteRow.setVisible(false);
 		toolBarMain.add(btnDeleteRow);
 
 		Component horizontalStrut_8 = Box.createHorizontalStrut(10);
@@ -268,6 +269,7 @@ public class MainWindow implements ActionListener {
 		btnSendManualSignals.setHorizontalTextPosition(SwingConstants.CENTER);
 		btnSendManualSignals.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/32/gear.png")));
 		btnSendManualSignals.setVerticalTextPosition(SwingConstants.BOTTOM);
+		btnSendManualSignals.addActionListener(listener);
 		if(!prop.getDebugMode())
 			btnSendManualSignals.setVisible(false);
 		else
@@ -376,6 +378,7 @@ public class MainWindow implements ActionListener {
 			panelProgress.setVisible(true);
 			btnEditMode.setEnabled(true);
 			btnExamMode.setEnabled(false);
+			btnDeleteRow.setEnabled(false);
 			btnNextStep.setEnabled(true);
 			mainLayout.setComponentConstraints(table, "cell 1 1,grow");
 			table.setEditMode(editMode);
@@ -385,6 +388,7 @@ public class MainWindow implements ActionListener {
 			panelProgress.setVisible(false);
 			btnEditMode.setEnabled(false);
 			btnExamMode.setEnabled(true);
+			btnDeleteRow.setEnabled(true);
 			btnNextStep.setEnabled(false);
 			mainLayout.setComponentConstraints(table, "cell 1 1 1 2,grow");
 			table.setEditMode(editMode);
@@ -575,6 +579,10 @@ public class MainWindow implements ActionListener {
 				prop.setUploadServer(sd.getServer());
 				prop.setUploadUser(sd.getUser());
 				prop.setDebugMode(sd.getDebug());
+				if(sd.getDebug())
+					btnSendManualSignals.setVisible(true);
+				else
+					btnSendManualSignals.setVisible(false);
 				sd.setVisible(false);
 			}
 			else if(cmd.equals("Settings_Cancel")) {
