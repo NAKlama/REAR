@@ -84,10 +84,15 @@ public class PropertiesStore {
 		save();
 	}
 	
-//	public void setTmpDir(String dir) {
-//		prop.setProperty("tmpDir", dir);
-//		save();
-//	}
+	public void setDebugMode(Boolean dMode) {
+		String modeStr = new String();
+		if(dMode)
+			modeStr = "true";
+		else
+			modeStr = "false";
+		prop.setProperty("debugMode", modeStr);
+		save();
+	}
 	
 	public String getUploadServer() {
 		return prop.getProperty("serverAddr");
@@ -97,7 +102,10 @@ public class PropertiesStore {
 		return prop.getProperty("serverUser");
 	}
 	
-//	public File getTmpDir() {
-//		return new File(prop.getProperty("tmpDir"));
-//	}
+	public Boolean getDebugMode() {
+		String modeStr = prop.getProperty("debugMode");
+		if(modeStr.equals("true"))
+			return true;
+		return false;
+	}
 }
