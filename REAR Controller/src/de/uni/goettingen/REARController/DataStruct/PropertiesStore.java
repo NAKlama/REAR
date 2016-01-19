@@ -14,8 +14,8 @@ import de.uni.goettingen.REARController.MainWindow;
 public class PropertiesStore {
 	private static final File 	PROP_FILE	= new File("REAR_Controller.conf");
 	
-//	private static final String	DEFAULT_UPLOAD_SERVER			= "134.76.187.188";
-	private static final String	DEFAULT_UPLOAD_SERVER			= "134.76.185.241";
+	private static final String	DEFAULT_UPLOAD_SERVER			= "134.76.187.188";
+//	private static final String	DEFAULT_UPLOAD_SERVER			= "134.76.185.241";
 	private static final String	DEFAULT_UPLOAD_USER				= "REAR";
 
 	Properties	prop;

@@ -16,13 +16,13 @@ import de.uni.goettingen.REARClient.Net.SSH.SSHkey;
 public class REARclient {
 	public static final boolean DEBUG					= false;
 	public static final boolean DEBUG_GUI				= false;
-	public static final String	DEFAULT_PATH			= "C:\\REAR\\audio\\";
-	public static final String	DEFAULT_FILE			= "C:\\REAR\\audio\\default.flac";
+	public static final String	DEFAULT_PATH			= "C:\\tmp\\audio\\";
+	public static final String	DEFAULT_FILE			= "C:\\tmp\\audio\\default.flac";
 	
 	private static final int	TCP_PORT				= 15000;	
 	public  static final int	DATA_PORT				= 28947;
-	public  static final String	UPLOAD_SERVER			= "134.76.185.241";
-//	public  static final String	UPLOAD_SERVER			= "134.76.187.188";
+//	public  static final String	UPLOAD_SERVER			= "134.76.185.241";
+	public  static final String	UPLOAD_SERVER			= "134.76.187.188";
 //	public  statuc final String	UPLOAD_SERVER			= "192.168.246.132";
 	public  static final String	UPLOAD_SERVER_USER		= "REAR";
 	
