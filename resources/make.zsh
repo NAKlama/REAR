@@ -1,5 +1,5 @@
 #!/usr/bin/zsh
-for i in 16 32 64
+for i in 16 32 50
 do 
 	mkdir -p icons/${i}/gray
 	for f in icons/svg/*

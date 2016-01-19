@@ -4,11 +4,6 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.Date;
 
 import javax.swing.Box;
@@ -18,13 +13,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.Timer;
-import javax.swing.UIManager;
 
-import org.apache.batik.transcoder.TranscoderException;
-import org.apache.batik.transcoder.TranscoderInput;
-import org.apache.batik.transcoder.image.ImageTranscoder;
-
-import de.codecentric.centerdevice.javafxsvg.BufferedImageTranscoder;
 import de.uni.goettingen.REARClient.REARclient;
 import de.uni.goettingen.REARClient.SignalObject;
 import de.uni.goettingen.REARClient.Audio.MicrophoneLine;
@@ -65,10 +54,10 @@ public class StatusWindow extends JFrame {
 //		micStreamLevel		= new AudioLevel(ml.getLine());
 		h = m = s 			= 0;
 		mode 				= 0;
-		stoppedIcon 		= new ImageIcon(createImageFromSVG(getClass().getResourceAsStream("/images/stopped.svg"), 50, 50));
-		recIcon 			= new ImageIcon(createImageFromSVG(getClass().getResourceAsStream("/images/rec.svg"), 50, 50));
-		uploadIcon 			= new ImageIcon(createImageFromSVG(getClass().getResourceAsStream("/images/upload.svg"), 50, 50));
-		okIcon 				= new ImageIcon(createImageFromSVG(getClass().getResourceAsStream("/images/OK.svg"), 50, 50));
+		stoppedIcon 		= new ImageIcon(StatusWindow.class.getResource("/icons/50/stopped.png"));
+		recIcon 			= new ImageIcon(StatusWindow.class.getResource("/icons/32/rec.png"));
+		uploadIcon 			= new ImageIcon(StatusWindow.class.getResource("/icons/32/upload.png"));
+		okIcon 				= new ImageIcon(StatusWindow.class.getResource("/icons/32/OK.png"));
 
 		win 				= this.getContentPane();
 		iconPanel			= new JPanel();
@@ -221,22 +210,22 @@ public class StatusWindow extends JFrame {
 		return true;
 	}
 
-	private BufferedImage createImageFromSVG(InputStream svgStream, int w, int h) {
-		Reader reader = new BufferedReader(new InputStreamReader(svgStream));
-		TranscoderInput svgImage = new TranscoderInput(reader);
-
-		BufferedImageTranscoder transcoder = new BufferedImageTranscoder();
-		transcoder.addTranscodingHint(ImageTranscoder.KEY_WIDTH, (float) w);
-		transcoder.addTranscodingHint(ImageTranscoder.KEY_HEIGHT, (float) h);
-		transcoder.addTranscodingHint(ImageTranscoder.KEY_BACKGROUND_COLOR, UIManager.getColor("Panel.background"));
-		try {
-			transcoder.transcode(svgImage, null);
-		} catch (TranscoderException e) {
-			e.printStackTrace();
-		}
-
-		return transcoder.getBufferedImage();
-	}
+//	private BufferedImage createImageFromSVG(InputStream svgStream, int w, int h) {
+//		Reader reader = new BufferedReader(new InputStreamReader(svgStream));
+//		TranscoderInput svgImage = new TranscoderInput(reader);
+//
+//		BufferedImageTranscoder transcoder = new BufferedImageTranscoder();
+//		transcoder.addTranscodingHint(ImageTranscoder.KEY_WIDTH, (float) w);
+//		transcoder.addTranscodingHint(ImageTranscoder.KEY_HEIGHT, (float) h);
+//		transcoder.addTranscodingHint(ImageTranscoder.KEY_BACKGROUND_COLOR, UIManager.getColor("Panel.background"));
+//		try {
+//			transcoder.transcode(svgImage, null);
+//		} catch (TranscoderException e) {
+//			e.printStackTrace();
+//		}
+//
+//		return transcoder.getBufferedImage();
+//	}
 
 	public void setExamID(String id) {
 		setTitle("REAR - " + id);
