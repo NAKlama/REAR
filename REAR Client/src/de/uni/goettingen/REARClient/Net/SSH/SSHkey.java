@@ -6,10 +6,12 @@ import java.io.FileInputStream;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.KeyPair;
 
+import de.uni.goettingen.REARClient.REARclient;
+
 public class SSHkey {
 	private static final int 	key_size	= 1024;
 	private static final int	type		= KeyPair.RSA;
-	private static final String	path		= "C:\\tmp\\ssh";
+	private static final String	path		= REARclient.DEFAULT_PATH + "ssh";
 	private static final String	filename	= "id_rsa";
 	private File privKey;
 	private File pubKey;

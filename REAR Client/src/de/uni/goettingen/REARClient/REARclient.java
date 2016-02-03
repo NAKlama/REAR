@@ -16,8 +16,8 @@ import de.uni.goettingen.REARClient.Net.SSH.SSHkey;
 public class REARclient {
 	public static final boolean DEBUG					= false;
 	public static final boolean DEBUG_GUI				= false;
-	public static final String	DEFAULT_PATH			= "D:\\REAR\\audio\\";
-	public static final String	DEFAULT_FILE			= "D:\\REAR\\audio\\default.flac";
+	public static final String	DEFAULT_PATH			= "C:\\Users\\ilias\\REAR\\";
+	public static final String	DEFAULT_FILE			= "C:\\Users\\ilias\\REAR\\default.flac";
 	
 	private static final int	TCP_PORT				= 15000;	
 	public  static final int	DATA_PORT				= 28947;
