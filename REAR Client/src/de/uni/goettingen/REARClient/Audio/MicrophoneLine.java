@@ -11,13 +11,16 @@ public class MicrophoneLine {
 	private static final int	BITWIDTH		= 16;
 	private static final int	CHANNELS		= 1;
 	
-	private TargetDataLine tDataLine;
+	private TargetDataLine	tDataLine;
+	private Boolean			lineOpen;
 	
 	public MicrophoneLine() {
+		lineOpen = false;
 		open();
 	}
 	
 	public void open() {
+		lineOpen = true;
 		AudioFormat	audioFormat = new AudioFormat(
 				AudioFormat.Encoding.PCM_SIGNED, 
 				SAMPLERATE,
@@ -37,10 +40,15 @@ public class MicrophoneLine {
 		}
 		catch (LineUnavailableException e)
 		{
+			lineOpen = false;
 			System.out.println("Unable to get a recording line");
 			e.printStackTrace();
 			System.exit(1);
 		}
+	}
+	
+	public Boolean isOpen() {
+		return lineOpen;
 	}
 	
 	public TargetDataLine getLine() {
