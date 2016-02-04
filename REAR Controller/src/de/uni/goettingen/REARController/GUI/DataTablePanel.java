@@ -238,8 +238,10 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 		MachinesTable tm = this.getTableModel();
 		SerMachinesTable ser = tm.getSaveObject();
 		mainTable.update(ser);
-		connections.update(mainTable);
-		updateConn();
+		if(!editMode) {
+			connections.update(mainTable);
+			updateConn();
+		}
 	}
 
 	private void updateConn() {
