@@ -45,8 +45,11 @@ public class TreePanel extends JPanel implements TreeSelectionListener {
 	private Component horizontalGlue_1;
 	
 	private Vector<TreeChangeListener> treeChangeListeners;
+	
+	private Boolean exam_mode;
 
 	public TreePanel() {
+		exam_mode = false;
 		table = null;
 		treeChangeListeners = new Vector<TreeChangeListener>();
 		setMinimumSize(new Dimension(100, 200));
@@ -165,6 +168,10 @@ public class TreePanel extends JPanel implements TreeSelectionListener {
 	        getTreeText(out, model, model.getChild(object, i), indent + "  ");
 	    }
 	}
+	
+	public void setExamMode(Boolean em) {
+		exam_mode = em;
+	}
 
 	@Override
 	public void valueChanged(TreeSelectionEvent e) {
@@ -178,7 +185,7 @@ public class TreePanel extends JPanel implements TreeSelectionListener {
 		selectedArea		= node;
 		selectedAreaParent	= parent;
 		
-		if(table != null)
+		if(table != null && !exam_mode)
 			table.setFilter(selectedArea);
 	}
 
