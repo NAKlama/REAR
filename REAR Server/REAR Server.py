@@ -105,8 +105,7 @@ class ClientThread(socketserver.BaseRequestHandler):
       dateStr  = today.strftime("%Y%m%d")
       mkDir(STORE_DIR, mode=0o775)
       mkDir(path.join(STORE_DIR, dateStr), mode=0o775)
-      mkDir(path.join(STORE_DIR, dateStr, examID), mode=0o775)
-      outFile  = path.join(STORE_DIR, dateStr, examID, filename + ".flac")
+      outFile  = path.join(STORE_DIR, dateStr, examID + "_" + filename + ".flac")
       # outFile  = path.join(STORE_DIR, dateStr, examID, filename + ".wav")
       print("Writing to file {}".format(outFile))
       c.storeAll(outFile)
@@ -118,13 +117,13 @@ class ClientThread(socketserver.BaseRequestHandler):
       mkDir(path.join(ENCODE_DIR, dateStr, examID), mode=0o775)
       title  = "S: " + filename
       artist = "E: " + examID
-      mp3File  = path.join(ENCODE_DIR, dateStr, examID, filename + ".mp3")
+      mp3File  = path.join(ENCODE_DIR, dateStr, examID + "_" + filename + ".mp3")
       command  = "flac -s -d -c \""
       command += outFile
       brSwitch = "--cbr "
       if LAME_ABR:
         brSwitch = "--abr "
-      command += "\" | lame -m " +LAME_MODE+ " --replaygain-accurate -S " + brSwitch + LAME_BITRATEE
+      command += "\" | lame -m " +LAME_MODE+ " --replaygain-accurate -S " + brSwitch + str(LAME_BITRATE)
       # command  = "lame -m m --replaygain-accurate -S --abr 64"
       command += " --tt \"" + title + "\""
       command += " --ta \"" + artist + "\""
