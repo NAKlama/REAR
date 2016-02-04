@@ -10,7 +10,7 @@ import java.util.Properties;
 public class PropertiesStore {
 	public static final String	DEFAULT_PASSPHRASE	= "B2WX1bXaxSJ4g4E8N6zULPXBOjdFXb5fZhh0BjFx7mhUgpzig5Pi5HKEhTF1a1tC";
 	public static final String	CONFIG_FILENAME		= "REARclient.conf";
-	public static final String	DEFAULT_PATH		= "C:\\tmp\\";
+	public static final String	DEFAULT_PATH		= "C:\\Users\\ilias\\REAR\\";
 	
 	public static final String	DEFAULT_CONF_PATH	= DEFAULT_PATH + CONFIG_FILENAME;
 	public static final String	DEFAULT_AUDIO_PATH	= DEFAULT_PATH + "audio\\";
@@ -18,8 +18,8 @@ public class PropertiesStore {
 	
 	private static final int	DEFAULT_TCP_PORT			= 15000;	
 	public  static final int	DEFAULT_DATA_PORT			= 28947;
-//	public  static final String	DEFAULT_UPLOAD_SERVER		= "134.76.185.241";
-	public  static final String	DEFAULT_UPLOAD_SERVER		= "134.76.187.188";
+	public  static final String	DEFAULT_UPLOAD_SERVER		= "134.76.185.241";
+//	public  static final String	DEFAULT_UPLOAD_SERVER		= "134.76.187.188";
 //	public  static final String	DEFAULT_UPLOAD_SERVER		= "192.168.246.132";
 	public  static final String	DEFAULT_UPLOAD_SERVER_USER	= "REAR";
 	
