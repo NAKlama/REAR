@@ -324,6 +324,8 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 				else
 					this.setForeground(Color.RED);
 				this.setText(a.getIPstr());
+			} else {
+				this.setText("None");
 			}
 			return this;
 		}
@@ -336,8 +338,10 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 
 			if(value != null) { // Area
 				Area a = (Area) ((AreaTreeNode) value).getUserObject();
-				this.setText(a.getName() + "(" + a.getID() + ")");
+				this.setText(a.getName());  // + "(" + a.getID() + ")");
 				this.setForeground(a.getColor());
+			} else {
+				this.setText("None");
 			}
 			return this;
 		}
