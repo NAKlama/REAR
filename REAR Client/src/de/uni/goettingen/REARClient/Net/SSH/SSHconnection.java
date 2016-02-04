@@ -5,6 +5,8 @@ import java.util.Properties;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
 
+import de.uni.goettingen.REARClient.PropertiesStore;
+
 public class SSHconnection {
 	private String		host;
 	private String		user;
@@ -13,17 +15,17 @@ public class SSHconnection {
 	private Session 	ssh;
 	private int			dataPort;
 	
-	public SSHconnection(String h, String u, SSHkey k, int dPort) {
+	public SSHconnection(String h, String u, SSHkey k, PropertiesStore prop) {
 		host		= h;
 		user		= u;
-		dataPort	= dPort;
+		dataPort	= prop.getDataPort();
 		
 		jsch = new JSch();
 		key  = k;
 		try {
 			Properties config = new Properties();
 			config.put("StrictHostKeyChecking", "no");
-			jsch.addIdentity(key.getPrivKey().getAbsolutePath(), SSHkey.PASSPHRASE);
+			jsch.addIdentity(key.getPrivKey().getAbsolutePath(), prop.getSSHPassphrase());
 			System.out.println("Creating SSH session to "+user+"@"+host);
 			ssh = jsch.getSession(user, host);
 			ssh.setConfig(config);

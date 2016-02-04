@@ -22,8 +22,9 @@ public class SignalObject {
 	private SSHconnection	ssh;
 	private String			uploadServer;
 	private String			uploadUser;
+	private PropertiesStore	prop;
 
-	public SignalObject(StatusWindow w, MicrophoneLine ml, SSHkey ssh) {
+	public SignalObject(StatusWindow w, MicrophoneLine ml, SSHkey ssh, PropertiesStore ps) {
 		shutdownServer	= false;
 		win				= w;
 		micLine			= ml;
@@ -33,8 +34,9 @@ public class SignalObject {
 		ssh				= null;
 		studentID		= "";
 		examID			= "";
-		uploadServer	= REARclient.UPLOAD_SERVER;
-		uploadUser		= REARclient.UPLOAD_SERVER_USER;
+		prop			= ps;
+		uploadServer	= prop.getUploadServer();
+		uploadUser		= prop.getUploadServerUser();
 	}
 
 	public void setUploadServer(String uls) {
@@ -86,8 +88,8 @@ public class SignalObject {
 	}
 
 	public void initClient() {
-		ssh				= new SSHconnection(uploadServer, uploadUser, sshKey, REARclient.DATA_PORT);
-		dataC			= new DataConnection("127.0.0.1", REARclient.DATA_PORT, ssh);
+		ssh				= new SSHconnection(uploadServer, uploadUser, sshKey, prop);
+		dataC			= new DataConnection("127.0.0.1", prop.getDataPort(), ssh);
 		dataC.addSignal(this);
 		win.init();
 	}
@@ -100,18 +102,18 @@ public class SignalObject {
 
 		String path;
 		if(win.getExamID() != null && ! win.getExamID().equals("")) {
-			path = REARclient.DEFAULT_PATH + win.getExamID().replaceAll("[/\"\'|\\\\:\\*\\?<>]", "-") + "\\";
+			path = prop.getAudioPath() + win.getExamID().replaceAll("[/\"\'|\\\\:\\*\\?<>]", "-") + "\\";
 			File p = new File(path);
 			p.mkdirs();
 		}
 		else 
-			path = REARclient.DEFAULT_PATH;
+			path = prop.getAudioPath();
 		System.out.println(path);
 		System.out.println(win.getExamID());
 		if(win.getID() != null && ! win.getID().equals(""))
-			outFile				= new File(path + win.getID().replaceAll("[/\"\'|\\\\:\\*\\?<>]", "-") + ".flac");
+			outFile			= new File(path + win.getID().replaceAll("[/\"\'|\\\\:\\*\\?<>]", "-") + ".flac");
 		else
-			outFile				= new File(REARclient.DEFAULT_FILE);
+			outFile			= new File(prop.getDefaultAudioFile());
 		rec					= new Recorder(micLine, outFile);
 		Thread recThread	= new Thread(rec);
 		recThread.start();
