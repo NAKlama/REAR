@@ -165,7 +165,6 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 		addListener();
 		machines.addBlankLine();
 		initTable(machines);
-
 	}
 
 	private void populateNodeList(Vector<AreaTreeNode> l, AreaTreeNode n) {
@@ -173,6 +172,10 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 			l.addElement((AreaTreeNode) n);
 			for(int i=0; i < n.getChildCount(); i++)
 				populateNodeList(l, (AreaTreeNode) n.getChildAt(i));
+		} else {
+			l.addElement(tree.getRoot());
+			for(int i=0; i < tree.getRoot().getChildCount(); i++)
+				populateNodeList(l, (AreaTreeNode) tree.getRoot().getChildAt(i));
 		}
 	}
 

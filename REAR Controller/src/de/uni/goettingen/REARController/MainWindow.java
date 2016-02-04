@@ -382,6 +382,8 @@ public class MainWindow implements ActionListener {
 			btnNextStep.setEnabled(true);
 			mainLayout.setComponentConstraints(table, "cell 1 1,grow");
 			table.setEditMode(editMode);
+			panelTree.setExamMode(true);
+			table.setFilter(null);
 		}
 		else {
 			editMode = true;
@@ -392,6 +394,7 @@ public class MainWindow implements ActionListener {
 			btnNextStep.setEnabled(false);
 			mainLayout.setComponentConstraints(table, "cell 1 1 1 2,grow");
 			table.setEditMode(editMode);
+			panelTree.setExamMode(false);
 		}
 		table.setEditMode(editMode);
 	}
