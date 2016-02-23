@@ -102,7 +102,15 @@ public class ServerThread implements Runnable {
 				
 				else if(message[0].equals("UPLOADUSER"))
 					uploadUser(message);
+				else if(message[0].equals("MICSTATUS")) {
+					if(signal.getMicStatus())
+						out.writeBytes("True\n");
+					else
+						out.writeBytes("False\n");
+				}
 				
+				else if(message[0].equals("MICRETRY"))
+					signal.checkMicrophone();
 				
 			}
 		} catch(NullPointerException e) {

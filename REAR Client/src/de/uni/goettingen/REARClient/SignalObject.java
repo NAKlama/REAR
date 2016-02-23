@@ -81,10 +81,19 @@ public class SignalObject {
 	public String getTime() {
 		return win.getTime();
 	}
+	
+	public Boolean getMicStatus() {
+		return micLine.isOpen();
+	}
 
 	public void setID(String id) {
 		win.setID(id);
 		studentID = id;
+	}
+	
+	public void checkMicrophone() {
+		if(!micLine.isOpen())
+			micLine.open();
 	}
 
 	public void initClient() {
@@ -99,7 +108,6 @@ public class SignalObject {
 	}
 
 	public void startRecording() {
-
 		String path;
 		if(win.getExamID() != null && ! win.getExamID().equals("")) {
 			path = prop.getAudioPath() + win.getExamID().replaceAll("[/\"\'|\\\\:\\*\\?<>]", "-") + "\\";
