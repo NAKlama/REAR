@@ -11,7 +11,7 @@ import java.util.Date;
 
 import de.uni.goettingen.REARController.DataStruct.ClientStatus;
 
-public class ClientConn {
+public class ClientConn implements Runnable {
 	private Boolean				connect;
 	private IPreachable			ip;
 	private Socket				sock;
@@ -20,13 +20,19 @@ public class ClientConn {
 	private AuthToken			token;
 	private String				salt;
 	private Date				connectCheckTime;
+	private NetConnSignal		sig;
+	
+	private Boolean				loop = true;
 
-	public ClientConn(IPreachable i) {
+	public ClientConn(NetConnSignal s) {
 		connectCheckTime = null;
 		connect = false;
-		ip = i;
+		sig = s;
+		ip  = sig.getIPR();
 		token = new AuthToken();
-		checkConnection();
+		if(this.checkConnection()) {
+			sig.setPubKey(this.getPubKey());
+		}
 	}
 
 	private Boolean checkConnection() {
@@ -100,22 +106,37 @@ public class ClientConn {
 			return getReply("ID\n").trim();
 		return null;
 	}
+	
+
+	public String getExamID() {
+		if(checkConnection())
+			return getReply("EXAMID\n").trim();
+		return null;
+	}
+
 
 	public boolean setID(String id) {
 		if(checkConnection()) {
 			String sendID = id.replaceAll("\\s", "_");
-			String reply = getReply("ID " + sendID + "\n").trim();
-			if(reply.equals("OK"))
-				return true;
+			String replyID = "";
+			while(!replyID.equals(id)) {
+				String reply = getReply("ID " + sendID + "\n").trim();
+				if(reply.equals("OK")) {
+					replyID = this.getID();
+				}
+			}
 		}
 		return false;
 	}
 
 	public boolean setExamID(String eID) {
 		if(checkConnection()) {
-			String reply = getReply("EXAMID " + eID + "\n").trim();
-			if(reply.equals("OK"))
-				return true;
+			String replyID = "";
+			while(!replyID.equals(eID)) {
+				String reply = getReply("EXAMID " + eID + "\n").trim();
+				if(reply.equals("OK"))
+					replyID = this.getExamID();
+			}
 		}
 		return false;		
 	}
@@ -216,5 +237,42 @@ public class ClientConn {
 			e.printStackTrace();
 		}
 		return false;
+	}
+
+	@Override
+	public void run() {
+		while(loop) {
+			try {
+				sig.wait(1000);
+			} catch (InterruptedException e) {
+			}
+			if(this.isReachable()) {
+				sig.setConnected(true);
+				if(sig.hasCommands()) {
+					if(sig.popCommand().equals("ID"))
+						setID(sig.getID());
+					if(sig.popCommand().equals("EID"))
+						setExamID(sig.getExamID());
+					if(sig.popCommand().equals("SetServer")) {
+						String[] server = sig.getServer();
+						this.setServer(server[0], server[1]);
+					}
+					if(sig.popCommand().equals("init"))
+						this.init();
+					if(sig.popCommand().equals("rec"));
+						this.rec();
+					if(sig.popCommand().equals("stop"));
+						this.stop();
+					if(sig.popCommand().equals("reset"));
+						this.reset();
+					if(sig.popCommand().equals("STOP_THREAD"))
+						loop = false;
+				}
+				sig.setStatus(this.status());
+				sig.setTime(this.getTime());
+			} else {
+				sig.setConnected(false);
+			}
+		}
 	}
 }

@@ -16,7 +16,7 @@ import de.uni.goettingen.REARController.DataStruct.Serializable.SerMachinesTable
 public class NetConnections {
 	private Vector<Long>							clientIDs;
 	private ConcurrentHashMap<Long, IPreachable>	ipMap;
-	private ConcurrentHashMap<Long, ClientConn> 	connMap;
+	private ConcurrentHashMap<Long, NetConnSignal>	connMap;
 	private ConcurrentHashMap<Long, String> 		recTimeMap;
 	private ConcurrentHashMap<Long, ClientStatus>	statusMap;
 	private ConcurrentHashMap<Long, String>			clientSSHkeys;
@@ -25,7 +25,7 @@ public class NetConnections {
 
 	public NetConnections() {
 		clientIDs		= new Vector<Long>();
-		connMap			= new ConcurrentHashMap<Long, ClientConn>();
+		connMap			= new ConcurrentHashMap<Long, NetConnSignal>();
 		ipMap			= new ConcurrentHashMap<Long, IPreachable>();
 		recTimeMap		= new ConcurrentHashMap<Long, String>();
 		statusMap		= new ConcurrentHashMap<Long, ClientStatus>();
@@ -43,15 +43,15 @@ public class NetConnections {
 				if(ip != null && !(clientIDs.contains(id) && ipMap.containsKey(id) && ip.equals(ipMap.get(id).getAddress()))) {
 					if(!clientIDs.contains(id)) 
 						clientIDs.add(id);
-					ClientConn	c = connMap.get(id);
+					NetConnSignal c = connMap.get(id);
 					if(c == null || !connMap.get(id).isReachable()) {
-						c = new ClientConn(ipr);
+						c = new NetConnSignal(ipr);
 						connMap.put(id, c);
 					}
 					if(c.isReachable()) {
 						ipr.setReachable(true);
 						ipMap.put(id, ipr);
-						clientSSHkeys.put(id, c.getSSHkey());
+						clientSSHkeys.put(id, c.getPubKey());
 					}
 				}
 			}
@@ -71,10 +71,12 @@ public class NetConnections {
 		for(long id : clientIDs) {
 			if(ids.containsKey(id)) {
 //				System.out.println(id);
-				ClientConn c = connMap.get(id);
+				NetConnSignal c = connMap.get(id);
 				boolean idSet = false;
 				for(int i = 0; i < 5 && !idSet; i++) {
-					idSet = c.setID(ids.get(id));
+					c.setID(ids.get(id));
+					if(c.getID() == ids.get(id))
+						idSet = true;
 				}
 				if(idSet) {
 					c.init();
@@ -133,7 +135,7 @@ public class NetConnections {
 	public void clearData() {
 		clientIDs	= new Vector<Long>();
 		ipMap		= new ConcurrentHashMap<Long, IPreachable>();
-		connMap		= new ConcurrentHashMap<Long, ClientConn>();
+		connMap		= new ConcurrentHashMap<Long, NetConnSignal>();
 		recTimeMap	= new ConcurrentHashMap<Long, String>();
 		statusMap	= new ConcurrentHashMap<Long, ClientStatus>();
 	}
@@ -156,7 +158,7 @@ public class NetConnections {
 		if(! clientIDs.contains(id))
 			clientIDs.add(id);
 		IPreachable ipr = new IPreachable(ip);
-		ClientConn c = new ClientConn(ipr);
+		NetConnSignal c = new NetConnSignal(ipr);
 		connMap.put(id, c);
 		ipMap.put(id, ipr);
 	}
@@ -187,8 +189,8 @@ public class NetConnections {
 		ClientStatus out = new ClientStatus();
 		for(long id : clientIDs) {
 			if(connMap.containsKey(id)) {
-				ClientConn		conn	= connMap.get(id);
-				ClientStatus 	status	= conn.status();
+				NetConnSignal	conn	= connMap.get(id);
+				ClientStatus 	status	= conn.getStatus();
 				statusMap.put(id, status);
 				out.or(status);
 				String			recTime = conn.getTime();
@@ -214,7 +216,7 @@ public class NetConnections {
 		}
 	}
 	
-	public ClientConn getClientConn(long id) {
+	public NetConnSignal getClientConn(long id) {
 		if(connMap.containsKey(id))
 			return connMap.get(id);
 		return null;
