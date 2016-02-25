@@ -30,108 +30,107 @@ public class NetConnSignal {
 		server		= new String[2];
 		commands	= new Stack<String>();
 		conThread	= new Thread(new ClientConn(this));
+		conThread.start();
 	}
 	
-	public String popCommand() {
-		synchronized(this) {
-			if(!commands.empty()) {
-				return commands.pop();
-			}
-			return null;
+	public synchronized String popCommand() {
+		if(!commands.empty()) {
+			return commands.pop();
 		}
+		return null;
 	}
 	
-	public IPreachable getIPR() {
+	public synchronized IPreachable getIPR() {
 		return ipr;
 	}
 	
-	public Boolean hasCommands() {
+	public synchronized Boolean hasCommands() {
 		return ! commands.empty();
 	}
 	
-	public void setStatus(ClientStatus s) {
+	public synchronized void setStatus(ClientStatus s) {
 		status = s;
 	}
 	
-	public ClientStatus getStatus() {
+	public synchronized ClientStatus getStatus() {
 		return status;
 	}
 	
-	public void setPubKey(String pk) {
+	public synchronized void setPubKey(String pk) {
 		pubKey = pk;
 	}
 	
-	public String getPubKey() {
+	public synchronized String getPubKey() {
 		return pubKey;
 	}
 	
-	public InetAddress getIP() {
+	public synchronized InetAddress getIP() {
 		return ipr.getAddress();
 	}
 	
-	public String getID() {
+	public synchronized String getID() {
 		return id;
 	}
 	
-	public void setID(String i) {
+	public synchronized void setID(String i) {
 		id = i;
 		commands.push("ID");
 		this.notifyAll();
 	}
 	
-	public String getExamID() {
+	public synchronized String getExamID() {
 		return eid;
 	}
 	
-	public void setExamID(String i) {
+	public synchronized void setExamID(String i) {
 		eid = i;
 		commands.push("EID");
 		this.notifyAll();
 	}
 	
-	public Boolean getConnected() {
+	public synchronized Boolean getConnected() {
 		return connected;
 	}
 	
-	public Boolean isReachable() {
+	public synchronized Boolean isReachable() {
 		return connected;
 	}
 	
-	public void setConnected(Boolean c) {
+	public synchronized void setConnected(Boolean c) {
 		connected = c;
 	}
 	
-	public void setServer(String s, String u) {
+	public synchronized void setServer(String s, String u) {
 		server[0] = s;
 		server[1] = u;
 		commands.push("SetServer");
 	}
 	
-	public String[] getServer() {	
+	public synchronized String[] getServer() {	
 		return server;
 	}
 	
-	public void setTime(String t) {
+	public synchronized void setTime(String t) {
 		recTime = t;
 	}
 	
-	public String getTime() {
+	public synchronized String getTime() {
 		return recTime;
 	}
 	
-	public void init() {
+	public synchronized void init() {
 		commands.push("init");
 	}
 	
-	public void rec() {
+	public synchronized void rec() {
 		commands.push("rec");
 	}
 	
-	public void stop() {
+	public synchronized void stop() {
 		commands.push("stop");
 	}
 	
-	public void reset() {
+	public synchronized void reset() {
 		commands.push("reset");
 	}
 }
