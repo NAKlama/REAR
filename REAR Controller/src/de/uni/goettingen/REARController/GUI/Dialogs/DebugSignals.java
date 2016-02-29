@@ -11,7 +11,7 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import de.uni.goettingen.REARController.Net.ClientConn;
+import de.uni.goettingen.REARController.Net.NetConnSignal;
 import net.miginfocom.swing.MigLayout;
 import javax.swing.JRadioButton;
 
@@ -20,7 +20,7 @@ public class DebugSignals extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
 
-	private Vector<ClientConn> connList;
+	private Vector<NetConnSignal> connList;
 	
 	private JRadioButton rdbtnInitialize;
 	private JRadioButton rdbtnStartExam;
@@ -32,9 +32,9 @@ public class DebugSignals extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public DebugSignals(Vector<ClientConn> cList) {
+	public DebugSignals(Vector<NetConnSignal> vector) {
 		setTitle("Send Signals Manually");
-		connList = cList;
+		connList = vector;
 		setBounds(100, 100, 189, 209);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -75,7 +75,7 @@ public class DebugSignals extends JDialog {
 	}
 
 	public void sendSignals() {
-		for(ClientConn c : connList) {
+		for(NetConnSignal c : connList) {
 			if(rdbtnInitialize.isSelected())
 				c.init();
 			else if(rdbtnStartExam.isSelected())

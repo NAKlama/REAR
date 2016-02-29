@@ -11,7 +11,6 @@ public class NetConnSignal {
 	private IPreachable		ipr;
 	private Boolean			connected;
 	
-	@SuppressWarnings("unused")
 	private Thread			conThread;
 	
 	private Stack<String>	commands;
