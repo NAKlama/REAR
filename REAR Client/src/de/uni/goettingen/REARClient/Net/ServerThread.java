@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.Arrays;
+import java.util.List;
 
 import de.uni.goettingen.REARClient.REARclient;
 import de.uni.goettingen.REARClient.SignalObject;
@@ -111,7 +113,8 @@ public class ServerThread implements Runnable {
 				
 				else if(message[0].equals("MICRETRY"))
 					signal.checkMicrophone();
-				
+				else if(message[0].equals("PLAYFILE"))
+					fetchAudioFile(message);
 			}
 		} catch(NullPointerException e) {
 			; // Do nothing
@@ -124,100 +127,13 @@ public class ServerThread implements Runnable {
 		}
 	}
 
-	private void initialize(String[] message) throws IOException {
-		if(message.length > 1) {
-			synchronized(signal) {
-				if(signal.getMode() == 0) {
-					AuthToken token = new AuthToken();
-					if(token.isValid(message[1].trim(), message[0], remoteAddr)) {
-						signal.initClient();
-						out.writeBytes("OK\n");
-					}
-					else { // Token invalid
-						out.writeBytes("Token Error\n");
-					}
-				}
-				else { // Mode != 0 
-					out.writeBytes("Already initialized\n");
-				}
-			}
-		}
-		else {
-			out.writeBytes("Token Missing\n");
-		}
-	}
-
-	private void startRecording(String[] message) throws IOException {
-		if(message.length > 1) {
-			synchronized(signal) {
-				switch(signal.getMode()) {
-				case 0:
-					out.writeBytes("Not initialized\n");
-					break;
-				case 1:
-					AuthToken token = new AuthToken();
-					if(token.isValid(message[1].trim(), message[0], remoteAddr)) {
-						signal.startRecording();
-						out.writeBytes("OK\n");
-					}
-					else { // Token invalid
-						out.writeBytes("Token Error\n");
-					}
-					break;
-				case 2:
-					out.writeBytes("Already Recording\n");
-					break;
-				case 3:
-					out.writeBytes("Uploading Data\n");
-					break;
-				case 4:
-					out.writeBytes("Waiting for reset\n");
-					break;
-				}
-			}
-		}
-		else {
-			out.writeBytes("Token Missing\n");
-		}
-	}
-	
-	private void stopRecording(String[] message) throws IOException {
-		if(message.length > 1) {
-			synchronized(signal) {
-				switch(signal.getMode()) {
-				case 0:
-					out.writeBytes("Not initialized\n");
-					break;
-				case 1:
-					out.writeBytes("Not Recording\n");
-					break;
-				case 2:
-					AuthToken token = new AuthToken();
-					if(token.isValid(message[1].trim(), message[0], remoteAddr)) {
-						signal.stopRecording();
-						out.writeBytes("OK\n");
-					}
-					else { // Token invalid
-						out.writeBytes("Token Error\n");
-					}
-					break;
-				case 3:
-					out.writeBytes("Uploading Data\n");
-					break;
-				case 4:
-					out.writeBytes("Waiting for reset\n");
-					break;
-				}
-			}
-		}
-		else {
-			out.writeBytes("Token Missing\n");
-		}
-	}
-	
-	private void reset(String[] message) throws IOException {
-		if(message.length > 1) {
-			synchronized(signal) {
+	private Boolean tokenCheck(String token, String cmd, String salt, List<Integer> allowedModes) throws IOException {
+		if(allowedModes != null && allowedModes.size() > 0) {
+			Boolean found = false;
+			for(Integer mode : allowedModes) 
+				if(signal.getMode() == mode)
+					found = true;
+			if(!found) {
 				switch(signal.getMode()) {
 				case 0:
 					out.writeBytes("Not initialized\n");
@@ -232,21 +148,64 @@ public class ServerThread implements Runnable {
 					out.writeBytes("Uploading Data\n");
 					break;
 				case 4:
-					AuthToken token = new AuthToken();
-					if(token.isValid(message[1].trim(), message[0], remoteAddr)) {
-						signal.reset();
-						out.writeBytes("OK\n");
-					}
-					else { // Token invalid
-						out.writeBytes("Token Error\n");
-					}
+					out.writeBytes("Waiting for reset\n");
 					break;
+				}
+				out.writeBytes("Wrong Mode\n");
+				return false;
+			}
+		}
+		AuthToken tokenObj = new AuthToken();
+		if(tokenObj.isValid(token, cmd, salt)) {
+			out.writeBytes("OK\n");
+			return true;
+		}
+		else
+			out.writeBytes("Token Error\n");
+		return false;
+	}
+	
+	private void fetchAudioFile(String[] message) throws IOException {
+		if(message.length > 2) {
+			synchronized(signal) {
+				if(tokenCheck(message[2].trim(), message[0], remoteAddr, Arrays.asList(0))) {
+					signal.setAudioFileURL(message[1]);
+					signal.activatePlayAudio();
 				}
 			}
 		}
-		else {
-			out.writeBytes("Token Missing\n");
-		}
+	}
+	
+	private void initialize(String[] message) throws IOException {
+		if(message.length > 1) 
+			synchronized(signal) {
+				if(tokenCheck(message[1].trim(), message[0], remoteAddr, Arrays.asList(0))) 
+					signal.initClient();
+			}
+	}
+
+	private void startRecording(String[] message) throws IOException {
+		if(message.length > 1) 
+			synchronized(signal) {
+				if(tokenCheck(message[1].trim(), message[0], remoteAddr, Arrays.asList(1)))
+					signal.startRecording();
+			}
+	}
+	
+	private void stopRecording(String[] message) throws IOException {
+		if(message.length > 1) 
+			synchronized(signal) {
+				if(tokenCheck(message[1].trim(), message[0], remoteAddr, Arrays.asList(2)))
+					signal.stopRecording();
+			}
+	}
+	
+	private void reset(String[] message) throws IOException {
+		if(message.length > 1)
+			synchronized(signal) {
+				if(tokenCheck(message[1].trim(), message[0], remoteAddr, null))
+					signal.reset();
+			}
 	}
 	
 	private void setID(String[] message) throws IOException {
@@ -284,43 +243,21 @@ public class ServerThread implements Runnable {
 	}
 	
 	private void uploadServer(String[] message) throws IOException {
-		if(message.length > 1) {
+		if(message.length > 1) 
 			synchronized(signal) {
-				if(signal.getMode() == 0) {
-					AuthToken token = new AuthToken();
-					if(message.length > 2 && token.isValid(message[2].trim(), message[0], remoteAddr)) {
-						signal.setUploadServer(message[1]);
-						out.writeBytes("OK\n");
-					}
-					else
-						out.writeBytes("Token Error\n");
+				if(tokenCheck(message[2].trim(), message[0], remoteAddr, Arrays.asList(0)))
+					signal.setUploadServer(message[1]);
+						
 				}
-				else
-					out.writeBytes("Can only change upload server in uninitialized client\n");
-			}
-		}
-		else
-			out.writeBytes(signal.getUploadServer());
 	}
 	
 	private void uploadUser(String[] message) throws IOException {
-		if(message.length > 1) {
+		if(message.length > 1)
 			synchronized(signal) {
-				if(signal.getMode() == 0) {
-					AuthToken token = new AuthToken();
-					if(message.length > 2 && token.isValid(message[2].trim(), message[0], remoteAddr)) {
-						signal.setUploadUser(message[1]);
-						out.writeBytes("OK\n");
-					}
-					else
-						out.writeBytes("Token Error\n");
+				if(tokenCheck(message[2].trim(), message[0], remoteAddr, Arrays.asList(0)))
+					signal.setUploadUser(message[1]);
+						
 				}
-				else
-					out.writeBytes("Can only change upload user in uninitialized client\n");
-			}
-		}
-		else
-			out.writeBytes(signal.getUploadUser());
 	}
 	
 	private Boolean checkShutdownToken(String[] message) {

@@ -6,10 +6,12 @@ public class Player {
 	private Thread					t;
 	private PlayerThread			pt;
 	private Boolean					playing;
+	private Recorder				rec;
 
-	Player(File inFile) {
+	public Player(File inFile, Recorder recorder) {
 		playing	= false;
-		pt		= new PlayerThread(inFile, this);
+		rec		= recorder;
+		pt		= new PlayerThread(inFile, this, rec);
 		t		= new Thread(pt);
 		t.start();
 	}
@@ -20,5 +22,9 @@ public class Player {
 	
 	public synchronized Boolean getPlaying(Boolean p) {
 		return playing;
+	}
+	
+	public synchronized void stop() {
+		pt.stop();
 	}
 }

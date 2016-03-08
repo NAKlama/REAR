@@ -21,10 +21,14 @@ public class PlayerThread implements Runnable {
 	private AudioInputStream		inS;
 	private AudioInputStream		dinS;
 	private Player					player;
+	private Recorder				recorder;
+	private Boolean					stop;
 	
-	PlayerThread(File flacFile, Player p) {
+	PlayerThread(File flacFile, Player p, Recorder r) {
 		try {
+			stop			= false;
 			player			= p;
+			recorder		= r;
 			fileFormat 		= AudioSystem.getAudioFileFormat(flacFile);
 			audioFormat		= fileFormat.getFormat();
 //			type			= fileFormat.getType();
@@ -56,7 +60,7 @@ public class PlayerThread implements Runnable {
 			@SuppressWarnings("unused")
 			int nBytesWritten	= 0;
 			try {
-				while(nBytesRead != -1) {
+				while(nBytesRead != -1 && !stop) {
 
 					nBytesRead = dinS.read(data, 0, data.length);
 					if(nBytesRead != -1) {
@@ -87,6 +91,10 @@ public class PlayerThread implements Runnable {
 		return res;
 	}
 
+	public void stop() {
+		stop = true;
+	}
+	
 	@Override
 	public void run() {
 		player.setPlaying(true);
@@ -99,6 +107,7 @@ public class PlayerThread implements Runnable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		if(recorder != null)
+			recorder.stopRecording();
 	}
-
 }
