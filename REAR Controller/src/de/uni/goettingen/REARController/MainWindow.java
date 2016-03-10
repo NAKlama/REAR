@@ -561,10 +561,21 @@ public class MainWindow implements ActionListener {
 			else if(cmd.equals("SaveAsFile"))
 				saveAsFile();
 			else if(cmd.equals("ExamID_OK")) {
-				String examID = esd.getExamID();
+				@SuppressWarnings("unused")
+				Boolean	play, record;
+				String	examID, playFileURL;
+				play	= esd.getPlay();
+				record	= esd.getRecord();
+				examID	= esd.getExamID();
+				if(play)
+					playFileURL = esd.getPlayURL();
+				else
+					playFileURL = null;
 				esd.setVisible(false);
 				if(examID != null && ! examID.equals("")) {
 					table.setExamID(examID);
+					if(play)
+						table.setPlayFile(playFileURL);
 					table.setServer(prop.getUploadServer(), prop.getUploadUser());
 					btnNextStep.setIcon(iconRec);
 					btnNextStep.setEnabled(false);

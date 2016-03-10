@@ -132,6 +132,12 @@ public class NetConnections {
 		}
 	}
 	
+	public void setPlayFile(String URL) {
+		for(long id : clientIDs) {
+			connMap.get(id).setPlayFile(URL);
+		}
+	}
+	
 	public void clearData() {
 		clientIDs	= new Vector<Long>();
 		ipMap		= new ConcurrentHashMap<Long, IPreachable>();

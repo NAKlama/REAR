@@ -19,6 +19,7 @@ public class NetConnSignal {
 	private String			id;
 	private String			eid;
 	private String[]		server;
+	private String			playFile;
 
 	
 	NetConnSignal(IPreachable ip) {
@@ -115,6 +116,15 @@ public class NetConnSignal {
 	
 	public synchronized String getTime() {
 		return recTime;
+	}
+	
+	public synchronized void setPlayFile(String URL) {
+		playFile = URL;
+		commands.push("playFile");
+	}
+	
+	public synchronized String getPlayFile() {
+		return playFile;
 	}
 	
 	public synchronized void init() {

@@ -140,6 +140,13 @@ public class ClientConn implements Runnable {
 		}
 		return false;		
 	}
+	
+	public boolean setPlayFile(String URL) {
+		if(checkConnection()) {
+			return sendAuthCommandOpt("PLAYFILE", URL);
+		}
+		return false;
+	}
 
 	public String getSSHkey() {
 		if(checkConnection())
@@ -205,10 +212,17 @@ public class ClientConn implements Runnable {
 	}
 
 	private boolean sendAuthCommand(String c) {
+		return sendAuthCommandOpt(c, null);
+	}
+	
+	private boolean sendAuthCommandOpt(String c, String opt) {
 		try {
 			String command = c.trim() + " ";
-			System.out.println("> " + command + "[TOKEN]");
-			command += token.getToken(c.trim(), salt) + "\n";			
+			if(opt != null) {
+				command += opt.trim() + " ";
+			}
+			command += token.getToken(c.trim(), salt) + "\n";
+			System.out.println("> " + command);
 			out.writeBytes(command);
 			String reply = in.readLine();
 			System.out.println("< " + reply);
@@ -249,24 +263,27 @@ public class ClientConn implements Runnable {
 			if(this.isReachable()) {
 				sig.setConnected(true);
 				if(sig.hasCommands()) {
-					if(sig.popCommand().equals("ID"))
+					String command = sig.popCommand();
+					if(command.equals("ID"))
 						setID(sig.getID());
-					if(sig.popCommand().equals("EID"))
+					if(command.equals("EID"))
 						setExamID(sig.getExamID());
-					if(sig.popCommand().equals("SetServer")) {
+					if(command.equals("SetServer")) {
 						String[] server = sig.getServer();
 						this.setServer(server[0], server[1]);
 					}
-					if(sig.popCommand().equals("init"))
+					if(command.equals("init"))
 						this.init();
-					if(sig.popCommand().equals("rec"));
+					if(command.equals("rec"));
 						this.rec();
-					if(sig.popCommand().equals("stop"));
+					if(command.equals("stop"));
 						this.stop();
-					if(sig.popCommand().equals("reset"));
+					if(command.equals("reset"));
 						this.reset();
-					if(sig.popCommand().equals("STOP_THREAD"))
+					if(command.equals("STOP_THREAD"))
 						loop = false;
+					if(command.equals("playFile"))
+						setPlayFile(sig.getPlayFile());
 				}
 				sig.setStatus(this.status());
 				sig.setTime(this.getTime());

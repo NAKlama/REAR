@@ -36,6 +36,7 @@ public class StatusWindow extends JFrame {
 	private ImageIcon	recIcon;
 	private ImageIcon	uploadIcon;
 	private ImageIcon	okIcon;
+	private ImageIcon	playIcon;
 	private Timer		timer;
 	private String		studentID;
 	private String		examID;
@@ -148,7 +149,7 @@ public class StatusWindow extends JFrame {
 		recStarted = new Date();
 		if(doPlay && doRecord)
 			label = "Recording / Playing";
-		else if(doPlay && !doRecord) {
+		else if(doPlay && !doRecord)
 			label = "Playing";
 		if(doRecord)
 			icon.setIcon(recIcon);

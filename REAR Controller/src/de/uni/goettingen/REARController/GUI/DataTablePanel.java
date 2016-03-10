@@ -153,6 +153,10 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 		if(!editMode)
 			((MachinesTable) table.getModel()).setExamMode(false, false);
 	}
+	
+	public void setPlayFile(String URL) {
+		connections.setPlayFile(URL);
+	}
 
 	public ClientStatus getStatus() {
 		return connections.getStatus();
