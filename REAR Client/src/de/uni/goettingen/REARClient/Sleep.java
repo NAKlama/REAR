@@ -1,4 +1,4 @@
-//package de.uni.goettingen.REARClient;
+package de.uni.goettingen.REARClient;
 //
 //import java.awt.event.ActionEvent;
 //import java.awt.event.ActionListener;

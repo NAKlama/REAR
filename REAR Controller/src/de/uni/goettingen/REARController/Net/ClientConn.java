@@ -257,7 +257,9 @@ public class ClientConn implements Runnable {
 	public void run() {
 		while(loop) {
 			try {
-				sig.wait(1000);
+				synchronized(this) {
+					sig.wait(1000);
+				}
 			} catch (InterruptedException e) {
 			}
 			if(this.isReachable()) {

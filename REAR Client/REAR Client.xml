@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="create_run_jar" name="Create Runnable Jar for Project REAR Client with Jar-in-Jar Loader">
+    <!--this file was created by Eclipse Runnable JAR file Export Wizard-->
+    <!--ANT 1.7 is required-->
+    <!--define folder properties-->
+    <property name="dir.buildfile" value="."/>
+    <property name="dir.workspace" value="C:/Users/Frederik Klama/workspace"/>
+    <property name="dir.jarfile" value="${dir.buildfile}"/>
+    <target name="create_run_jar">
+        <jar destfile="${dir.jarfile}/REAR Client.jar">
+            <manifest>
+                <attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"/>
+                <attribute name="Rsrc-Main-Class" value="de.uni.goettingen.REARClient.REARclient"/>
+                <attribute name="Class-Path" value="."/>
+                <attribute name="Rsrc-Class-Path" value="./ javaFlacEncoder-0.3.1.jar jsch-0.1.53.jar resources - Copy (2).zip"/>
+            </manifest>
+            <zipfileset src="jar-in-jar-loader.zip"/>
+            <fileset dir="${dir.jarfile}/bin"/>
+            <zipfileset dir="C:/Users/Frederik Klama/git/REAR/lib" includes="javaFlacEncoder-0.3.1.jar"/>
+            <zipfileset dir="C:/Users/Frederik Klama/git/REAR/lib" includes="jsch-0.1.53.jar"/>
+            <zipfileset dir="C:/Users/Frederik Klama/git/REAR" includes="resources - Copy (2).zip"/>
+        </jar>
+    </target>
+</project>

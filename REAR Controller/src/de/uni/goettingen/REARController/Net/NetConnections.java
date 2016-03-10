@@ -41,14 +41,15 @@ public class NetConnections {
 			if(ipr != null) {
 				InetAddress	ip	= ipr.getAddress();
 				if(ip != null && !(clientIDs.contains(id) && ipMap.containsKey(id) && ip.equals(ipMap.get(id).getAddress()))) {
+					System.out.println(ip);
 					if(!clientIDs.contains(id)) 
 						clientIDs.add(id);
 					NetConnSignal c = connMap.get(id);
-					if(c == null || !connMap.get(id).isReachable()) {
+					if(c == null || !c.isReachable()) {
 						c = new NetConnSignal(ipr);
 						connMap.put(id, c);
 					}
-					if(c.isReachable()) {
+					if(c != null && c.isReachable()) {
 						ipr.setReachable(true);
 						ipMap.put(id, ipr);
 						clientSSHkeys.put(id, c.getPubKey());
