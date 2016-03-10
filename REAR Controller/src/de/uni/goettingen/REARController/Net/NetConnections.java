@@ -198,8 +198,10 @@ public class NetConnections {
 			if(connMap.containsKey(id)) {
 				NetConnSignal	conn	= connMap.get(id);
 				ClientStatus 	status	= conn.getStatus();
-				statusMap.put(id, status);
-				out.or(status);
+				if(status != null) {
+					statusMap.put(id, status);
+					out.or(status);
+				}
 				String			recTime = conn.getTime();
 				recTimeMap.put(id, recTime);
 				

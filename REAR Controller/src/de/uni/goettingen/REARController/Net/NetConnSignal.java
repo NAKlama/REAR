@@ -26,7 +26,7 @@ public class NetConnSignal {
 		ipr			= ip;
 		pubKey		= null;
 		id			= null;
-		connected	= null;
+		connected	= false;
 		server		= new String[2];
 		commands	= new Stack<String>();
 		conThread	= new Thread(new ClientConn(this));
@@ -49,7 +49,7 @@ public class NetConnSignal {
 	}
 	
 	public synchronized void setStatus(ClientStatus s) {
-		status = s;
+		status = new ClientStatus(s);
 	}
 	
 	public synchronized ClientStatus getStatus() {
@@ -57,7 +57,7 @@ public class NetConnSignal {
 	}
 	
 	public synchronized void setPubKey(String pk) {
-		pubKey = pk;
+		pubKey = new String(pk);
 	}
 	
 	public synchronized String getPubKey() {
@@ -73,7 +73,7 @@ public class NetConnSignal {
 	}
 	
 	public synchronized void setID(String i) {
-		id = i;
+		id = new String(i);
 		commands.push("ID");
 		this.notifyAll();
 	}
@@ -83,7 +83,7 @@ public class NetConnSignal {
 	}
 	
 	public synchronized void setExamID(String i) {
-		eid = i;
+		eid = new String(i);
 		commands.push("EID");
 		this.notifyAll();
 	}
@@ -101,8 +101,8 @@ public class NetConnSignal {
 	}
 	
 	public synchronized void setServer(String s, String u) {
-		server[0] = s;
-		server[1] = u;
+		server[0] = new String(s);
+		server[1] = new String(u);
 		commands.push("SetServer");
 	}
 	
@@ -111,7 +111,7 @@ public class NetConnSignal {
 	}
 	
 	public synchronized void setTime(String t) {
-		recTime = t;
+		recTime = new String(t);
 	}
 	
 	public synchronized String getTime() {
@@ -119,7 +119,7 @@ public class NetConnSignal {
 	}
 	
 	public synchronized void setPlayFile(String URL) {
-		playFile = URL;
+		playFile = new String(URL);
 		commands.push("playFile");
 	}
 	

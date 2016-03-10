@@ -56,7 +56,7 @@ public class MainWindow implements ActionListener {
 
 	//	private int 		mode; // 0 = Uninitialized; 1 = Initialized pre-Exam; 2 = Recording; 3 = Uploading & Done
 	// private int 		mode; // 0 = Uninitialized; 1 = Initialized pre-Exam; 3 = Recording; 5 = Uploading & Done
-	private int step;
+	private int 			step = 0;
 	private ClientStatus	mode;
 
 	private Boolean		editMode = true;		

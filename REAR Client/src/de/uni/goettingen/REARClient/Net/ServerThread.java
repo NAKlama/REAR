@@ -136,19 +136,19 @@ public class ServerThread implements Runnable {
 			if(!found) {
 				switch(signal.getMode()) {
 				case 0:
-					out.writeBytes("Not initialized\n");
+					out.writeBytes("Not initialized  ");
 					break;
 				case 1:
-					out.writeBytes("Not Recording\n");
+					out.writeBytes("Not Recording  ");
 					break;
 				case 2:
-					out.writeBytes("Still Recording\n");
+					out.writeBytes("Still Recording  ");
 					break;
 				case 3:
-					out.writeBytes("Uploading Data\n");
+					out.writeBytes("Uploading Data  ");
 					break;
 				case 4:
-					out.writeBytes("Waiting for reset\n");
+					out.writeBytes("Waiting for reset  ");
 					break;
 				}
 				out.writeBytes("Wrong Mode\n");
