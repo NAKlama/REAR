@@ -74,7 +74,7 @@ public class SerMachinesTable implements Serializable {
 				data.addElement(inLine);
 			}
 		}
-		System.out.println(this.print()); 
+//		System.out.println(this.print());
 	}
 	
 

@@ -23,7 +23,7 @@ public class NetConnSignal {
 
 	
 	NetConnSignal(IPreachable ip) {
-		ipr			= ip;
+		ipr			= new IPreachable(ip);
 		pubKey		= null;
 		id			= null;
 		connected	= false;

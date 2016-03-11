@@ -30,6 +30,12 @@ public class IPreachable implements Serializable {
 		ip				= ipArg;
 	}
 	
+	public IPreachable(IPreachable ipr) {
+		ip			= ipr.ip;
+		reachable	= ipr.reachable;
+		ipString	= ipr.ipString;
+	}
+
 	public InetAddress getAddress() {
 		return ip;
 	}

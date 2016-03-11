@@ -111,7 +111,7 @@ public class SignalObject {
 	}
 
 	public synchronized int getMode() {
-		int mode = win.getMode();
+		int mode = new Integer(win.getMode());
 		if(mode == 1 && doPlay && !playFileDownloaded)
 			mode -= 1;
 		return mode;
@@ -131,8 +131,8 @@ public class SignalObject {
 	}
 
 	public synchronized void setID(String id) {
-		win.setID(id);
-		studentID = id;
+		win.setID(new String(id));
+		studentID = new String(id);
 	}
 	
 	public synchronized void checkMicrophone() {
@@ -154,12 +154,12 @@ public class SignalObject {
 	public synchronized void startRecording() {
 		String path;
 		if(win.getExamID() != null && ! win.getExamID().equals("")) {
-			path = prop.getAudioPath() + win.getExamID().replaceAll("[/\"\'|\\\\:\\*\\?<>]", "-") + "\\";
+			path = new String(prop.getAudioPath() + win.getExamID().replaceAll("[/\"\'|\\\\:\\*\\?<>]", "-") + "\\");
 			File p = new File(path);
 			p.mkdirs();
 		}
 		else 
-			path = prop.getAudioPath();
+			path = new String(prop.getAudioPath());
 		System.out.println(path);
 		System.out.println(win.getExamID());
 		if(win.getID() != null && ! win.getID().equals(""))
@@ -197,7 +197,7 @@ public class SignalObject {
 	}
 
 	public synchronized void setExamID(String id) {
-		win.setExamID(id);
+		win.setExamID(new String(id));
 		examID = id;
 	}
 

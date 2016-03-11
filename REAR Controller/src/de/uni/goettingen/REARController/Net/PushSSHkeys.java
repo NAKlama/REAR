@@ -51,7 +51,7 @@ public class PushSSHkeys implements Runnable {
 			String pushCommand = "@@@SSH_KEYS@@@\n";
 			out.write(pushCommand.getBytes(), 0, pushCommand.length());
 			while((rsize = fStr.read(buff, 0, 1024)) > 0) {
-				System.out.println("  rsize = " + rsize);
+//				System.out.println("  rsize = " + rsize);
 				out.write(buff, 0, rsize);
 //				total += rsize;
 			}

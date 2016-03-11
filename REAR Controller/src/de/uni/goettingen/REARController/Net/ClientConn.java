@@ -263,9 +263,15 @@ public class ClientConn implements Runnable {
 			} catch (InterruptedException e) {
 			}
 			if(this.isReachable()) {
-				sig.setConnected(true);
-				if(sig.hasCommands()) {
-					String command = sig.popCommand();
+				String command = null;
+				synchronized(sig) {
+					sig.setConnected(true);
+					if(sig.hasCommands())
+						command = new String(sig.popCommand());
+				}
+				
+				if(command != null) {
+					System.out.println("Got command: " + command);
 					if(command.equals("ID"))
 						setID(sig.getID());
 					if(command.equals("EID"))
@@ -276,11 +282,11 @@ public class ClientConn implements Runnable {
 					}
 					if(command.equals("init"))
 						this.init();
-					if(command.equals("rec"));
+					if(command.equals("rec"))
 						this.rec();
-					if(command.equals("stop"));
+					if(command.equals("stop"))
 						this.stop();
-					if(command.equals("reset"));
+					if(command.equals("reset"))
 						this.reset();
 					if(command.equals("STOP_THREAD"))
 						loop = false;

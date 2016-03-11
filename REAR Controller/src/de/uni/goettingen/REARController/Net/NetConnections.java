@@ -37,7 +37,7 @@ public class NetConnections {
 //		System.out.println("Update (" + mList.data.size() + ")");
 		for(Vector<Object> m : mList.data) {
 			long		id	= (long) m.get(7);
-			IPreachable ipr = (IPreachable) m.get(2);
+			IPreachable ipr = new IPreachable((IPreachable) m.get(2));
 			if(ipr != null) {
 				InetAddress	ip	= ipr.getAddress();
 				if(ip != null && !(clientIDs.contains(id) && ipMap.containsKey(id) && ip.equals(ipMap.get(id).getAddress()))) {
@@ -52,7 +52,7 @@ public class NetConnections {
 					if(c != null && c.isReachable()) {
 						ipr.setReachable(true);
 						ipMap.put(id, ipr);
-						clientSSHkeys.put(id, c.getPubKey());
+						clientSSHkeys.put(id, new String(c.getPubKey()));
 					}
 				}
 			}
@@ -174,8 +174,11 @@ public class NetConnections {
 		if(! statusMap.containsKey(id)) {	
 			return null;
 		}
-		if(connMap.get(id).isReachable())
-			ipMap.get(id).setReachable(true);
+		if(connMap.get(id).isReachable()) {
+			IPreachable ipr = ipMap.get(id);
+			if(ipr != null)
+				ipr.setReachable(true);
+		}
 		return statusMap.get(id);
 	}
 	
@@ -197,12 +200,12 @@ public class NetConnections {
 		for(long id : clientIDs) {
 			if(connMap.containsKey(id)) {
 				NetConnSignal	conn	= connMap.get(id);
-				ClientStatus 	status	= conn.getStatus();
+				ClientStatus 	status	= new ClientStatus(conn.getStatus());
 				if(status != null) {
 					statusMap.put(id, status);
 					out.or(status);
 				}
-				String			recTime = conn.getTime();
+				String			recTime = new String(conn.getTime());
 				recTimeMap.put(id, recTime);
 				
 			}

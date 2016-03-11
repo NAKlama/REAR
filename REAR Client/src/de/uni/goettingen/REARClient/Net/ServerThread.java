@@ -79,7 +79,8 @@ public class ServerThread implements Runnable {
 				}
 				
 				else if(message[0].equals("STATUS")) {
-					String outStr = String.valueOf(signal.getMode()) + "\n";
+					String outStr = new String();
+					outStr = String.valueOf(signal.getMode()) + "\n";
 					System.out.println("> " + outStr.trim());
 					out.writeBytes(outStr);
 				}
