@@ -68,20 +68,13 @@ public class NetConnections {
 	}
 
 	public void init(ConcurrentHashMap<Long, String> ids) {
-//		System.out.println("Clientcount: " + clientIDs.size());
+		System.out.println("Clientcount: " + clientIDs.size());
 		for(long id : clientIDs) {
 			if(ids.containsKey(id)) {
 //				System.out.println(id);
 				NetConnSignal c = connMap.get(id);
-				boolean idSet = false;
-				for(int i = 0; i < 5 && !idSet; i++) {
-					c.setID(ids.get(id));
-					if(c.getID() == ids.get(id))
-						idSet = true;
-				}
-				if(idSet) {
-					c.init();
-				}
+				c.setID(ids.get(id));
+				c.init();
 			}
 		}
 		String SSHKeys = "";

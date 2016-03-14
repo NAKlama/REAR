@@ -122,7 +122,6 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 //			System.out.println(id + ": " + studID);
 			if(studID != null && ! studID.trim().equals("")) {
 				studIDs.put(id, studID);
-
 			}
 		}
  		connections.init(studIDs);

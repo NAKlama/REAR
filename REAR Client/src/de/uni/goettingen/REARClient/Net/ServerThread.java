@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -42,79 +43,83 @@ public class ServerThread implements Runnable {
 				System.out.println("Running connection thread connected to " + remoteAddr + "#\n");
 
 			while(!quit) {
-				String msg = in.readLine();
-				String[] message = msg.trim().split(" ");
+				String msg = new String(in.readLine());
+				ArrayList<String> message = new ArrayList<>();
+				int msgLength = msg.trim().split(" ").length;
+				for(int i = 0; i<msgLength; i++) {
+					message.add(msg.trim().split(" ")[i]);
+				}
 				
 				if(REARclient.DEBUG)
 					System.out.println("< " + msg);
 
-				if(allowShutdown && !message[0].equals("SHUTDOWN"))
+				if(allowShutdown && !message.get(0).equals("SHUTDOWN"))
 					allowShutdown = false;
 
 				else if(shutdown && !allowShutdown)
 					shutdown = false;
 
-				else if(message[0].equals("INIT"))
+				else if(message.get(0).equals("INIT"))
 					initialize(message);
 
-				else if(message[0].equals("REC"))
+				else if(message.get(0).equals("REC"))
 					startRecording(message);
 					
-				else if(message[0].equals("STOP"))
+				else if(message.get(0).equals("STOP"))
 					stopRecording(message);
 				
-				else if(message[0].equals("RESET"))
+				else if(message.get(0).equals("RESET"))
 					reset(message);
 				
-				else if(message[0].equals("ID"))
+				else if(message.get(0).equals("ID"))
 					setID(message);
 				
-				else if(message[0].equals("EXAMID"))
+				else if(message.get(0).equals("EXAMID"))
 					examID(message);
 				
-				else if(message[0].equals("RECTIME")) {
+				else if(message.get(0).equals("RECTIME")) {
 					String outStr = signal.getTime() + "\n";
 					System.out.println("> " + outStr.trim());
 					out.writeBytes(outStr);
 				}
 				
-				else if(message[0].equals("STATUS")) {
+				else if(message.get(0).equals("STATUS")) {
 					String outStr = new String();
 					outStr = String.valueOf(signal.getMode()) + "\n";
 					System.out.println("> " + outStr.trim());
 					out.writeBytes(outStr);
 				}
 				
-				else if(message[0].equals("GETSALT"))
+				else if(message.get(0).equals("GETSALT"))
 					out.writeBytes(remoteAddr + "\n");
 					
-				else if(message[0].equals("QUIT") || message[0].equals("EXIT"))
+				else if(message.get(0).equals("QUIT") || message.get(0).equals("EXIT"))
 					quit = true;
 				
-				else if(message[0].equals("GETPUBKEY"))
+				else if(message.get(0).equals("GETPUBKEY"))
 					out.writeBytes(signal.getPubKeyString() + "\n");
 				
-				else if(message[0].equals("ALLOWSHUTDOWN") && checkShutdownToken(message))
+				else if(message.get(0).equals("ALLOWSHUTDOWN") && checkShutdownToken(message))
 					allowShutdown = true;
 				
-				else if(message[0].equals("SHUTDOWN") && checkShutdownToken(message))
+				else if(message.get(0).equals("SHUTDOWN") && checkShutdownToken(message))
 					shutdown = true;
 				
-				else if(message[0].equals("UPLOADSERVER"))
+				else if(message.get(0).equals("UPLOADSERVER"))
 					uploadServer(message);
 				
-				else if(message[0].equals("UPLOADUSER"))
+				else if(message.get(0).equals("UPLOADUSER"))
 					uploadUser(message);
-				else if(message[0].equals("MICSTATUS")) {
+				else if(message.get(0).equals("MICSTATUS")) {
 					if(signal.getMicStatus())
 						out.writeBytes("True\n");
 					else
 						out.writeBytes("False\n");
 				}
 				
-				else if(message[0].equals("MICRETRY"))
+				else if(message.get(0).equals("MICRETRY"))
 					signal.checkMicrophone();
-				else if(message[0].equals("PLAYFILE"))
+				else if(message.get(0).equals("PLAYFILE"))
 					fetchAudioFile(message);
 			}
 		} catch(NullPointerException e) {
@@ -166,54 +171,55 @@ public class ServerThread implements Runnable {
 		return false;
 	}
 	
-	private void fetchAudioFile(String[] message) throws IOException {
-		if(message.length > 2) {
+	private void fetchAudioFile(ArrayList<String> message) throws IOException {
+		if(message.size() > 2) {
 			synchronized(signal) {
-				if(tokenCheck(message[2].trim(), message[0], remoteAddr, Arrays.asList(0))) {
-					signal.setAudioFileURL(message[1]);
+				if(tokenCheck(message.get(2).trim(), message.get(0), remoteAddr, Arrays.asList(0))) {
+					signal.setAudioFileURL(message.get(1));
 					signal.activatePlayAudio();
 				}
 			}
 		}
 	}
 	
-	private void initialize(String[] message) throws IOException {
-		if(message.length > 1) 
+	private void initialize(ArrayList<String> message) throws IOException {
+		if(message.size() > 1) 
 			synchronized(signal) {
-				if(tokenCheck(message[1].trim(), message[0], remoteAddr, Arrays.asList(0))) 
+				if(tokenCheck(message.get(1).trim(), message.get(0), remoteAddr, Arrays.asList(0))) 
 					signal.initClient();
 			}
 	}
 
-	private void startRecording(String[] message) throws IOException {
-		if(message.length > 1) 
+	private void startRecording(ArrayList<String> message) throws IOException {
+		if(message.size() > 1) 
 			synchronized(signal) {
-				if(tokenCheck(message[1].trim(), message[0], remoteAddr, Arrays.asList(1)))
+				if(tokenCheck(message.get(1).trim(), message.get(0), remoteAddr, Arrays.asList(1)))
 					signal.startRecording();
 			}
 	}
 	
-	private void stopRecording(String[] message) throws IOException {
-		if(message.length > 1) 
+	private void stopRecording(ArrayList<String> message) throws IOException {
+		if(message.size() > 1) 
 			synchronized(signal) {
-				if(tokenCheck(message[1].trim(), message[0], remoteAddr, Arrays.asList(2)))
+				if(tokenCheck(message.get(1).trim(), message.get(0), remoteAddr, Arrays.asList(2)))
 					signal.stopRecording();
 			}
 	}
 	
-	private void reset(String[] message) throws IOException {
-		if(message.length > 1)
+	private void reset(ArrayList<String> message) throws IOException {
+		if(message.size() > 1)
 			synchronized(signal) {
-				if(tokenCheck(message[1].trim(), message[0], remoteAddr, null))
+				if(tokenCheck(message.get(1).trim(), message.get(0), remoteAddr, null))
 					signal.reset();
 			}
 	}
 	
-	private void setID(String[] message) throws IOException {
-		if(message.length > 1) {
+	private void setID(ArrayList<String> message) throws IOException {
+		if(message.size() > 1) {
+			System.out.println("setID(); message.size() = " + message.size() + " : " + message.get(1));
 			synchronized(signal) {
 				if(signal.getMode() == 0) {
-					signal.setID(message[1]);
+					signal.setID(message.get(1));
 					out.writeBytes("OK\n");
 				}
 				else {
@@ -226,11 +232,12 @@ public class ServerThread implements Runnable {
 		}
 	}
 	
-	private void examID(String[] message) throws IOException {
-		if(message.length > 1) {
+	private void examID(ArrayList<String> message) throws IOException {
+		if(message.size() > 1) {
+			System.out.println("examID(); message.size() = " + message.size() + " : " + message.get(1));
 			synchronized(signal) {
 				if(signal.getMode() == 0) {
-					signal.setExamID(message[1]);
+					signal.setExamID(message.get(1));
 					out.writeBytes("OK\n");
 				}
 				else {
@@ -243,27 +250,27 @@ public class ServerThread implements Runnable {
 		}
 	}
 	
-	private void uploadServer(String[] message) throws IOException {
-		if(message.length > 1) 
+	private void uploadServer(ArrayList<String> message) throws IOException {
+		if(message.size() > 1) 
 			synchronized(signal) {
-				if(tokenCheck(message[2].trim(), message[0], remoteAddr, Arrays.asList(0)))
-					signal.setUploadServer(message[1]);
+				if(tokenCheck(message.get(2).trim(), message.get(0), remoteAddr, Arrays.asList(0)))
+					signal.setUploadServer(message.get(1));
 						
 				}
 	}
 	
-	private void uploadUser(String[] message) throws IOException {
-		if(message.length > 1)
+	private void uploadUser(ArrayList<String> message) throws IOException {
+		if(message.size() > 1)
 			synchronized(signal) {
-				if(tokenCheck(message[2].trim(), message[0], remoteAddr, Arrays.asList(0)))
-					signal.setUploadUser(message[1]);
+				if(tokenCheck(message.get(2).trim(), message.get(0), remoteAddr, Arrays.asList(0)))
+					signal.setUploadUser(message.get(1));
 						
 				}
 	}
 	
-	private Boolean checkShutdownToken(String[] message) {
+	private Boolean checkShutdownToken(ArrayList<String> message) {
 		AuthToken token = new AuthToken();
-		if(token.isValid(message[1].trim(), message[0], remoteAddr))
+		if(token.isValid(message.get(1).trim(), message.get(0), remoteAddr))
 			return true;
 		return false;
 	}

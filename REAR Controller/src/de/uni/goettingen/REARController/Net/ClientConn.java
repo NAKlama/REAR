@@ -118,25 +118,18 @@ public class ClientConn implements Runnable {
 	public boolean setID(String id) {
 		if(checkConnection()) {
 			String sendID = id.replaceAll("\\s", "_");
-			String replyID = "";
-			while(!replyID.equals(id)) {
-				String reply = getReply("ID " + sendID + "\n").trim();
-				if(reply.equals("OK")) {
-					replyID = this.getID();
-				}
-			}
+			String reply = getReply("ID " + sendID + "\n").trim();
+			if(reply.equals("OK"))
+				return true;	
 		}
 		return false;
 	}
 
 	public boolean setExamID(String eID) {
 		if(checkConnection()) {
-			String replyID = "";
-			while(!replyID.equals(eID)) {
-				String reply = getReply("EXAMID " + eID + "\n").trim();
-				if(reply.equals("OK"))
-					replyID = this.getExamID();
-			}
+			String reply = getReply("EXAMID " + eID + "\n").trim();
+			if(reply.equals("OK"))
+				return true;
 		}
 		return false;		
 	}
@@ -197,9 +190,9 @@ public class ClientConn implements Runnable {
 	private String getReply(String c) {
 		try {
 			System.out.println("> " + c.trim());
-			out.writeBytes(c);
+			out.writeBytes(new String(c));
 			String reply = in.readLine();
-			while(in.ready()) {
+			if(in.ready()) {
 				in.readLine();
 			}
 			System.out.println("< " + reply);

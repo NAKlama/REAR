@@ -128,9 +128,7 @@ public class StatusWindow extends JFrame {
 	}
 
 	public void init() {
-		synchronized(signal) {
-			mode = 1;
-		}
+		mode = 1;
 		if(!examID.equals(""))
 			setTitle("REAR - " + examID);
 		else

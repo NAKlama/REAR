@@ -169,7 +169,8 @@ public class SignalObject {
 		rec					= new Recorder(micLine, outFile);
 		Thread recThread	= new Thread(rec);
 		recThread.start();
-		player 				= new Player(playFile, rec);
+		if(doPlay)
+			player			= new Player(playFile, rec);
 		win.setRecording(doRecord, doPlay);
 	}
 

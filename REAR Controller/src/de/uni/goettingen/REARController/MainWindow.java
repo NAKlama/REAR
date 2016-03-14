@@ -577,9 +577,9 @@ public class MainWindow implements ActionListener {
 					if(play)
 						table.setPlayFile(playFileURL);
 					table.setServer(prop.getUploadServer(), prop.getUploadUser());
+					table.init();
 					btnNextStep.setIcon(iconRec);
 					btnNextStep.setEnabled(false);
-					table.init();
 				}
 			}
 			else if(cmd.equals("ExamID_Cancel"))
