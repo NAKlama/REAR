@@ -21,10 +21,12 @@ public class ClientConn implements Runnable {
 	private String				salt;
 	private Date				connectCheckTime;
 	private NetConnSignal		sig;
+	private String				modeString;
 	
 	private Boolean				loop = true;
 
 	public ClientConn(NetConnSignal s) {
+		modeString = "None";
 		connectCheckTime = null;
 		connect = false;
 		sig = s;
@@ -233,7 +235,7 @@ public class ClientConn implements Runnable {
 			String command = c.trim() + " ";
 			System.out.println("> " + command + "[TOKEN]");
 			command += par + " ";
-			command += token.getToken(c.trim(), salt) + "\n";			
+			command += token.getToken(c.trim(), salt) + "\n";
 			out.writeBytes(command);
 			String reply = in.readLine();
 			System.out.println("< " + reply);
@@ -274,13 +276,13 @@ public class ClientConn implements Runnable {
 						this.setServer(server[0], server[1]);
 					}
 					if(command.equals("init"))
-						this.init();
+						modeString = "init";
 					if(command.equals("rec"))
-						this.rec();
+						modeString = "rec";
 					if(command.equals("stop"))
-						this.stop();
+						modeString = "stop";
 					if(command.equals("reset"))
-						this.reset();
+						modeString = "reset";
 					if(command.equals("STOP_THREAD"))
 						loop = false;
 					if(command.equals("playFile"))
@@ -288,6 +290,18 @@ public class ClientConn implements Runnable {
 				}
 				sig.setStatus(this.status());
 				sig.setTime(this.getTime());
+				
+				if(modeString.equals("init")  && !sig.getStatus().getInit()) {
+					if(!this.getID().equals("") && !this.getExamID().equals(""))
+						this.init();
+				}
+				if(modeString.equals("rec")   && !sig.getStatus().getRec())
+					this.rec();
+				if(modeString.equals("stop")  && !sig.getStatus().getUpload())
+					this.stop();
+				if(modeString.equals("stop")  && !sig.getStatus().getDone())
+					this.reset();
+				
 			} else {
 				sig.setConnected(false);
 			}

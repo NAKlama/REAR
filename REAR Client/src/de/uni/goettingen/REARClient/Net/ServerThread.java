@@ -228,7 +228,7 @@ public class ServerThread implements Runnable {
 			}
 		}
 		else {
-			out.writeBytes(signal.getID());
+			out.writeBytes(signal.getID() + "\n");
 		}
 	}
 	
@@ -246,7 +246,7 @@ public class ServerThread implements Runnable {
 			}
 		}
 		else {
-			out.writeBytes(signal.getExamID());
+			out.writeBytes(signal.getExamID() + "\n");
 		}
 	}
 	

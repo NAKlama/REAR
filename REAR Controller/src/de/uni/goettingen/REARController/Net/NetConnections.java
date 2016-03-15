@@ -198,8 +198,8 @@ public class NetConnections {
 					statusMap.put(id, status);
 					out.or(status);
 				}
-				String			recTime = new String(conn.getTime());
-				recTimeMap.put(id, recTime);
+				String			recTime = conn.getTime();
+				recTimeMap.put(id, new String(recTime));
 				
 			}
 		}

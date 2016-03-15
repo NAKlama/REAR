@@ -26,6 +26,7 @@ public class NetConnSignal {
 		ipr			= new IPreachable(ip);
 		pubKey		= null;
 		id			= null;
+		eid			= null;
 		connected	= false;
 		server		= new String[2];
 		commands	= new Stack<String>();

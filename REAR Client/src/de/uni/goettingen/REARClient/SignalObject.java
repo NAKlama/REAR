@@ -175,7 +175,8 @@ public class SignalObject {
 	}
 
 	public synchronized void stopRecording() {
-		player.stop();
+		if(doPlay)
+			player.stop();
 		rec.stopRecording();
 		win.setUpload();
 		try {
