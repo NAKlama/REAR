@@ -12,13 +12,13 @@
                 <attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"/>
                 <attribute name="Rsrc-Main-Class" value="de.uni.goettingen.REARClient.REARclient"/>
                 <attribute name="Class-Path" value="."/>
-                <attribute name="Rsrc-Class-Path" value="./ javaFlacEncoder-0.3.1.jar jsch-0.1.53.jar resources.zip"/>
+                <attribute name="Rsrc-Class-Path" value="./ javaFlacEncoder-0.3.1.jar jsch-0.1.53.jar resources - Copy (2).zip"/>
             </manifest>
             <zipfileset src="jar-in-jar-loader.zip"/>
             <fileset dir="${dir.jarfile}/bin"/>
             <zipfileset dir="C:/Users/Frederik Klama/git/REAR/lib" includes="javaFlacEncoder-0.3.1.jar"/>
             <zipfileset dir="C:/Users/Frederik Klama/git/REAR/lib" includes="jsch-0.1.53.jar"/>
-            <zipfileset dir="C:/Users/Frederik Klama/git/REAR" includes="resources.zip"/>
+            <zipfileset dir="C:/Users/Frederik Klama/git/REAR" includes="resources - Copy (2).zip"/>
         </jar>
     </target>
 </project>

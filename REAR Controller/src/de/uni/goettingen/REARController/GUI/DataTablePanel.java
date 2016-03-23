@@ -25,8 +25,8 @@ import de.uni.goettingen.REARController.DataStruct.Machine;
 import de.uni.goettingen.REARController.DataStruct.MachinesTable;
 import de.uni.goettingen.REARController.DataStruct.Serializable.SerMachinesTable;
 import de.uni.goettingen.REARController.GUI.Tools.TreeChangeListener;
-import de.uni.goettingen.REARController.Net.ClientConn;
 import de.uni.goettingen.REARController.Net.IPreachable;
+import de.uni.goettingen.REARController.Net.NetConnSignal;
 import de.uni.goettingen.REARController.Net.NetConnections;
 
 import javax.swing.JScrollPane;
@@ -122,7 +122,6 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 //			System.out.println(id + ": " + studID);
 			if(studID != null && ! studID.trim().equals("")) {
 				studIDs.put(id, studID);
-
 			}
 		}
  		connections.init(studIDs);
@@ -152,6 +151,10 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 		connections.reset();
 		if(!editMode)
 			((MachinesTable) table.getModel()).setExamMode(false, false);
+	}
+	
+	public void setPlayFile(String URL) {
+		connections.setPlayFile(URL);
 	}
 
 	public ClientStatus getStatus() {
@@ -279,8 +282,8 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 		areaColumn.setCellEditor(new DefaultCellEditor(areaSelector));
 	}
 	
-	public Vector<ClientConn> getConnections(int[] lines) {
-		Vector<ClientConn> out = new Vector<ClientConn>();
+	public Vector<NetConnSignal> getConnections(int[] lines) {
+		Vector<NetConnSignal> out = new Vector<>();
 		if(lines.length > 0) {
 			for(int l : lines) {
 				out.addElement(connections.getClientConn((Long) machines.getValueAt(l, 7)));

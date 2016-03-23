@@ -36,6 +36,7 @@ public class StatusWindow extends JFrame {
 	private ImageIcon	recIcon;
 	private ImageIcon	uploadIcon;
 	private ImageIcon	okIcon;
+	private ImageIcon	playIcon;
 	private Timer		timer;
 	private String		studentID;
 	private String		examID;
@@ -43,7 +44,7 @@ public class StatusWindow extends JFrame {
 //	private AudioLevel	micStreamLevel;
 
 	private int h, m, s;
-	private int mode; // 0 = invisible; 1 = stopped; 2 = recording; 3 = transferring; 4 = done
+	private int mode; // 0 = invisible; 1 = stopped; 2 = recording; 3 = transferring; 4 = done; 5 = playing
 
 	private SignalObject signal = null;
 
@@ -56,6 +57,7 @@ public class StatusWindow extends JFrame {
 		mode 				= 0;
 		stoppedIcon 		= new ImageIcon(StatusWindow.class.getResource("/icons/50/stopped.png"));
 		recIcon 			= new ImageIcon(StatusWindow.class.getResource("/icons/32/rec.png"));
+		playIcon			= new ImageIcon(StatusWindow.class.getResource("/icons/32/start.png"));
 		uploadIcon 			= new ImageIcon(StatusWindow.class.getResource("/icons/32/upload.png"));
 		okIcon 				= new ImageIcon(StatusWindow.class.getResource("/icons/32/OK.png"));
 
@@ -126,9 +128,7 @@ public class StatusWindow extends JFrame {
 	}
 
 	public void init() {
-		synchronized(signal) {
-			mode = 1;
-		}
+		mode = 1;
 		if(!examID.equals(""))
 			setTitle("REAR - " + examID);
 		else
@@ -136,13 +136,24 @@ public class StatusWindow extends JFrame {
 		setVisible(true);
 	}
 
-	public void setRecording() {
+	public void setRecording(Boolean doRecord, Boolean doPlay) {
+		String label = new String("Recording");
 		synchronized(signal) {
-			mode = 2;
+			if(doPlay && ! doRecord)
+				mode = 5;
+			else
+				mode = 2;
 		}
 		recStarted = new Date();
-		icon.setIcon(recIcon);
-		statusLabel.setText("Recording.");
+		if(doPlay && doRecord)
+			label = "Recording / Playing";
+		else if(doPlay && !doRecord)
+			label = "Playing";
+		if(doRecord)
+			icon.setIcon(recIcon);
+		else
+			icon.setIcon(playIcon);
+		statusLabel.setText(label);
 		win.repaint();
 	}
 

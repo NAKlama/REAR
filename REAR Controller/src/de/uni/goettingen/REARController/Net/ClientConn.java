@@ -11,7 +11,7 @@ import java.util.Date;
 
 import de.uni.goettingen.REARController.DataStruct.ClientStatus;
 
-public class ClientConn {
+public class ClientConn implements Runnable {
 	private Boolean				connect;
 	private IPreachable			ip;
 	private Socket				sock;
@@ -20,13 +20,21 @@ public class ClientConn {
 	private AuthToken			token;
 	private String				salt;
 	private Date				connectCheckTime;
+	private NetConnSignal		sig;
+	private String				modeString;
+	
+	private Boolean				loop = true;
 
-	public ClientConn(IPreachable i) {
+	public ClientConn(NetConnSignal s) {
+		modeString = "None";
 		connectCheckTime = null;
 		connect = false;
-		ip = i;
+		sig = s;
+		ip  = sig.getIPR();
 		token = new AuthToken();
-		checkConnection();
+		if(this.checkConnection()) {
+			sig.setPubKey(this.getPubKey());
+		}
 	}
 
 	private Boolean checkConnection() {
@@ -100,13 +108,21 @@ public class ClientConn {
 			return getReply("ID\n").trim();
 		return null;
 	}
+	
+
+	public String getExamID() {
+		if(checkConnection())
+			return getReply("EXAMID\n").trim();
+		return null;
+	}
+
 
 	public boolean setID(String id) {
 		if(checkConnection()) {
 			String sendID = id.replaceAll("\\s", "_");
 			String reply = getReply("ID " + sendID + "\n").trim();
 			if(reply.equals("OK"))
-				return true;
+				return true;	
 		}
 		return false;
 	}
@@ -118,6 +134,13 @@ public class ClientConn {
 				return true;
 		}
 		return false;		
+	}
+	
+	public boolean setPlayFile(String URL) {
+		if(checkConnection()) {
+			return sendAuthCommandOpt("PLAYFILE", URL);
+		}
+		return false;
 	}
 
 	public String getSSHkey() {
@@ -169,9 +192,9 @@ public class ClientConn {
 	private String getReply(String c) {
 		try {
 			System.out.println("> " + c.trim());
-			out.writeBytes(c);
+			out.writeBytes(new String(c));
 			String reply = in.readLine();
-			while(in.ready()) {
+			if(in.ready()) {
 				in.readLine();
 			}
 			System.out.println("< " + reply);
@@ -184,10 +207,17 @@ public class ClientConn {
 	}
 
 	private boolean sendAuthCommand(String c) {
+		return sendAuthCommandOpt(c, null);
+	}
+	
+	private boolean sendAuthCommandOpt(String c, String opt) {
 		try {
 			String command = c.trim() + " ";
-			System.out.println("> " + command + "[TOKEN]");
-			command += token.getToken(c.trim(), salt) + "\n";			
+			if(opt != null) {
+				command += opt.trim() + " ";
+			}
+			command += token.getToken(c.trim(), salt) + "\n";
+			System.out.println("> " + command);
 			out.writeBytes(command);
 			String reply = in.readLine();
 			System.out.println("< " + reply);
@@ -205,7 +235,7 @@ public class ClientConn {
 			String command = c.trim() + " ";
 			System.out.println("> " + command + "[TOKEN]");
 			command += par + " ";
-			command += token.getToken(c.trim(), salt) + "\n";			
+			command += token.getToken(c.trim(), salt) + "\n";
 			out.writeBytes(command);
 			String reply = in.readLine();
 			System.out.println("< " + reply);
@@ -216,5 +246,65 @@ public class ClientConn {
 			e.printStackTrace();
 		}
 		return false;
+	}
+
+	@Override
+	public void run() {
+		while(loop) {
+			try {
+				synchronized(sig) {
+					sig.wait(1000);
+				}
+			} catch (InterruptedException e) {
+			}
+			if(this.isReachable()) {
+				String command = null;
+				synchronized(sig) {
+					sig.setConnected(true);
+					if(sig.hasCommands())
+						command = new String(sig.popCommand());
+				}
+				
+				if(command != null) {
+					System.out.println("Got command: " + command);
+					if(command.equals("ID"))
+						setID(sig.getID());
+					if(command.equals("EID"))
+						setExamID(sig.getExamID());
+					if(command.equals("SetServer")) {
+						String[] server = sig.getServer();
+						this.setServer(server[0], server[1]);
+					}
+					if(command.equals("init"))
+						modeString = "init";
+					if(command.equals("rec"))
+						modeString = "rec";
+					if(command.equals("stop"))
+						modeString = "stop";
+					if(command.equals("reset"))
+						modeString = "reset";
+					if(command.equals("STOP_THREAD"))
+						loop = false;
+					if(command.equals("playFile"))
+						setPlayFile(sig.getPlayFile());
+				}
+				sig.setStatus(this.status());
+				sig.setTime(this.getTime());
+				
+				if(modeString.equals("init")  && !sig.getStatus().getInit()) {
+					if(!this.getID().equals("") && !this.getExamID().equals(""))
+						this.init();
+				}
+				if(modeString.equals("rec")   && !sig.getStatus().getRec())
+					this.rec();
+				if(modeString.equals("stop")  && !sig.getStatus().getUpload())
+					this.stop();
+				if(modeString.equals("stop")  && !sig.getStatus().getDone())
+					this.reset();
+				
+			} else {
+				sig.setConnected(false);
+			}
+		}
 	}
 }

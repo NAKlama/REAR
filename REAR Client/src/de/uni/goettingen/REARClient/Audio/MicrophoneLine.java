@@ -42,8 +42,6 @@ public class MicrophoneLine {
 		{
 			lineOpen = false;
 			System.out.println("Unable to get a recording line");
-			e.printStackTrace();
-			System.exit(1);
 		}
 	}
 	
@@ -52,6 +50,9 @@ public class MicrophoneLine {
 	}
 	
 	public TargetDataLine getLine() {
-		return tDataLine;
+		if(lineOpen)
+			return tDataLine;
+		else
+			return null;
 	}
 }
