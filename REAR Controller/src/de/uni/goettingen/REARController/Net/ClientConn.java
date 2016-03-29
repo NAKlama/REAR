@@ -7,7 +7,7 @@ import java.io.InputStreamReader;
 import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.util.Date;
+//import java.util.Date;
 
 import de.uni.goettingen.REARController.DataStruct.ClientStatus;
 
@@ -19,15 +19,17 @@ public class ClientConn implements Runnable {
 	private BufferedReader		in;
 	private AuthToken			token;
 	private String				salt;
-	private Date				connectCheckTime;
+//	private Date				connectCheckTime;
 	private NetConnSignal		sig;
 	private String				modeString;
+	private String				pubKey;
 	
 	private Boolean				loop = true;
 
 	public ClientConn(NetConnSignal s) {
 		modeString = "None";
-		connectCheckTime = null;
+//		connectCheckTime = null;
+		pubKey = null;
 		connect = false;
 		sig = s;
 		ip  = sig.getIPR();
@@ -40,8 +42,9 @@ public class ClientConn implements Runnable {
 	private Boolean checkConnection() {
 		if(connect)
 			return true;
-		if(connectCheckTime == null || (new Date()).getTime() - connectCheckTime.getTime() > (60 * 1000)) {
-			connectCheckTime = new Date();
+		//if(connectCheckTime == null || (new Date()).getTime() - connectCheckTime.getTime() > (60 * 1000)) {
+		//	connectCheckTime = new Date();
+		else {
 			try {
 				sock	= new Socket(ip.getAddress(), 15000);
 				out		= new DataOutputStream(sock.getOutputStream());
@@ -98,9 +101,11 @@ public class ClientConn implements Runnable {
 	}
 
 	public String getPubKey() {
-		if(checkConnection())
-			return getReply("GETPUBKEY\n").trim();
-		return null;
+		if(pubKey == null) {
+			if(checkConnection())
+				pubKey = getReply("GETPUBKEY\n").trim();
+		}
+		return pubKey;
 	}
 
 	public String getID() {
@@ -191,13 +196,13 @@ public class ClientConn implements Runnable {
 
 	private String getReply(String c) {
 		try {
-			System.out.println("> " + c.trim());
+//			System.out.println("> " + c.trim());
 			out.writeBytes(new String(c));
 			String reply = in.readLine();
 			if(in.ready()) {
 				in.readLine();
 			}
-			System.out.println("< " + reply);
+//			System.out.println("< " + reply);
 			return reply;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -253,17 +258,15 @@ public class ClientConn implements Runnable {
 		while(loop) {
 			try {
 				synchronized(sig) {
-					sig.wait(1000);
+					sig.wait(10000);
 				}
 			} catch (InterruptedException e) {
 			}
 			if(this.isReachable()) {
 				String command = null;
-				synchronized(sig) {
 					sig.setConnected(true);
 					if(sig.hasCommands())
 						command = new String(sig.popCommand());
-				}
 				
 				if(command != null) {
 					System.out.println("Got command: " + command);

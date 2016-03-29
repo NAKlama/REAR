@@ -9,10 +9,10 @@ import java.net.UnknownHostException;
 public class IPreachable implements Serializable {
 
 	private static final long serialVersionUID = 7951754742903794194L;
-	private InetAddress ip;
-	private Boolean		reachable;
-	private String		ipString;
-
+	private InetAddress		ip;
+	private Boolean			reachable;
+	private String			ipString;
+	private NetConnSignal	connSig;
 	
 	public IPreachable(String ips) {
 		ipString		= ips;
@@ -45,11 +45,19 @@ public class IPreachable implements Serializable {
 	}
 	
 	public boolean isReachable() {
+		if(!reachable) {
+			if(connSig.isReachable())
+				reachable = true;
+		}
 		return reachable;
 	}
 	
 	public void setReachable(Boolean r) {
 		reachable = r;
+	}
+	
+	public void setConnection(NetConnSignal cS) {
+		connSig = cS;
 	}
 	
 	private void writeObject(ObjectOutputStream out) throws IOException {

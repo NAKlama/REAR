@@ -523,10 +523,10 @@ public class MainWindow implements ActionListener {
 				FileInputStream		fileIn	= new FileInputStream(file);
 				ObjectInputStream	objIn	= new ObjectInputStream(fileIn);
 				FileDataObject o = (FileDataObject) objIn.readObject();
-				panelTree.setRootNode(AreaTreeNode.loadSaveObject(o.tree));
-				table.setTable(MachinesTable.loadSaveObject(o.table));
 				objIn.close();
 				fileIn.close();
+				panelTree.setRootNode(AreaTreeNode.loadSaveObject(o.tree));
+				table.setTable(MachinesTable.loadSaveObject(o.table));
 				System.out.println(o.table.size());
 				btnSaveFile.setEnabled(true);
 			} catch (FileNotFoundException e) {

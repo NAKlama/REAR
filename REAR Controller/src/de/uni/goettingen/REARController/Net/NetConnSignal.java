@@ -31,6 +31,7 @@ public class NetConnSignal {
 	private Object			eidLock			= new Object();
 	private Object			serverLock		= new Object();
 	private Object			playFileLock	= new Object();
+	private Object			sleepLock		= new Object();
 
 	
 	NetConnSignal(IPreachable ip) {
@@ -43,6 +44,10 @@ public class NetConnSignal {
 		commands	= new Stack<String>();
 		conThread	= new Thread(new ClientConn(this));
 		conThread.start();
+	}
+	
+	public Object getSleepLock() {
+		return sleepLock;
 	}
 	
 	public String popCommand() {

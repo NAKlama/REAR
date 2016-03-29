@@ -19,7 +19,6 @@ public class NetConnections {
 	private ConcurrentHashMap<Long, NetConnSignal>	connMap;
 	private ConcurrentHashMap<Long, String> 		recTimeMap;
 	private ConcurrentHashMap<Long, ClientStatus>	statusMap;
-	private ConcurrentHashMap<Long, String>			clientSSHkeys;
 	
 	private PushSSHkeys sshPush;
 
@@ -29,7 +28,6 @@ public class NetConnections {
 		ipMap			= new ConcurrentHashMap<Long, IPreachable>();
 		recTimeMap		= new ConcurrentHashMap<Long, String>();
 		statusMap		= new ConcurrentHashMap<Long, ClientStatus>();
-		clientSSHkeys	= new ConcurrentHashMap<Long, String>();
 		sshPush 		= null;
 	}
 
@@ -41,9 +39,10 @@ public class NetConnections {
 			if(ipr != null) {
 				InetAddress	ip	= ipr.getAddress();
 				if(ip != null && !(clientIDs.contains(id) && ipMap.containsKey(id) && ip.equals(ipMap.get(id).getAddress()))) {
-					System.out.println(ip);
+					System.out.println(">>>> " + id + " >>>>   " + ip);
 					if(!clientIDs.contains(id)) 
 						clientIDs.add(id);
+					ipMap.put(id, ipr);
 					NetConnSignal c = connMap.get(id);
 					if(c == null || !c.isReachable()) {
 						c = new NetConnSignal(ipr);
@@ -51,8 +50,6 @@ public class NetConnections {
 					}
 					if(c != null && c.isReachable()) {
 						ipr.setReachable(true);
-						ipMap.put(id, ipr);
-						clientSSHkeys.put(id, new String(c.getPubKey()));
 					}
 				}
 			}
@@ -62,7 +59,7 @@ public class NetConnections {
 	private Vector<String> getPubKeys() {
 		Vector<String> out = new Vector<String>();
 		for(long id : clientIDs) {
-			out.add(clientSSHkeys.get(id));
+			out.add(connMap.get(id).getPubKey());
 		}
 		return out;
 	}
