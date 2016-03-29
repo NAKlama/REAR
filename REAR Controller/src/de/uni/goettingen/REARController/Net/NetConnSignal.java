@@ -20,6 +20,17 @@ public class NetConnSignal {
 	private String			eid;
 	private String[]		server;
 	private String			playFile;
+	
+	private Object			commandLock		= new Object();
+	private Object			connectedLock	= new Object();
+	private Object			recTimeLock		= new Object();
+	private Object			statusLock		= new Object();
+	private Object			iprLock			= new Object();
+	private Object			pubKeyLock		= new Object();
+	private Object			idLock			= new Object();
+	private Object			eidLock			= new Object();
+	private Object			serverLock		= new Object();
+	private Object			playFileLock	= new Object();
 
 	
 	NetConnSignal(IPreachable ip) {
@@ -34,113 +45,171 @@ public class NetConnSignal {
 		conThread.start();
 	}
 	
-	public synchronized String popCommand() {
-		if(!commands.empty()) {
-			return commands.pop();
+	public String popCommand() {
+		synchronized(commandLock) {
+			if(!commands.empty()) {
+				return commands.pop();
+			}
 		}
 		return null;
 	}
 	
-	public synchronized IPreachable getIPR() {
-		return ipr;
+	public IPreachable getIPR() {
+		synchronized(iprLock) {
+			return ipr;
+		}
 	}
 	
-	public synchronized Boolean hasCommands() {
-		return ! commands.empty();
+	public Boolean hasCommands() {
+		synchronized(commandLock) {
+			return ! commands.empty();
+		}
 	}
 	
-	public synchronized void setStatus(ClientStatus s) {
-		status = new ClientStatus(s);
+	public void setStatus(ClientStatus s) {
+		synchronized(statusLock) {
+			status = new ClientStatus(s);
+		}
 	}
 	
-	public synchronized ClientStatus getStatus() {
-		return status;
+	public ClientStatus getStatus() {
+		synchronized(statusLock) {
+			return status;
+		}
 	}
 	
-	public synchronized void setPubKey(String pk) {
-		pubKey = new String(pk);
+	public void setPubKey(String pk) {
+		synchronized(pubKeyLock) {
+			pubKey = new String(pk);
+		}
 	}
 	
-	public synchronized String getPubKey() {
-		return pubKey;
+	public String getPubKey() {
+		synchronized(pubKeyLock) {
+			return pubKey;
+		}
 	}
 	
-	public synchronized InetAddress getIP() {
-		return ipr.getAddress();
+	public InetAddress getIP() {
+		synchronized(iprLock) {
+			return ipr.getAddress();
+		}
 	}
 	
-	public synchronized String getID() {
-		return id;
+	public String getID() {
+		synchronized(idLock) {
+			return id;
+		}
 	}
 	
-	public synchronized void setID(String i) {
-		id = new String(i);
-		commands.push("ID");
+	public void setID(String i) {
+		synchronized(idLock) {
+			id = new String(i);
+		}
+		synchronized(commandLock) {
+			commands.push("ID");
+		}
 		this.notifyAll();
 	}
 	
-	public synchronized String getExamID() {
-		return eid;
+	public String getExamID() {
+		synchronized(eidLock) {
+			return eid;
+		}
 	}
 	
-	public synchronized void setExamID(String i) {
-		eid = new String(i);
-		commands.push("EID");
+	public void setExamID(String i) {
+		synchronized(eidLock) {
+			eid = new String(i);
+		}
+		synchronized(commandLock) {
+			commands.push("EID");
+		}
 		this.notifyAll();
 	}
 	
-	public synchronized Boolean getConnected() {
-		return connected;
+	public Boolean getConnected() {
+		synchronized(connectedLock) {
+			return connected;
+		}
 	}
 	
-	public synchronized Boolean isReachable() {
-		return connected;
+	public Boolean isReachable() {
+		synchronized(connectedLock) {
+			return connected;
+		}
 	}
 	
-	public synchronized void setConnected(Boolean c) {
-		connected = c;
+	public void setConnected(Boolean c) {
+		synchronized(connectedLock) {
+			connected = c;
+		}
 	}
 	
-	public synchronized void setServer(String s, String u) {
-		server[0] = new String(s);
-		server[1] = new String(u);
-		commands.push("SetServer");
+	public void setServer(String s, String u) {
+		synchronized(serverLock) {
+			server[0] = new String(s);
+			server[1] = new String(u);
+		}
+		synchronized(commandLock) {
+			commands.push("SetServer");
+		}
 	}
 	
-	public synchronized String[] getServer() {	
-		return server;
+	public String[] getServer() {
+		synchronized(serverLock) {
+			return server;
+		}
 	}
 	
-	public synchronized void setTime(String t) {
-		recTime = new String(t);
+	public void setTime(String t) {
+		synchronized(recTimeLock) {
+			recTime = new String(t);
+		}
 	}
 	
-	public synchronized String getTime() {
-		return recTime;
+	public String getTime() {
+		synchronized(recTimeLock) {
+			return recTime;
+		}
 	}
 	
-	public synchronized void setPlayFile(String URL) {
-		playFile = new String(URL);
-		commands.push("playFile");
+	public void setPlayFile(String URL) {
+		synchronized(playFileLock) {
+			playFile = new String(URL);
+		}
+		synchronized(commandLock) {
+			commands.push("playFile");
+		}
 	}
 	
-	public synchronized String getPlayFile() {
-		return playFile;
+	public String getPlayFile() {
+		synchronized(playFileLock) {
+			return playFile;
+		}
 	}
 	
-	public synchronized void init() {
-		commands.push("init");
+	public void init() {
+		synchronized(commandLock) {
+			commands.push("init");
+		}
 	}
 	
-	public synchronized void rec() {
-		commands.push("rec");
+	public void rec() {
+		synchronized(commandLock) {
+			commands.push("rec");
+		}
 	}
 	
-	public synchronized void stop() {
-		commands.push("stop");
+	public void stop() {
+		synchronized(commandLock) {
+			commands.push("stop");
+		}
 	}
 	
-	public synchronized void reset() {
-		commands.push("reset");
+	public void reset() {
+		synchronized(commandLock) {
+			commands.push("reset");
+		}
 	}
 }
