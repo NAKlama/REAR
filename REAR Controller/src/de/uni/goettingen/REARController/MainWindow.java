@@ -59,7 +59,7 @@ public class MainWindow implements ActionListener {
 	private int 			step = 0;
 	private ClientStatus	mode;
 
-	private Boolean		editMode = true;		
+	private Boolean		editMode = true;
 
 	private JToolBar	toolBarMain;
 
@@ -75,6 +75,7 @@ public class MainWindow implements ActionListener {
 	private JButton		btnExamMode;
 	private JButton		btnEditMode;
 	private JButton		btnNextStep;
+	private JButton		btnReset;
 	private JButton		btnInfo;	
 
 	private JLabel		lblStoppedState;
@@ -258,6 +259,15 @@ public class MainWindow implements ActionListener {
 		chckbxAllowStopp.setVerticalTextPosition(SwingConstants.BOTTOM);
 		chckbxAllowStopp.setHorizontalTextPosition(SwingConstants.CENTER);
 		chckbxAllowStopp.setVisible(false);
+		
+		btnReset = new JButton("Reset");
+		btnReset.setVisible(false);
+		btnReset.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/32/reload.png")));
+		btnReset.setVerticalTextPosition(SwingConstants.BOTTOM);
+		btnReset.setToolTipText("Reset");
+		btnReset.setHorizontalTextPosition(SwingConstants.CENTER);
+		btnReset.setActionCommand("Next");
+		toolBarMain.add(btnReset);
 		toolBarMain.add(chckbxAllowStopp);
 		
 		horizontalGlue_3 = Box.createHorizontalGlue();
@@ -445,6 +455,15 @@ public class MainWindow implements ActionListener {
 				step = 0;
 		}
 		frmREAR.repaint();
+	}
+	
+	public void reset() {
+		if(chckbxAllowStopp.isSelected()) {
+			chckbxAllowStopp.setSelected(false);
+			chckbxAllowStopp.setVisible(false);
+			table.reset();
+			step = 0;
+		}
 	}
 
 	public void newFile() {
