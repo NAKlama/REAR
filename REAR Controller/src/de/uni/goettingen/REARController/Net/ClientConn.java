@@ -34,9 +34,9 @@ public class ClientConn implements Runnable {
 		sig = s;
 		ip  = sig.getIPR();
 		token = new AuthToken();
-		if(this.checkConnection()) {
-			sig.setPubKey(this.getPubKey());
-		}
+//		if(this.checkConnection()) {
+//			sig.setPubKey(this.getPubKey());
+//		}
 	}
 
 	private Boolean checkConnection() {
@@ -51,6 +51,7 @@ public class ClientConn implements Runnable {
 				in		= new BufferedReader(new InputStreamReader(sock.getInputStream()));
 				sock.setKeepAlive(true);
 				connect = true;
+				sig.setConnected(true);
 				ip.setReachable(true);
 				salt	= getSalt();
 			} catch (ConnectException e) {
@@ -88,6 +89,10 @@ public class ClientConn implements Runnable {
 
 	public InetAddress getIP() {
 		return ip.getAddress();
+	}
+	
+	public IPreachable getIPR() {
+		return ip;
 	}
 
 	public Boolean isReachable() {
@@ -196,13 +201,15 @@ public class ClientConn implements Runnable {
 
 	private String getReply(String c) {
 		try {
-//			System.out.println("> " + c.trim());
+			if(!c.equals("STATUS") && !c.equals("RECTIME"))
+				System.out.println("> " + c.trim());
 			out.writeBytes(new String(c));
 			String reply = in.readLine();
 			if(in.ready()) {
 				in.readLine();
 			}
-//			System.out.println("< " + reply);
+			if(!c.equals("STATUS") && !c.equals("RECTIME"))
+				System.out.println("< " + reply);
 			return reply;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -255,6 +262,9 @@ public class ClientConn implements Runnable {
 
 	@Override
 	public void run() {
+		if(this.checkConnection()) {
+			sig.setPubKey(this.getPubKey());
+		}
 		while(loop) {
 			try {
 				synchronized(sig) {
@@ -307,6 +317,7 @@ public class ClientConn implements Runnable {
 				
 			} else {
 				sig.setConnected(false);
+				this.checkConnection();
 			}
 		}
 	}

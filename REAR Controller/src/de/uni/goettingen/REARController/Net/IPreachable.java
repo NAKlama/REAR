@@ -17,6 +17,7 @@ public class IPreachable implements Serializable {
 	public IPreachable(String ips) {
 		ipString		= ips;
 		reachable		= false;
+		connSig			= null;
 		try {
 			ip 			= InetAddress.getByName(ips);
 		} catch (UnknownHostException e) {
@@ -28,12 +29,14 @@ public class IPreachable implements Serializable {
 		ipString		= ipArg.getHostAddress();
 		reachable		= false;
 		ip				= ipArg;
+		connSig			= null;
 	}
 	
 	public IPreachable(IPreachable ipr) {
 		ip			= ipr.ip;
 		reachable	= ipr.reachable;
 		ipString	= ipr.ipString;
+		connSig		= ipr.connSig;
 	}
 
 	public InetAddress getAddress() {
@@ -46,7 +49,7 @@ public class IPreachable implements Serializable {
 	
 	public boolean isReachable() {
 		if(!reachable) {
-			if(connSig.isReachable())
+			if(connSig != null && connSig.isReachable())
 				reachable = true;
 		}
 		return reachable;

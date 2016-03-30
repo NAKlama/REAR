@@ -36,6 +36,7 @@ public class NetConnSignal {
 	
 	NetConnSignal(IPreachable ip) {
 		ipr			= new IPreachable(ip);
+		ipr.setConnection(this);
 		pubKey		= null;
 		id			= null;
 		eid			= null;
@@ -114,7 +115,9 @@ public class NetConnSignal {
 		synchronized(commandLock) {
 			commands.push("ID");
 		}
-		this.notifyAll();
+		synchronized(this) {
+			this.notifyAll();
+		}
 	}
 	
 	public String getExamID() {
@@ -130,7 +133,9 @@ public class NetConnSignal {
 		synchronized(commandLock) {
 			commands.push("EID");
 		}
-		this.notifyAll();
+		synchronized(this) {
+			this.notifyAll();
+		}
 	}
 	
 	public Boolean getConnected() {
