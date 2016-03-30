@@ -15,21 +15,19 @@ import de.uni.goettingen.REARController.DataStruct.Serializable.SerMachinesTable
 
 public class NetConnections {
 	private Vector<Long>							clientIDs;
-	private ConcurrentHashMap<Long, IPreachable>	ipMap;
+//	private ConcurrentHashMap<Long, IPreachable>	ipMap;
 	private ConcurrentHashMap<Long, NetConnSignal>	connMap;
 	private ConcurrentHashMap<Long, String> 		recTimeMap;
 	private ConcurrentHashMap<Long, ClientStatus>	statusMap;
-	private ConcurrentHashMap<Long, String>			clientSSHkeys;
 	
 	private PushSSHkeys sshPush;
 
 	public NetConnections() {
 		clientIDs		= new Vector<Long>();
 		connMap			= new ConcurrentHashMap<Long, NetConnSignal>();
-		ipMap			= new ConcurrentHashMap<Long, IPreachable>();
+//		ipMap			= new ConcurrentHashMap<Long, IPreachable>();
 		recTimeMap		= new ConcurrentHashMap<Long, String>();
 		statusMap		= new ConcurrentHashMap<Long, ClientStatus>();
-		clientSSHkeys	= new ConcurrentHashMap<Long, String>();
 		sshPush 		= null;
 	}
 
@@ -40,20 +38,25 @@ public class NetConnections {
 			IPreachable ipr = new IPreachable((IPreachable) m.get(2));
 			if(ipr != null) {
 				InetAddress	ip	= ipr.getAddress();
-				if(ip != null && !(clientIDs.contains(id) && ipMap.containsKey(id) && ip.equals(ipMap.get(id).getAddress()))) {
-					System.out.println(ip);
+				if(ip != null && !clientIDs.contains(id)) {
+					System.out.println(">>>> " + id + " >>>>   " + ip);
+//					if(ipMap.containsKey(id))
+//						System.out.println("    => " + ip.equals(ipMap.get(id).getAddress()));
 					if(!clientIDs.contains(id)) 
 						clientIDs.add(id);
+
 					NetConnSignal c = connMap.get(id);
 					if(c == null || !c.isReachable()) {
+						System.out.print("   Connecting...");
 						c = new NetConnSignal(ipr);
 						connMap.put(id, c);
+						System.out.println("connected");
 					}
+					System.out.print("   Checking reachability...");
 					if(c != null && c.isReachable()) {
 						ipr.setReachable(true);
-						ipMap.put(id, ipr);
-						clientSSHkeys.put(id, new String(c.getPubKey()));
 					}
+					System.out.println("done");
 				}
 			}
 		}
@@ -62,7 +65,7 @@ public class NetConnections {
 	private Vector<String> getPubKeys() {
 		Vector<String> out = new Vector<String>();
 		for(long id : clientIDs) {
-			out.add(clientSSHkeys.get(id));
+			out.add(connMap.get(id).getPubKey());
 		}
 		return out;
 	}
@@ -134,7 +137,7 @@ public class NetConnections {
 	
 	public void clearData() {
 		clientIDs	= new Vector<Long>();
-		ipMap		= new ConcurrentHashMap<Long, IPreachable>();
+//		ipMap		= new ConcurrentHashMap<Long, IPreachable>();
 		connMap		= new ConcurrentHashMap<Long, NetConnSignal>();
 		recTimeMap	= new ConcurrentHashMap<Long, String>();
 		statusMap	= new ConcurrentHashMap<Long, ClientStatus>();
@@ -146,12 +149,12 @@ public class NetConnections {
 
 	public InetAddress getIP(long id) {
 		if(connMap.get(id).isReachable())
-			return ipMap.get(id).getAddress();
+			return connMap.get(id).getIP();
 		return null;
 	}
 	
 	public IPreachable getIPR(long id) {
-		return ipMap.get(id);
+		return connMap.get(id).getIPR();
 	}
 
 	public void setIP(long id, InetAddress ip) {
@@ -160,7 +163,6 @@ public class NetConnections {
 		IPreachable ipr = new IPreachable(ip);
 		NetConnSignal c = new NetConnSignal(ipr);
 		connMap.put(id, c);
-		ipMap.put(id, ipr);
 	}
 
 	public ClientStatus getStatus(long id) {
@@ -168,7 +170,7 @@ public class NetConnections {
 			return null;
 		}
 		if(connMap.get(id).isReachable()) {
-			IPreachable ipr = ipMap.get(id);
+			IPreachable ipr = connMap.get(id).getIPR();
 			if(ipr != null)
 				ipr.setReachable(true);
 		}
@@ -199,7 +201,8 @@ public class NetConnections {
 					out.or(status);
 				}
 				String			recTime = conn.getTime();
-				recTimeMap.put(id, new String(recTime));
+				if(recTime != null)
+					recTimeMap.put(id, new String(recTime));
 				
 			}
 		}
