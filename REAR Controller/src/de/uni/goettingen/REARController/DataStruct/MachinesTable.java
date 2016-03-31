@@ -12,7 +12,7 @@ import de.uni.goettingen.REARController.Net.IPreachable;
 
 public class MachinesTable extends AbstractTableModel implements TableModel {
 	private static final long serialVersionUID = 3569965886668818735L;
-	private final static int		COL_NUM			= 8;
+	private final static int		COL_NUM			= 6;
 	private final static int		COL_NUM_REAL	= 8;
 	private final static String []	COLUMN_NAMES 	=
 		{	"Computer ID",	// 0
