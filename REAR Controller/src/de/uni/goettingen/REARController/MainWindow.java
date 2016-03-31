@@ -259,12 +259,12 @@ public class MainWindow implements ActionListener {
 		chckbxAllowStopp.setVisible(false);
 		
 		btnReset = new JButton("Reset");
+		btnReset.setActionCommand("Reset");
 		btnReset.setVisible(false);
 		btnReset.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/32/reload.png")));
 		btnReset.setVerticalTextPosition(SwingConstants.BOTTOM);
 		btnReset.setToolTipText("Reset");
 		btnReset.setHorizontalTextPosition(SwingConstants.CENTER);
-		btnReset.setActionCommand("Next");
 		toolBarMain.add(btnReset);
 		toolBarMain.add(chckbxAllowStopp);
 		
@@ -420,6 +420,7 @@ public class MainWindow implements ActionListener {
 				esd = new ExamStartDialog(studCount);
 				esd.addListener(listener);
 				esd.setVisible(true);
+				btnReset.setVisible(true);
 			}
 			else
 				nextStep = false;
@@ -444,6 +445,7 @@ public class MainWindow implements ActionListener {
 		case 3:
 			btnNextStep.setIcon(iconNext);
 			btnNextStep.setEnabled(false);
+			btnReset.setVisible(false);
 			table.reset();
 			break;
 		}
@@ -455,23 +457,24 @@ public class MainWindow implements ActionListener {
 		frmREAR.repaint();
 	}
 	
-	public void reset() {
+	private void reset() {
 		if(chckbxAllowStopp.isSelected()) {
 			chckbxAllowStopp.setSelected(false);
 			chckbxAllowStopp.setVisible(false);
+			btnReset.setVisible(false);
 			table.reset();
 			step = 0;
 		}
 	}
 
-	public void newFile() {
+	private void newFile() {
 		panelTree.newEmpty();
 		table.newEmpty();
 		file = null;
 		btnSaveFile.setEnabled(false);
 	}
 
-	public void saveFile() {
+	private void saveFile() {
 		try {
 			FileOutputStream	fileOut	= new FileOutputStream(file);
 			ObjectOutputStream	objOut	= new ObjectOutputStream(fileOut);
@@ -492,7 +495,7 @@ public class MainWindow implements ActionListener {
 		}
 	}
 
-	public void saveAsFile() {
+	private void saveAsFile() {
 		fileChooser = new JFileChooser();
 		fileChooser.setFileFilter(new RearFileFilter());
 		int returnVal = fileChooser.showSaveDialog(btnSaveAsFile);
@@ -508,7 +511,7 @@ public class MainWindow implements ActionListener {
 		saveFile();
 	}
 
-	public void loadFile() {
+	private void loadFile() {
 		fileChooser = new JFileChooser();
 		fileChooser.setFileFilter(new RearFileFilter());
 		int returnVal = fileChooser.showOpenDialog(btnSaveAsFile);
@@ -565,6 +568,8 @@ public class MainWindow implements ActionListener {
 				toggleEdit();
 			else if(cmd.equals("Next"))
 				next();
+			else if(cmd.equals("Reset"))
+				reset();
 			else if(cmd.equals("Info")) {
 				InfoDialog infoDialog = new InfoDialog();
 				infoDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);

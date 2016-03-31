@@ -312,9 +312,8 @@ public class ClientConn implements Runnable {
 					this.rec();
 				if(modeString.equals("stop")  && !sig.getStatus().getUpload())
 					this.stop();
-				if(modeString.equals("stop")  && !sig.getStatus().getDone())
+				if(modeString.equals("reset"))
 					this.reset();
-				
 			} else {
 				sig.setConnected(false);
 				this.checkConnection();
