@@ -12,6 +12,7 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+
 public class PlayerThread implements Runnable {
 
 	private AudioFileFormat			fileFormat = null;
@@ -32,7 +33,7 @@ public class PlayerThread implements Runnable {
 			fileFormat 		= AudioSystem.getAudioFileFormat(flacFile);
 			audioFormat		= fileFormat.getFormat();
 //			type			= fileFormat.getType();
-
+			
 			inS 			= AudioSystem.getAudioInputStream(flacFile);
 			decodedFormat	= new AudioFormat(	AudioFormat.Encoding.PCM_SIGNED,
 					audioFormat.getSampleRate(),
@@ -40,7 +41,8 @@ public class PlayerThread implements Runnable {
 					audioFormat.getChannels(),
 					audioFormat.getChannels() * 2,
 					audioFormat.getSampleRate(),
-					false );
+					false );			
+			System.out.println("Created player thread");
 		} catch (UnsupportedAudioFileException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -97,8 +99,10 @@ public class PlayerThread implements Runnable {
 	
 	@Override
 	public void run() {
+		System.out.println("Runnin Player thread");
 		player.setPlaying(true);
 		dinS	= AudioSystem.getAudioInputStream(decodedFormat, inS);
+//		dinS = inS;
 		rawplay(decodedFormat, dinS);
 		player.setPlaying(false);
 		try {

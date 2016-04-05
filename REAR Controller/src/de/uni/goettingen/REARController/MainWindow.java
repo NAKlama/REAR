@@ -421,6 +421,7 @@ public class MainWindow implements ActionListener {
 				esd.addListener(listener);
 				esd.setVisible(true);
 				btnReset.setVisible(true);
+				chckbxAllowStopp.setVisible(true);
 			}
 			else
 				nextStep = false;
@@ -428,7 +429,6 @@ public class MainWindow implements ActionListener {
 		case 1:
 			btnNextStep.setIcon(iconStop);
 			btnNextStep.setEnabled(false);
-			chckbxAllowStopp.setVisible(true);
 			table.rec();
 			break;
 		case 2:

@@ -58,9 +58,9 @@ public class ExamStartDialog extends JDialog {
 		}
 		{
 			textAudioURL = new JTextField();
-			textAudioURL.setText("http://URL/audio/");
 			textAudioURL.setEnabled(false);
 			textAudioURL.setEditable(false);
+			textAudioURL.setText("http://ilias-intern.wiso.uni-goettingen.de/pi.mp3");
 			contentPanel.add(textAudioURL, "cell 1 2,growx");
 			textAudioURL.setColumns(10);
 		}
@@ -137,6 +137,7 @@ public class ExamStartDialog extends JDialog {
 		public void stateChanged(ChangeEvent e) {
 			JCheckBox source = (JCheckBox) e.getSource();
 			url.setEnabled(source.isSelected());
+			url.setEditable(source.isSelected());
 		}
 	}
 }
