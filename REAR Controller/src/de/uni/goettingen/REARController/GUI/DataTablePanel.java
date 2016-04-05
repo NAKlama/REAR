@@ -156,6 +156,10 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 	public void setPlayFile(String URL) {
 		connections.setPlayFile(URL);
 	}
+	
+	public void setPlayOnly() {
+		connections.setPlayOnly();
+	}
 
 	public ClientStatus getStatus() {
 		return connections.getStatus();

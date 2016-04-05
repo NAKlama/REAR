@@ -48,7 +48,7 @@ public class MainWindow implements ActionListener {
 	public  static final String PROGRAM_NAME	= "REAR Controller";
 	private static final int	MajorVersion 	= 0;
 	private static final int	MedVersion		= 3;
-	private static final int	MinorVersion	= 1;
+	private static final int	MinorVersion	= 2;
 	
 	private JFrame frmREAR;
 
@@ -583,7 +583,6 @@ public class MainWindow implements ActionListener {
 			else if(cmd.equals("SaveAsFile"))
 				saveAsFile();
 			else if(cmd.equals("ExamID_OK")) {
-				@SuppressWarnings("unused")
 				Boolean	play, record;
 				String	examID, playFileURL;
 				play	= esd.getPlay();
@@ -596,8 +595,11 @@ public class MainWindow implements ActionListener {
 				esd.setVisible(false);
 				if(examID != null && ! examID.equals("")) {
 					table.setExamID(examID);
-					if(play)
+					if(play) {
 						table.setPlayFile(playFileURL);
+						if(!record) 
+							table.setPlayOnly();
+					}
 					table.setServer(prop.getUploadServer(), prop.getUploadUser());
 					table.init();
 					btnNextStep.setIcon(iconRec);

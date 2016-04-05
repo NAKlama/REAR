@@ -135,6 +135,12 @@ public class NetConnections {
 		}
 	}
 	
+	public void setPlayOnly() {
+		for(long id: clientIDs) {
+			connMap.get(id).setPlayOnly();
+		}
+	}
+	
 	public void clearData() {
 		clientIDs	= new Vector<Long>();
 //		ipMap		= new ConcurrentHashMap<Long, IPreachable>();

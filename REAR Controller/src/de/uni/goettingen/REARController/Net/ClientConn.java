@@ -105,7 +105,7 @@ public class ClientConn implements Runnable {
 		return null;
 	}
 
-	public String getPubKey() {
+	private String getPubKey() {
 		if(pubKey == null) {
 			if(checkConnection())
 				pubKey = getReply("GETPUBKEY\n").trim();
@@ -113,21 +113,21 @@ public class ClientConn implements Runnable {
 		return pubKey;
 	}
 
-	public String getID() {
+	private String getID() {
 		if(checkConnection())
 			return getReply("ID\n").trim();
 		return null;
 	}
 	
 
-	public String getExamID() {
+	private String getExamID() {
 		if(checkConnection())
 			return getReply("EXAMID\n").trim();
 		return null;
 	}
 
 
-	public boolean setID(String id) {
+	private boolean setID(String id) {
 		if(checkConnection()) {
 			String sendID = id.replaceAll("\\s", "_");
 			String reply = getReply("ID " + sendID + "\n").trim();
@@ -137,7 +137,7 @@ public class ClientConn implements Runnable {
 		return false;
 	}
 
-	public boolean setExamID(String eID) {
+	private boolean setExamID(String eID) {
 		if(checkConnection()) {
 			String reply = getReply("EXAMID " + eID + "\n").trim();
 			if(reply.equals("OK"))
@@ -146,9 +146,16 @@ public class ClientConn implements Runnable {
 		return false;		
 	}
 	
-	public boolean setPlayFile(String URL) {
+	private boolean setPlayFile(String URL) {
 		if(checkConnection()) {
 			return sendAuthCommandOpt("PLAYFILE", URL);
+		}
+		return false;
+	}
+	
+	private boolean setPlayOnly() {
+		if(checkConnection()) {
+			return sendAuthCommand("PLAYONLY");
 		}
 		return false;
 	}
@@ -159,37 +166,37 @@ public class ClientConn implements Runnable {
 		return null;
 	}
 
-	public String getTime() {
+	private String getTime() {
 		if(checkConnection())
 			return getReply("RECTIME\n");
 		return null;
 	}
 
-	public boolean init() {
+	private boolean init() {
 		if(checkConnection())
 			return sendAuthCommand("INIT");
 		return false;
 	}
 
-	public boolean rec() {
+	private boolean rec() {
 		if(checkConnection())
 			return sendAuthCommand("REC");
 		return false;
 	}
 
-	public boolean stop() {
+	private boolean stop() {
 		if(checkConnection())
 			return sendAuthCommand("STOP");
 		return false;
 	}
 
-	public boolean reset() {
+	private boolean reset() {
 		if(checkConnection())
 			return sendAuthCommand("RESET");
 		return false;
 	}
 
-	public boolean setServer(String uploadServer, String uploadUser) {
+	private boolean setServer(String uploadServer, String uploadUser) {
 		if(checkConnection()) {
 			boolean a, b;
 			a = sendAuthParCommand("UPLOADSERVER", uploadServer);
@@ -300,6 +307,8 @@ public class ClientConn implements Runnable {
 						loop = false;
 					if(command.equals("playFile"))
 						setPlayFile(sig.getPlayFile());
+					if(command.equals("playOnly"))
+						setPlayOnly();
 				}
 				sig.setStatus(this.status());
 				sig.setTime(this.getTime());
