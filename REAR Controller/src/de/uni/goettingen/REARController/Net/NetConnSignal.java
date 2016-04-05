@@ -199,6 +199,12 @@ public class NetConnSignal {
 		}
 	}
 	
+	public void setPlayOnly() {
+		synchronized(commandLock) {
+			commands.push("playOnly");
+		}
+	}
+	
 	public void init() {
 		synchronized(commandLock) {
 			commands.push("init");

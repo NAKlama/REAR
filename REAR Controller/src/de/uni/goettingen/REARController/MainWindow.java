@@ -585,7 +585,6 @@ public class MainWindow implements ActionListener {
 			else if(cmd.equals("SaveAsFile"))
 				saveAsFile();
 			else if(cmd.equals("ExamID_OK")) {
-				@SuppressWarnings("unused")
 				Boolean	play, record;
 				String	examID, playFileURL;
 				play	= esd.getPlay();
@@ -598,8 +597,11 @@ public class MainWindow implements ActionListener {
 				esd.setVisible(false);
 				if(examID != null && ! examID.equals("")) {
 					table.setExamID(examID);
-					if(play)
+					if(play) {
 						table.setPlayFile(playFileURL);
+						if(!record) 
+							table.setPlayOnly();
+					}
 					table.setServer(prop.getUploadServer(), prop.getUploadUser());
 					table.init();
 					btnNextStep.setIcon(iconRec);
