@@ -692,6 +692,9 @@ public class MainWindow implements ActionListener {
 				lblDone.setIcon(iconOk);
 			else
 				lblDone.setIcon(iconOkGray);
+			
+			if(mode.getDone() && ! mode.getRec() && ! mode.getUpload())
+				step = 3;
 
 			switch(step) {
 			case 0:

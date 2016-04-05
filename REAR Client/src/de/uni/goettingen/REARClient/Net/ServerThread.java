@@ -121,6 +121,8 @@ public class ServerThread implements Runnable {
 					signal.checkMicrophone();
 				else if(message.get(0).equals("PLAYFILE"))
 					fetchAudioFile(message);
+				else if(message.get(0).equals("PLAYONLY"))
+					playOnly(message);
 			}
 		} catch(NullPointerException e) {
 			; // Do nothing
@@ -177,6 +179,16 @@ public class ServerThread implements Runnable {
 				if(tokenCheck(message.get(2).trim(), message.get(0), remoteAddr, Arrays.asList(0))) {
 					signal.setAudioFileURL(message.get(1));
 					signal.activatePlayAudio();
+				}
+			}
+		}
+	}
+	
+	private void playOnly(ArrayList<String> message) throws IOException {
+		if(message.size() > 1) {
+			synchronized(signal) {
+				if(tokenCheck(message.get(1).trim(), message.get(0), remoteAddr, Arrays.asList(0))) {
+					signal.activatePlayNoRecord();
 				}
 			}
 		}

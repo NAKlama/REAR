@@ -304,6 +304,14 @@ public class ClientConn implements Runnable {
 				sig.setStatus(this.status());
 				sig.setTime(this.getTime());
 				
+				Boolean isInit		= modeString.equals("init")  && sig.getStatus().getInit();
+				Boolean isRec		= modeString.equals("rec")   && sig.getStatus().getRec();
+				Boolean isStop		= modeString.equals("stop")  && sig.getStatus().getUpload();
+				Boolean isReset		= modeString.equals("reset") && sig.getStatus().getNone();
+				
+				if(isInit || isRec || isStop || isReset)
+					modeString = "";
+				
 				if(modeString.equals("init")  && !sig.getStatus().getInit()) {
 					if(!this.getID().equals("") && !this.getExamID().equals(""))
 						this.init();
