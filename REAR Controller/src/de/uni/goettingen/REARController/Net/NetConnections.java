@@ -19,6 +19,7 @@ public class NetConnections {
 	private ConcurrentHashMap<Long, NetConnSignal>	connMap;
 	private ConcurrentHashMap<Long, String> 		recTimeMap;
 	private ConcurrentHashMap<Long, ClientStatus>	statusMap;
+	private ConcurrentHashMap<Long, Boolean>		activeMap;
 	
 	private PushSSHkeys sshPush;
 
@@ -28,6 +29,7 @@ public class NetConnections {
 //		ipMap			= new ConcurrentHashMap<Long, IPreachable>();
 		recTimeMap		= new ConcurrentHashMap<Long, String>();
 		statusMap		= new ConcurrentHashMap<Long, ClientStatus>();
+		activeMap		= new ConcurrentHashMap<Long, Boolean>();
 		sshPush 		= null;
 	}
 
@@ -35,7 +37,9 @@ public class NetConnections {
 //		System.out.println("Update (" + mList.data.size() + ")");
 		for(Vector<Object> m : mList.data) {
 			long		id	= (long) m.get(7);
+			String		studID = (String) m.get(3);
 			IPreachable ipr = new IPreachable((IPreachable) m.get(2));
+			Boolean		active = !studID.isEmpty();
 			if(ipr != null) {
 				InetAddress	ip	= ipr.getAddress();
 				if(ip != null && !clientIDs.contains(id)) {
@@ -59,6 +63,8 @@ public class NetConnections {
 					System.out.println("done");
 				}
 			}
+			if(clientIDs.contains(id))
+				activeMap.put(id, active);
 		}
 	}
 	
@@ -199,7 +205,7 @@ public class NetConnections {
 	public ClientStatus getStatus() {
 		ClientStatus out = new ClientStatus();
 		for(long id : clientIDs) {
-			if(connMap.containsKey(id)) {
+			if(connMap.containsKey(id) && activeMap.containsKey(id) && activeMap.get(id)) {
 				NetConnSignal	conn	= connMap.get(id);
 				ClientStatus 	status	= new ClientStatus(conn.getStatus());
 				if(status != null) {
