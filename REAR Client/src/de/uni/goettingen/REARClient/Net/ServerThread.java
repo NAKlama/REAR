@@ -118,7 +118,7 @@ public class ServerThread implements Runnable {
 				}
 				
 				else if(message.get(0).equals("MICRETRY"))
-					signal.checkMicrophone();
+					checkMicrophone(message);
 				else if(message.get(0).equals("PLAYFILE"))
 					fetchAudioFile(message);
 				else if(message.get(0).equals("PLAYONLY"))
@@ -180,6 +180,16 @@ public class ServerThread implements Runnable {
 				if(tokenCheck(message.get(2).trim(), message.get(0), remoteAddr, Arrays.asList(0))) {
 					signal.setAudioFileURL(message.get(1));
 					signal.activatePlayAudio();
+				}
+			}
+		}
+	}
+	
+	private void checkMicrophone(ArrayList<String> message) throws IOException {
+		if(message.size() > 1) {
+			synchronized(signal) {
+				if(tokenCheck(message.get(1).trim(), message.get(0), remoteAddr, null)) {
+					signal.checkMicrophone();
 				}
 			}
 		}
