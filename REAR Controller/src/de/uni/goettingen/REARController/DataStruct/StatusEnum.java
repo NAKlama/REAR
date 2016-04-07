@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 public enum StatusEnum implements Serializable {
 	UNINITIALIZED,
+	NOMIC,
 	STOPPED,
 	RECORDING,
 	UPLOADING,

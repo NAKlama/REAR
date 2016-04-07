@@ -6,6 +6,7 @@ public class ClientStatus implements Serializable {
 	private static final long serialVersionUID = 6835731377460284019L;
 
 	private Boolean none;
+	private Boolean noMic;
 	private Boolean init;
 	private Boolean rec;
 	private Boolean upload;
@@ -13,6 +14,7 @@ public class ClientStatus implements Serializable {
 
 	public ClientStatus() {
 		none	= false;
+		noMic	= false;
 		init	= false;
 		rec		= false;
 		upload	= false;
@@ -22,6 +24,7 @@ public class ClientStatus implements Serializable {
 	public ClientStatus(ClientStatus cs) {
 		if(cs != null) {
 			none	= cs.none;
+			noMic	= cs.noMic;
 			init	= cs.init;
 			rec		= cs.rec;
 			upload	= cs.upload;
@@ -30,6 +33,7 @@ public class ClientStatus implements Serializable {
 		else
 		{
 			none	= false;
+			noMic	= false;
 			init	= false;
 			rec		= false;
 			upload	= false;
@@ -37,8 +41,9 @@ public class ClientStatus implements Serializable {
 		}
 	}
 
-	public ClientStatus(Boolean n, Boolean i, Boolean r, Boolean u, Boolean d) {
+	public ClientStatus(Boolean n, Boolean nmic, Boolean i, Boolean r, Boolean u, Boolean d) {
 		none	= n;
+		noMic	= nmic;
 		init	= i;
 		rec		= r;
 		upload	= u;
@@ -47,12 +52,15 @@ public class ClientStatus implements Serializable {
 
 	public ClientStatus(StatusEnum s) {
 		none	= false;
+		noMic	= false;
 		init	= false;
 		rec		= false;
 		upload	= false;
 		done	= false;
 		if(s == StatusEnum.STOPPED)
 			init	= true;
+		else if(s == StatusEnum.NOMIC)
+			noMic	= true;
 		else if(s == StatusEnum.RECORDING)
 			rec		= true;
 		else if(s == StatusEnum.UPLOADING)
@@ -67,6 +75,8 @@ public class ClientStatus implements Serializable {
 		Boolean a = init 	&& ( rec	|| upload	|| done);
 		Boolean b = rec  	&& ( upload	|| done		);
 		Boolean c = upload	&& done;
+		if(noMic)
+			return StatusEnum.NOMIC;
 		if(a || b || c) 
 			return StatusEnum.MULTI_STATUS;
 		if(init)
@@ -82,6 +92,7 @@ public class ClientStatus implements Serializable {
 
 	public void or(ClientStatus cs) {
 		none	|= cs.none;
+		noMic	|= cs.noMic;
 		init	|= cs.init;
 		rec		|= cs.rec;
 		upload	|= cs.upload;
@@ -90,6 +101,7 @@ public class ClientStatus implements Serializable {
 
 	public void and(ClientStatus cs) {
 		none	&= cs.none;
+		noMic	&= cs.noMic;
 		init	&= cs.init;
 		rec		&= cs.rec;
 		upload	&= cs.upload;
@@ -98,6 +110,7 @@ public class ClientStatus implements Serializable {
 
 	public void not() {
 		none	= !none;
+		noMic	= !noMic;
 		init	= !init;
 		rec		= !rec;
 		upload	= !upload;
@@ -110,6 +123,7 @@ public class ClientStatus implements Serializable {
 
 	public void setNone() {
 		none	= true;
+		noMic	= false;
 		init	= false;
 		rec		= false;
 		upload	= false;
@@ -122,7 +136,21 @@ public class ClientStatus implements Serializable {
 
 	public void setInit() {
 		none	= false;
+		noMic	= false;
 		init	= true;
+		rec		= false;
+		upload	= false;
+		done	= false;
+	}
+	
+	public void setNoMic(Boolean i) {
+		noMic = i;
+	}
+
+	public void setNoMic() {
+		none	= false;
+		noMic	= true;
+		init	= false;
 		rec		= false;
 		upload	= false;
 		done	= false;
@@ -134,6 +162,7 @@ public class ClientStatus implements Serializable {
 
 	public void setRec() {
 		none	= false;
+		noMic	= false;
 		init	= false;
 		rec		= true;
 		upload	= false;
@@ -146,6 +175,7 @@ public class ClientStatus implements Serializable {
 
 	public void setUpload() {
 		none	= false;
+		noMic	= false;
 		init	= false;
 		rec		= false;
 		upload	= true;
@@ -158,6 +188,7 @@ public class ClientStatus implements Serializable {
 
 	public void setDone() {
 		none	= false;
+		noMic	= false;
 		init	= false;
 		rec		= false;
 		upload	= false;
@@ -166,6 +197,10 @@ public class ClientStatus implements Serializable {
 
 	public Boolean getNone() {
 		return none;
+	}
+	
+	public Boolean getNoMic() {
+		return noMic;
 	}
 
 	public Boolean getInit() {
@@ -185,33 +220,28 @@ public class ClientStatus implements Serializable {
 	}
 
 	public boolean isUninitialized() {
-		if(none && !init && !rec && !upload && !done)
-			return true;
-		return false;
+		return none && !init && !rec && !upload && !done;
+
+	}
+	
+	public boolean isNoMic() {
+		return noMic && !init && !rec && !upload && !done;
 	}
 
 	public boolean isInitialized() {
-		if(!none && init && !rec && !upload && !done)
-			return true;
-		return false;
+		return !none && !noMic && init && !rec && !upload && !done;
 	}
 
 	public boolean isRec() {
-		if(!none && !init && rec && !upload && !done)
-			return true;
-		return false;
+		return none && !noMic &&!init && rec && !upload && !done;
 	}
 
 	public boolean isUpload() {
-		if(!none && !init && !rec && upload && !done)
-			return true;
-		return false;
+		return !none && !noMic &&!init && !rec && upload && !done;
 	}
 
 	public boolean isDone() {
-		if(!none && !init && !rec && !upload && done)
-			return true;
-		return false;
+		return !none && !noMic &&!init && !rec && !upload && done;
 	}
 
 	public String toString() {
