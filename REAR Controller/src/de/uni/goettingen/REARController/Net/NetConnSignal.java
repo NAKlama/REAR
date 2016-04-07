@@ -205,6 +205,12 @@ public class NetConnSignal {
 		}
 	}
 	
+	public void micRetry() {
+		synchronized(commandLock) {
+			commands.push("micRetry");
+		}
+	}
+	
 	public void init() {
 		synchronized(commandLock) {
 			commands.push("init");

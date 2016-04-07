@@ -121,6 +121,8 @@ public class MainWindow implements ActionListener {
 	private JButton btnDeleteRow;
 	private Component horizontalGlue_3;
 	private JButton btnSendManualSignals;
+	private Component horizontalStrut_11;
+	private JLabel lblWarning;
 
 	/**
 	 * Launch the application.
@@ -318,6 +320,14 @@ public class MainWindow implements ActionListener {
 
 		Component horizontalGlue_1 = Box.createHorizontalGlue();
 		panelProgress.add(horizontalGlue_1);
+		
+		lblWarning = new JLabel("");
+		lblWarning.setVisible(false);
+		lblWarning.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/32/warning.png")));
+		panelProgress.add(lblWarning);
+		
+		horizontalStrut_11 = Box.createHorizontalStrut(20);
+		panelProgress.add(horizontalStrut_11);
 
 		lblArrowUnInitToStopped = new JLabel("");
 		lblArrowUnInitToStopped.setIcon(iconRightArrowGray);
@@ -414,6 +424,8 @@ public class MainWindow implements ActionListener {
 	private void next() {
 		boolean nextStep = true;
 		switch(step) {
+		case -1:
+			table.micRetry();
 		case 0:	
 			int studCount = table.studentCount();
 			if(studCount > 0) {
@@ -654,6 +666,12 @@ public class MainWindow implements ActionListener {
 	public void actionPerformed(ActionEvent arg0) {
 		if(!editMode) {
 			mode = table.getStatus();
+			
+			if(mode.getNoMic()) {
+				lblWarning.setVisible(true);
+				step = -1;
+			} else
+				lblWarning.setVisible(false);
 //			System.out.println(mode);
 			if(mode.getNone() && mode.getInit())
 				lblArrowUnInitToStopped.setIcon(iconRightArrow);
@@ -699,6 +717,10 @@ public class MainWindow implements ActionListener {
 				step = 3;
 
 			switch(step) {
+			case -1:
+				btnNextStep.setText("Retry Mic Connection");
+				btnNextStep.setText("Retry connecting clients to microphone");
+				btnNextStep.setEnabled(true);
 			case 0:
 				btnNextStep.setText("Prepare Exam");
 				btnNextStep.setToolTipText("Prepare Exam");

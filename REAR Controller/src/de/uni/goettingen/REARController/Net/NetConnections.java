@@ -75,7 +75,7 @@ public class NetConnections {
 		}
 		return out;
 	}
-
+	
 	public void init(ConcurrentHashMap<Long, String> ids) {
 		System.out.println("Clientcount: " + clientIDs.size());
 		for(long id : clientIDs) {
@@ -114,36 +114,48 @@ public class NetConnections {
 		}
 	}
 
+	public void micRetry() {
+		for(long id : clientIDs) {
+			if(activeMap.get(id))
+				connMap.get(id).micRetry();
+		}
+	}
 
+	
 	public void rec() {
 		for(long id : clientIDs) {
-			connMap.get(id).rec();
+			if(activeMap.get(id))
+				connMap.get(id).rec();
 		}
 	}
 
 
 	public void stop() {
 		for(long id : clientIDs) {
-			connMap.get(id).stop();
+			if(activeMap.get(id))
+				connMap.get(id).stop();
 		}
 	}
 
 
 	public void reset() {
 		for(long id : clientIDs) {
-			connMap.get(id).reset();
+			if(activeMap.get(id))
+				connMap.get(id).reset();
 		}
 	}
 	
 	public void setPlayFile(String URL) {
 		for(long id : clientIDs) {
-			connMap.get(id).setPlayFile(URL);
+			if(activeMap.get(id))
+				connMap.get(id).setPlayFile(URL);
 		}
 	}
 	
 	public void setPlayOnly() {
 		for(long id: clientIDs) {
-			connMap.get(id).setPlayOnly();
+			if(activeMap.get(id))
+				connMap.get(id).setPlayOnly();
 		}
 	}
 	

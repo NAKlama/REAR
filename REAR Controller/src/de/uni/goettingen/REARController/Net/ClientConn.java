@@ -173,6 +173,12 @@ public class ClientConn implements Runnable {
 			return getReply("RECTIME\n");
 		return null;
 	}
+	
+	private boolean micRetry() {
+		if(checkConnection())
+			return sendAuthCommand("MICRETRY");
+		return false;
+	}
 
 	private boolean init() {
 		if(checkConnection())
@@ -311,6 +317,8 @@ public class ClientConn implements Runnable {
 						setPlayFile(sig.getPlayFile());
 					if(command.equals("playOnly"))
 						setPlayOnly();
+					if(command.equals("micRetry"))
+						micRetry();
 				}
 				sig.setStatus(this.status());
 				sig.setTime(this.getTime());
