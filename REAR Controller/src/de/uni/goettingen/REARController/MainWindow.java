@@ -426,6 +426,7 @@ public class MainWindow implements ActionListener {
 		switch(step) {
 		case -1:
 			table.micRetry();
+			break;
 		case 0:	
 			int studCount = table.studentCount();
 			if(studCount > 0) {
@@ -719,8 +720,9 @@ public class MainWindow implements ActionListener {
 			switch(step) {
 			case -1:
 				btnNextStep.setText("Retry Mic Connection");
-				btnNextStep.setText("Retry connecting clients to microphone");
+				btnNextStep.setToolTipText("Retry connecting clients to microphone");
 				btnNextStep.setEnabled(true);
+				break;
 			case 0:
 				btnNextStep.setText("Prepare Exam");
 				btnNextStep.setToolTipText("Prepare Exam");
