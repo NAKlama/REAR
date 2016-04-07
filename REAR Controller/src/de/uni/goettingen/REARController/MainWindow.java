@@ -619,8 +619,10 @@ public class MainWindow implements ActionListener {
 					btnNextStep.setEnabled(false);
 				}
 			}
-			else if(cmd.equals("ExamID_Cancel"))
+			else if(cmd.equals("ExamID_Cancel")) {
 				esd.setVisible(false);
+				btnNextStep.setEnabled(true);
+			}
 			else if(cmd.equals("Settings")) {
 				sd = new SettingsDialog(prop);
 				sd.addListener(this);

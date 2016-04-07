@@ -218,8 +218,8 @@ public class NetConnections {
 		ClientStatus out = new ClientStatus();
 		for(long id : clientIDs) {
 			if(connMap.containsKey(id) && activeMap.containsKey(id) && activeMap.get(id)) {
-				NetConnSignal	conn	= connMap.get(id);
-				ClientStatus 	status	= new ClientStatus(conn.getStatus());
+				NetConnSignal	conn		= connMap.get(id);
+				ClientStatus 	status		= new ClientStatus(conn.getStatus());
 				if(status != null) {
 					statusMap.put(id, status);
 					out.or(status);

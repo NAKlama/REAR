@@ -84,9 +84,9 @@ public class ClientConn implements Runnable {
 			case 4:
 				return new ClientStatus(false, false, false, false, false, true );
 			}
-			return new ClientStatus(true,  false, false, false, false, false);
+			return new ClientStatus(true, false, false, false, false, false);
 		}
-		return null;		
+		return new ClientStatus();		
 	}
 
 	public InetAddress getIP() {

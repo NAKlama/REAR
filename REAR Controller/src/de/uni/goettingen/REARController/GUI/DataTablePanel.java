@@ -45,6 +45,8 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 	private static final ImageIcon uploadIcon	= new ImageIcon(MainWindow.class.getResource("/icons/16/upload.png"));
 	private static final ImageIcon okIcon		= new ImageIcon(MainWindow.class.getResource("/icons/16/OK.png"));
 	private static final ImageIcon warnIcon		= new ImageIcon(MainWindow.class.getResource("/icons/16/warning.png"));
+	private static final ImageIcon connIcon		= new ImageIcon(MainWindow.class.getResource("/icons/16/connected.png"));
+	private static final ImageIcon disconnIcon	= new ImageIcon(MainWindow.class.getResource("/icons/16/disconnected.png"));
 
 	private JTable 			table;
 	private MachinesTable	machines;
@@ -312,8 +314,10 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 			String text = "";
 			if(editMode == false) {
 				ClientStatus status = (ClientStatus) value;
+				if(status.isDisconnected())
+					this.setIcon(disconnIcon);
 				if(status.isUninitialized())
-				{}
+					this.setIcon(connIcon);
 				else if(status.getNoMic())
 					this.setIcon(warnIcon);
 				else if(status.getInit())
