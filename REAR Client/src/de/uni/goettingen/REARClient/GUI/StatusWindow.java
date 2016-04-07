@@ -16,7 +16,6 @@ import javax.swing.Timer;
 
 import de.uni.goettingen.REARClient.REARclient;
 import de.uni.goettingen.REARClient.SignalObject;
-import de.uni.goettingen.REARClient.Audio.MicrophoneLine;
 
 @SuppressWarnings("serial")
 public class StatusWindow extends JFrame {
@@ -48,7 +47,7 @@ public class StatusWindow extends JFrame {
 
 	private SignalObject signal = null;
 
-	public StatusWindow(MicrophoneLine ml)
+	public StatusWindow()
 	{
 		studentID			= "";
 		examID				= "";

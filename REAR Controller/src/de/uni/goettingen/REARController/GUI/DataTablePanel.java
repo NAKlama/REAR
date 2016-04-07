@@ -296,6 +296,10 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 		return out;
 	}
 
+	public void setServer(String uploadServer, String uploadUser) {
+		connections.setServer(uploadServer, uploadUser);		
+	}
+	
 	private class StatusRenderer extends DefaultTableCellRenderer {
 		@Override
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
@@ -376,9 +380,5 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 			}
 			return this;
 		}
-	}
-	
-	public void setServer(String uploadServer, String uploadUser) {
-		connections.setServer(uploadServer, uploadUser);		
 	}
 }

@@ -16,10 +16,9 @@ public class MicrophoneLine {
 	
 	public MicrophoneLine() {
 		lineOpen = false;
-		open();
 	}
 	
-	public void open() {
+	public boolean open() {
 		lineOpen = true;
 		AudioFormat	audioFormat = new AudioFormat(
 				AudioFormat.Encoding.PCM_SIGNED, 
@@ -38,11 +37,13 @@ public class MicrophoneLine {
 			tDataLine.open(audioFormat);
 			tDataLine.start();
 		}
-		catch (LineUnavailableException e)
+		catch (LineUnavailableException | IllegalArgumentException e)
 		{
 			lineOpen = false;
 			System.out.println("Unable to get a recording line");
+			return false;
 		}
+		return true;
 	}
 	
 	public Boolean isOpen() {

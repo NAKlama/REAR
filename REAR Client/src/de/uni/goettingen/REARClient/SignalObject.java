@@ -33,7 +33,7 @@ public class SignalObject {
 	private Boolean			doRecord;
 	private Boolean			doPlay;
 	private Player			player;
-
+	
 	public SignalObject(StatusWindow w, MicrophoneLine ml, SSHkey ssh, PropertiesStore ps) {
 		shutdownServer		= false;
 		win					= w;
@@ -50,6 +50,7 @@ public class SignalObject {
 		playFileDownloaded	= false;
 		doRecord			= true;
 		doPlay				= false;
+		this.checkMicrophone();
 	}
 	
 	public synchronized Boolean getDoPlay() {
@@ -112,6 +113,8 @@ public class SignalObject {
 	}
 
 	public synchronized int getMode() {
+		if(!this.getMicStatus())
+			return -1;
 		int mode = new Integer(win.getMode());
 		if(mode == 1 && doPlay && !playFileDownloaded)
 			mode -= 1;

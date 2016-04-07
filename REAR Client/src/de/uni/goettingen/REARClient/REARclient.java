@@ -31,7 +31,7 @@ public class REARclient {
 	{
 		PropertiesStore prop			= new PropertiesStore();
 		MicrophoneLine	micLine			= new MicrophoneLine();
-		StatusWindow	win				= new StatusWindow(micLine);
+		StatusWindow	win				= new StatusWindow();
 		
 		prop.load(configDirs);
 		
