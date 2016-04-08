@@ -42,7 +42,7 @@ public class PlayerThread implements Runnable {
 					audioFormat.getChannels() * 2,
 					audioFormat.getSampleRate(),
 					false );			
-			System.out.println("Created player thread");
+//			System.out.println("Created player thread");
 		} catch (UnsupportedAudioFileException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -99,7 +99,7 @@ public class PlayerThread implements Runnable {
 	
 	@Override
 	public void run() {
-		System.out.println("Runnin Player thread");
+//		System.out.println("Running Player thread");
 		player.setPlaying(true);
 		dinS	= AudioSystem.getAudioInputStream(decodedFormat, inS);
 //		dinS = inS;

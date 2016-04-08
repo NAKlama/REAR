@@ -72,7 +72,7 @@ public class SignalObject {
 	
 	public synchronized void setAudioFileURL(String urlString) {
 		try {
-			System.out.println("Setting audio URL = " + urlString);
+//			System.out.println("Setting audio URL = " + urlString);
 			playFileLocation = new URL(urlString);
 			playFile = new File(prop.getDefaultPath() + "playback.mp3");
 			DownloadThread downloadTh = new DownloadThread(playFileLocation, this, playFile);

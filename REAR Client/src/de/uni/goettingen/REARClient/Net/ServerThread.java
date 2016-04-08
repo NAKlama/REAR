@@ -174,7 +174,7 @@ public class ServerThread implements Runnable {
 	}
 	
 	private void fetchAudioFile(ArrayList<String> message) throws IOException {
-		System.out.println("fetchAudioFile(); message.size() = " + message.size() + " : " + message.get(1));
+//		System.out.println("fetchAudioFile(); message.size() = " + message.size() + " : " + message.get(1));
 		if(message.size() > 2) {
 			synchronized(signal) {
 				if(tokenCheck(message.get(2).trim(), message.get(0), remoteAddr, Arrays.asList(0))) {

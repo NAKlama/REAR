@@ -20,7 +20,7 @@ public class DownloadThread implements Runnable {
 		url		= urlIn;
 		sig		= sigIn;
 		outFile	= file;
-		System.out.println("Created Download Thread => " + file.getAbsolutePath());
+//		System.out.println("Created Download Thread => " + file.getAbsolutePath());
 	}
 	
 	@Override
@@ -33,11 +33,11 @@ public class DownloadThread implements Runnable {
 			BufferedInputStream  bis = new BufferedInputStream(con.getInputStream());
 			BufferedOutputStream bos = new BufferedOutputStream(
 										new FileOutputStream(outFile.getAbsolutePath()));
-			System.out.println("[download] created connection");
+//			System.out.println("[download] created connection");
 			while((i = bis.read()) != -1) {
 				bos.write(i);
 			}
-			System.out.println("[download] finished writing");
+//			System.out.println("[download] finished writing");
 			bos.flush();
 			bis.close();
 			bos.close();
