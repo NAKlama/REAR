@@ -45,16 +45,16 @@ public class NetConnections {
 
 					NetConnSignal c = connMap.get(id);
 					if(c == null || !c.isReachable()) {
-						System.out.print("   Connecting...");
+//						System.out.print("   Connecting...");
 						c = new NetConnSignal(ipr);
 						connMap.put(id, c);
-						System.out.println("connected");
+//						System.out.println("connected");
 					}
-					System.out.print("   Checking reachability...");
+//					System.out.print("   Checking reachability...");
 					if(c != null && c.isReachable()) {
 						ipr.setReachable(true);
 					}
-					System.out.println("done");
+//					System.out.println("done");
 				}
 			}
 			if(clientIDs.contains(id))
