@@ -146,7 +146,8 @@ public class ClientStatus implements Serializable {
 	}
 	
 	public void setConnected(Boolean n) {
-		connected = n;
+		if(n != null)
+			connected = n;
 	}
 
 	public void setConnected() {
