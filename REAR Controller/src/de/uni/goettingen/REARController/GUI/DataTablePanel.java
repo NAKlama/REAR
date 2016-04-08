@@ -314,7 +314,7 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 			String text = "";
 			if(editMode == false) {
 				ClientStatus status = (ClientStatus) value;
-				if(status.isDisconnected())
+				if(status == null || status.isDisconnected())
 					this.setIcon(disconnIcon);
 				else if(status.isUninitialized())
 					this.setIcon(connIcon);
