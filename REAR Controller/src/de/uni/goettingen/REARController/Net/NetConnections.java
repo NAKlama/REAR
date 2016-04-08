@@ -15,7 +15,6 @@ import de.uni.goettingen.REARController.DataStruct.Serializable.SerMachinesTable
 
 public class NetConnections {
 	private Vector<Long>							clientIDs;
-//	private ConcurrentHashMap<Long, IPreachable>	ipMap;
 	private ConcurrentHashMap<Long, NetConnSignal>	connMap;
 	private ConcurrentHashMap<Long, String> 		recTimeMap;
 	private ConcurrentHashMap<Long, ClientStatus>	statusMap;
@@ -26,7 +25,6 @@ public class NetConnections {
 	public NetConnections() {
 		clientIDs		= new Vector<Long>();
 		connMap			= new ConcurrentHashMap<Long, NetConnSignal>();
-//		ipMap			= new ConcurrentHashMap<Long, IPreachable>();
 		recTimeMap		= new ConcurrentHashMap<Long, String>();
 		statusMap		= new ConcurrentHashMap<Long, ClientStatus>();
 		activeMap		= new ConcurrentHashMap<Long, Boolean>();
@@ -34,7 +32,6 @@ public class NetConnections {
 	}
 
 	public void update(SerMachinesTable mList) {
-//		System.out.println("Update (" + mList.data.size() + ")");
 		for(Vector<Object> m : mList.data) {
 			long		id	= (long) m.get(7);
 			String		studID = (String) m.get(3);
@@ -43,9 +40,6 @@ public class NetConnections {
 			if(ipr != null) {
 				InetAddress	ip	= ipr.getAddress();
 				if(ip != null && !clientIDs.contains(id)) {
-//					System.out.println(">>>> " + id + " >>>>   " + ip);
-//					if(ipMap.containsKey(id))
-//						System.out.println("    => " + ip.equals(ipMap.get(id).getAddress()));
 					if(!clientIDs.contains(id)) 
 						clientIDs.add(id);
 
@@ -80,7 +74,6 @@ public class NetConnections {
 		System.out.println("Clientcount: " + clientIDs.size());
 		for(long id : clientIDs) {
 			if(ids.containsKey(id)) {
-//				System.out.println(id);
 				NetConnSignal c = connMap.get(id);
 				c.setID(ids.get(id));
 				c.init();
@@ -161,7 +154,6 @@ public class NetConnections {
 	
 	public void clearData() {
 		clientIDs	= new Vector<Long>();
-//		ipMap		= new ConcurrentHashMap<Long, IPreachable>();
 		connMap		= new ConcurrentHashMap<Long, NetConnSignal>();
 		recTimeMap	= new ConcurrentHashMap<Long, String>();
 		statusMap	= new ConcurrentHashMap<Long, ClientStatus>();
@@ -234,7 +226,6 @@ public class NetConnections {
 	}
 
 	public void setExamID(String eID) {
-//		System.out.println(clientIDs);
 		String str = eID.replaceAll("\\s", "_");
 		for(long id : clientIDs) {
 			connMap.get(id).setExamID(str);
