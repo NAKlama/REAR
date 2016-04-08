@@ -280,37 +280,40 @@ public class ClientConn implements Runnable {
 			} catch (InterruptedException e) {
 			}
 			if(this.isReachable()) {
-				String command = null;
+				String command = "";
+				while(command != null) {
+					command = null;
 					sig.setConnected(true);
 					if(sig.hasCommands())
 						command = new String(sig.popCommand());
-				
-				if(command != null) {
-					System.out.println("Got command: " + command);
-					if(command.equals("ID"))
-						setID(sig.getID());
-					if(command.equals("EID"))
-						setExamID(sig.getExamID());
-					if(command.equals("SetServer")) {
-						String[] server = sig.getServer();
-						this.setServer(server[0], server[1]);
+
+					if(command != null) {
+						System.out.println("Got command: " + command);
+						if(command.equals("ID"))
+							setID(sig.getID());
+						if(command.equals("EID"))
+							setExamID(sig.getExamID());
+						if(command.equals("SetServer")) {
+							String[] server = sig.getServer();
+							this.setServer(server[0], server[1]);
+						}
+						if(command.equals("init"))
+							modeString = "init";
+						if(command.equals("rec"))
+							modeString = "rec";
+						if(command.equals("stop"))
+							modeString = "stop";
+						if(command.equals("reset"))
+							modeString = "reset";
+						if(command.equals("STOP_THREAD"))
+							loop = false;
+						if(command.equals("playFile"))
+							setPlayFile(sig.getPlayFile());
+						if(command.equals("playOnly"))
+							setPlayOnly();
+						if(command.equals("micRetry"))
+							micRetry();
 					}
-					if(command.equals("init"))
-						modeString = "init";
-					if(command.equals("rec"))
-						modeString = "rec";
-					if(command.equals("stop"))
-						modeString = "stop";
-					if(command.equals("reset"))
-						modeString = "reset";
-					if(command.equals("STOP_THREAD"))
-						loop = false;
-					if(command.equals("playFile"))
-						setPlayFile(sig.getPlayFile());
-					if(command.equals("playOnly"))
-						setPlayOnly();
-					if(command.equals("micRetry"))
-						micRetry();
 				}
 				sig.setStatus(this.status());
 				sig.setTime(this.getTime());
