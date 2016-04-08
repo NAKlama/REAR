@@ -168,6 +168,7 @@ public class ClientStatus implements Serializable {
 		rec		= false;
 		upload	= false;
 		done	= false;
+		connected 	= true;
 	}
 	
 	public void setNoMic(Boolean i) {
@@ -181,6 +182,7 @@ public class ClientStatus implements Serializable {
 		rec		= false;
 		upload	= false;
 		done	= false;
+		connected 	= true;
 	}
 
 	public void setRec(Boolean r) {
@@ -194,6 +196,7 @@ public class ClientStatus implements Serializable {
 		rec		= true;
 		upload	= false;
 		done	= false;
+		connected 	= true;
 	}
 
 	public void setUpload(Boolean u) {
@@ -207,6 +210,7 @@ public class ClientStatus implements Serializable {
 		rec		= false;
 		upload	= true;
 		done	= false;
+		connected 	= true;
 	}
 
 	public void setDone(Boolean d) {
@@ -220,6 +224,7 @@ public class ClientStatus implements Serializable {
 		rec		= false;
 		upload	= false;
 		done	= true;
+		connected 	= true;
 	}
 
 	public Boolean getNone() {

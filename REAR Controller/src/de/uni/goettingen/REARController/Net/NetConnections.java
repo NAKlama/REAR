@@ -43,7 +43,7 @@ public class NetConnections {
 			if(ipr != null) {
 				InetAddress	ip	= ipr.getAddress();
 				if(ip != null && !clientIDs.contains(id)) {
-					System.out.println(">>>> " + id + " >>>>   " + ip);
+//					System.out.println(">>>> " + id + " >>>>   " + ip);
 //					if(ipMap.containsKey(id))
 //						System.out.println("    => " + ip.equals(ipMap.get(id).getAddress()));
 					if(!clientIDs.contains(id)) 
