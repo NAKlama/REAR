@@ -115,9 +115,6 @@ public class NetConnSignal {
 		synchronized(commandLock) {
 			commands.push("ID");
 		}
-		synchronized(this) {
-			this.notifyAll();
-		}
 	}
 	
 	public String getExamID() {
@@ -132,9 +129,6 @@ public class NetConnSignal {
 		}
 		synchronized(commandLock) {
 			commands.push("EID");
-		}
-		synchronized(this) {
-			this.notifyAll();
 		}
 	}
 	
