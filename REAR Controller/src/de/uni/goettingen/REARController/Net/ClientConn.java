@@ -7,7 +7,6 @@ import java.io.InputStreamReader;
 import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.Socket;
-//import java.util.Date;
 
 import de.uni.goettingen.REARController.DataStruct.ClientStatus;
 
@@ -19,7 +18,6 @@ public class ClientConn implements Runnable {
 	private BufferedReader		in;
 	private AuthToken			token;
 	private String				salt;
-//	private Date				connectCheckTime;
 	private NetConnSignal		sig;
 	private String				modeString;
 	private String				pubKey;
@@ -28,22 +26,16 @@ public class ClientConn implements Runnable {
 
 	public ClientConn(NetConnSignal s) {
 		modeString = "None";
-//		connectCheckTime = null;
 		pubKey = null;
 		connect = false;
 		sig = s;
 		ip  = sig.getIPR();
 		token = new AuthToken();
-//		if(this.checkConnection()) {
-//			sig.setPubKey(this.getPubKey());
-//		}
 	}
 
 	private Boolean checkConnection() {
 		if(connect)
 			return true;
-		//if(connectCheckTime == null || (new Date()).getTime() - connectCheckTime.getTime() > (60 * 1000)) {
-		//	connectCheckTime = new Date();
 		else {
 			try {
 				sock	= new Socket(ip.getAddress(), 15000);
