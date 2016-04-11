@@ -33,10 +33,17 @@ public class IPreachable implements Serializable {
 	}
 	
 	public IPreachable(IPreachable ipr) {
-		ip			= ipr.ip;
-		reachable	= ipr.reachable;
-		ipString	= ipr.ipString;
-		connSig		= ipr.connSig;
+		if(ipr != null) {
+			ip			= ipr.ip;
+			reachable	= ipr.reachable;
+			ipString	= ipr.ipString;
+			connSig		= ipr.connSig;
+		} else {
+			ip = null;
+			reachable	= false;
+			ipString	= new String();
+			connSig		= null;
+		}
 	}
 
 	public InetAddress getAddress() {

@@ -297,7 +297,11 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 		Vector<NetConnSignal> out = new Vector<>();
 		if(lines.length > 0) {
 			for(int l : lines) {
-				out.addElement(connections.getClientConn((Long) machines.getValueAt(l, 7)));
+				Long id = (Long) machines.getValueAt(l, 7);
+				System.out.println("line: " + l + "  ID: " + id);
+				NetConnSignal signalObj = connections.getClientConn(id);
+				if(signalObj != null) 
+					out.addElement(signalObj);
 			}
 		}
 		return out;
@@ -313,21 +317,30 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 			super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 			String text = "";
 			if(editMode == false) {
-				ClientStatus status = (ClientStatus) value;
-				if(status.isDisconnected())
-					this.setIcon(disconnIcon);
-				else if(status.isUninitialized())
-					this.setIcon(connIcon);
-				else if(status.getNoMic())
-					this.setIcon(warnIcon);
-				else if(status.getInit())
-					this.setIcon(stoppedIcon);
-				else if(status.getRec())
-					this.setIcon(recIcon);
-				else if(status.getUpload())
-					this.setIcon(uploadIcon);
-				else if(status.getDone())
-					this.setIcon(okIcon);
+				try {
+					ClientStatus status = (ClientStatus) value;
+					if(status == null || status.isDisconnected())
+						this.setIcon(disconnIcon);
+					else if(status.isUninitialized())
+						this.setIcon(connIcon);
+					else if(status.getNoMic())
+						this.setIcon(warnIcon);
+					else if(status.getInit())
+						this.setIcon(stoppedIcon);
+					else if(status.getRec())
+						this.setIcon(recIcon);
+					else if(status.getUpload())
+						this.setIcon(uploadIcon);
+					else if(status.getDone())
+						this.setIcon(okIcon);
+				}
+				catch(ClassCastException e) {
+					try {
+						String status = (String) value;
+						this.setText(status);
+					}
+					catch(ClassCastException e2) {}
+				}
 			}
 			this.setText(text);
 			this.setHorizontalAlignment(DefaultTableCellRenderer.CENTER);

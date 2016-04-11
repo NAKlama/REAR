@@ -5,13 +5,13 @@ import java.io.Serializable;
 public class ClientStatus implements Serializable {
 	private static final long serialVersionUID = 6835731377460284019L;
 
-	private Boolean none;
-	private Boolean noMic;
-	private Boolean init;
-	private Boolean rec;
-	private Boolean upload;
-	private Boolean done;
-	private Boolean connected;
+	private Boolean none		= false;
+	private Boolean noMic		= false;
+	private Boolean init		= false;
+	private Boolean rec			= false;
+	private Boolean upload		= false;
+	private Boolean done		= false;
+	private Boolean connected	= false;
 
 	public ClientStatus() {
 		none		= false;
@@ -146,7 +146,8 @@ public class ClientStatus implements Serializable {
 	}
 	
 	public void setConnected(Boolean n) {
-		connected = n;
+		if(n != null)
+			connected = n;
 	}
 
 	public void setConnected() {
@@ -158,7 +159,8 @@ public class ClientStatus implements Serializable {
 	}
 	
 	public void setInit(Boolean i) {
-		init = i;
+		if(i != null)
+			init = i;
 	}
 
 	public void setInit() {
@@ -172,7 +174,8 @@ public class ClientStatus implements Serializable {
 	}
 	
 	public void setNoMic(Boolean i) {
-		noMic = i;
+		if(i != null)
+			noMic = i;
 	}
 
 	public void setNoMic() {
@@ -186,7 +189,8 @@ public class ClientStatus implements Serializable {
 	}
 
 	public void setRec(Boolean r) {
-		rec = r;
+		if(r != null)
+			rec = r;
 	}
 
 	public void setRec() {
@@ -200,7 +204,8 @@ public class ClientStatus implements Serializable {
 	}
 
 	public void setUpload(Boolean u) {
-		upload = u;
+		if(u != null)
+			upload = u;
 	}
 
 	public void setUpload() {
@@ -214,7 +219,8 @@ public class ClientStatus implements Serializable {
 	}
 
 	public void setDone(Boolean d) {
-		done = d;
+		if(d != null)
+			done = d;
 	}
 
 	public void setDone() {
@@ -228,30 +234,44 @@ public class ClientStatus implements Serializable {
 	}
 
 	public Boolean getNone() {
+		if(none == null)
+			return false;
 		return none;
 	}
 	
 	public Boolean getNoMic() {
+		if(noMic == null)
+			return false;
 		return noMic;
 	}
 
 	public Boolean getInit() {
+		if(init == null)
+			return false;
 		return init;
 	}
 
 	public Boolean getRec() {
+		if(rec == null)
+			return false;
 		return rec;
 	}
 
 	public Boolean getUpload() {
+		if(upload == null)
+			return false;
 		return upload;
 	}
 
 	public Boolean getDone() {
+		if(done == null)
+			return false;
 		return done;
 	}
 	
 	public boolean isDisconnected() {
+		if(connected == null)
+			return false;
 		return !connected;
 	}
 

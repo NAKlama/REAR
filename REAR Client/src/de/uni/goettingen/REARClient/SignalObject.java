@@ -70,6 +70,12 @@ public class SignalObject {
 		doRecord = false;
 	}
 	
+	public synchronized void activateRecOnly() {
+		doPlay = false;
+		doRecord = true;
+	}
+	
+	
 	public synchronized void setAudioFileURL(String urlString) {
 		try {
 //			System.out.println("Setting audio URL = " + urlString);

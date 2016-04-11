@@ -160,7 +160,7 @@ public class MachinesTable extends AbstractTableModel implements TableModel {
 
 	@Override
 	public Object getValueAt(int r, int c) {
-		if(c < COL_NUM && r < table.size())
+		if(c < COL_NUM_REAL && r < table.size())
 			return table.get(r).get(c);
 		return null;
 	}
