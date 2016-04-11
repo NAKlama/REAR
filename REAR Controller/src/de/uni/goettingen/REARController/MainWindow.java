@@ -421,7 +421,6 @@ public class MainWindow implements ActionListener {
 			btnDeleteRow.setEnabled(false);
 			btnNextStep.setEnabled(true);
 			mainLayout.setComponentConstraints(table, "cell 1 1,grow");
-			table.setEditMode(editMode);
 			panelTree.setExamMode(true);
 			table.setFilter(null);
 			stepSpinner.setEnabled(true);
@@ -434,7 +433,6 @@ public class MainWindow implements ActionListener {
 			btnDeleteRow.setEnabled(true);
 			btnNextStep.setEnabled(false);
 			mainLayout.setComponentConstraints(table, "cell 1 1 1 2,grow");
-			table.setEditMode(editMode);
 			panelTree.setExamMode(false);
 			stepSpinner.setEnabled(false);
 		}
@@ -654,7 +652,7 @@ public class MainWindow implements ActionListener {
 				prop.setUploadUser(sd.getUser());
 				prop.setDebugMode(sd.getDebug());
 				btnSendManualSignals.setVisible(sd.getDebug());
-				table.setVisible(sd.getDebug());
+				lblStep.setVisible(sd.getDebug());
 				stepSpinner.setVisible(sd.getDebug());
 				sd.setVisible(false);
 			}
