@@ -240,6 +240,7 @@ public class NetConnections {
 	}
 	
 	public NetConnSignal getClientConn(long id) {
+		System.out.println(id + " <? " + clientIDs);
 		if(connMap.containsKey(id))
 			return connMap.get(id);
 		return null;

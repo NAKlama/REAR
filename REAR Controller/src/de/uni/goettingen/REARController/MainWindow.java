@@ -728,39 +728,21 @@ public class MainWindow implements ActionListener {
 			case 0:
 				btnNextStep.setText("Prepare Exam");
 				btnNextStep.setToolTipText("Prepare Exam");
-				if(mode.isUninitialized()) {
-					btnNextStep.setEnabled(true);
-					btnEditMode.setEnabled(true);
-				}
-				else
-					btnNextStep.setEnabled(false);
 				break;
 			case 1:
 				btnNextStep.setText("Start Exam");
 				btnNextStep.setToolTipText("Start Exam");
 				btnEditMode.setEnabled(false);
-				if(mode.isInitialized())
-					btnNextStep.setEnabled(true);
-				else
-					btnNextStep.setEnabled(false);
 				break;
 			case 2:
 				btnNextStep.setText("Stop Exam");
 				btnNextStep.setToolTipText("Stop Exam");
 				btnEditMode.setEnabled(false);
-				if(mode.isRec())
-					btnNextStep.setEnabled(true);
-				else
-					btnNextStep.setEnabled(false);
 				break;
 			case 3:
 				btnNextStep.setText("Reset Exam");
 				btnNextStep.setToolTipText("Reset Exam");
 				btnEditMode.setEnabled(false);
-				if(mode.isDone())
-					btnNextStep.setEnabled(true);
-				else
-					btnNextStep.setEnabled(false);
 				break;
 			}
 			table.timerEvent();

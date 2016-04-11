@@ -297,7 +297,11 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 		Vector<NetConnSignal> out = new Vector<>();
 		if(lines.length > 0) {
 			for(int l : lines) {
-				out.addElement(connections.getClientConn((Long) machines.getValueAt(l, 7)));
+				Long id = (Long) machines.getValueAt(l, 7);
+				System.out.println("line: " + l + "  ID: " + id);
+				NetConnSignal signalObj = connections.getClientConn(id);
+				if(signalObj != null) 
+					out.addElement(signalObj);
 			}
 		}
 		return out;
