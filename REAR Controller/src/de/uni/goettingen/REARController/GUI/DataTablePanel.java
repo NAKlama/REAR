@@ -307,6 +307,15 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 		return out;
 	}
 
+	public NetConnSignal getConnection(int line) {
+		Long id = (Long) machines.getValueAt(line, 7);
+		return connections.getClientConn(id);
+	}
+	
+	public String getID(int line) {
+		return (String) machines.getValueAt(line, 3);
+	}
+	
 	public void setServer(String uploadServer, String uploadUser) {
 		connections.setServer(uploadServer, uploadUser);		
 	}

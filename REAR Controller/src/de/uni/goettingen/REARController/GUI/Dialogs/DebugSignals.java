@@ -3,7 +3,6 @@ package de.uni.goettingen.REARController.GUI.Dialogs;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
-import java.util.Vector;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -13,6 +12,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import de.uni.goettingen.REARController.GUI.DataTablePanel;
 import de.uni.goettingen.REARController.Net.NetConnSignal;
 import net.miginfocom.swing.MigLayout;
 import javax.swing.JRadioButton;
@@ -27,7 +27,8 @@ public class DebugSignals extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
 
-	private Vector<NetConnSignal> connList;
+	private DataTablePanel			table;
+	private int[]					rows;
 	
 	private JRadioButton rdbtnInitialize;
 	private JRadioButton rdbtnStartExam;
@@ -49,9 +50,11 @@ public class DebugSignals extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public DebugSignals(Vector<NetConnSignal> vector) {
+	public DebugSignals(DataTablePanel t, int[] r) {
+		table = t;
+		rows  = r;
 		setTitle("Send Signals Manually");
-		connList = vector;
+
 		setBounds(100, 100, 288, 309);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -130,11 +133,13 @@ public class DebugSignals extends JDialog {
 	}
 
 	public void sendSignals() {
-		for(NetConnSignal c : connList) {
+		for(int r : rows) {
+			NetConnSignal c = table.getConnection(r);
 			if(rdbtnMicRetry.isSelected()) {
 				c.micRetry();
 			}
 			if(rdbtnInitialize.isSelected()) {
+				c.setID(table.getID(r));
 				c.setExamID(txtExamTitle.getText());
 				if(chckbxPlayAudio.isSelected()) {
 					c.setPlayFile(txtURL.getText());

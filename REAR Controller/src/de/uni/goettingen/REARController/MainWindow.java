@@ -17,6 +17,7 @@ import de.uni.goettingen.REARController.GUI.Dialogs.InfoDialog;
 import de.uni.goettingen.REARController.GUI.Dialogs.SettingsDialog;
 import de.uni.goettingen.REARController.GUI.Tools.IDfactory;
 import de.uni.goettingen.REARController.GUI.Tools.RearFileFilter;
+import de.uni.goettingen.REARController.GUI.Tools.Step;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -36,6 +37,9 @@ import javax.swing.JPanel;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.Timer;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
 import net.miginfocom.swing.MigLayout;
 import javax.swing.Box;
 import java.awt.event.ActionListener;
@@ -43,6 +47,7 @@ import java.awt.event.ActionEvent;
 import java.awt.Dimension;
 import javax.swing.JCheckBox;
 import javax.swing.SwingConstants;
+import javax.swing.JSpinner;
 
 public class MainWindow implements ActionListener {
 	public  static final String PROGRAM_NAME	= "REAR Controller (Devel)";
@@ -54,7 +59,7 @@ public class MainWindow implements ActionListener {
 
 	private DataTablePanel	table;
 
-	private int 			step = 0;
+	private Step 			step = new Step(-1, 3, 0);
 	private ClientStatus	mode;
 
 	private Boolean		editMode = true;
@@ -123,6 +128,10 @@ public class MainWindow implements ActionListener {
 	private JButton btnSendManualSignals;
 	private Component horizontalStrut_11;
 	private JLabel lblWarning;
+	private Component horizontalStrut_12;
+	private Component horizontalGlue_2;
+	private JSpinner stepSpinner;
+	private JLabel lblStep;
 
 	/**
 	 * Launch the application.
@@ -280,14 +289,24 @@ public class MainWindow implements ActionListener {
 		btnSendManualSignals.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/32/gear.png")));
 		btnSendManualSignals.setVerticalTextPosition(SwingConstants.BOTTOM);
 		btnSendManualSignals.addActionListener(listener);
-		if(!prop.getDebugMode())
-			btnSendManualSignals.setVisible(false);
-		else
-			btnSendManualSignals.setVisible(true);
-		toolBarMain.add(btnSendManualSignals);
-
-		Component horizontalGlue_2 = Box.createHorizontalGlue();
+		btnSendManualSignals.setVisible(prop.getDebugMode());
+		
+		stepSpinner = new JSpinner();
+		stepSpinner.setSize(new Dimension(40, 20));
+		stepSpinner.setVisible(prop.getDebugMode());
+		stepSpinner.setEnabled(!editMode);
+		stepSpinner.addChangeListener(new changeListener());
+		step.linkSpinner(stepSpinner);
+		
+		lblStep = new JLabel("Step: ");
+		lblStep.setVisible(prop.getDebugMode());
+		
+		toolBarMain.add(lblStep);
+		toolBarMain.add(stepSpinner);
+		
+		horizontalGlue_2 = Box.createHorizontalGlue();
 		toolBarMain.add(horizontalGlue_2);
+		toolBarMain.add(btnSendManualSignals);
 
 		btnInfo = new JButton("About");
 		btnInfo.setVerticalTextPosition(SwingConstants.BOTTOM);
@@ -301,6 +320,9 @@ public class MainWindow implements ActionListener {
 		btnSettings.setActionCommand("Settings");
 		btnSettings.setToolTipText("Properties");
 		btnSettings.addActionListener(listener);
+		
+		horizontalStrut_12 = Box.createHorizontalStrut(20);
+		toolBarMain.add(horizontalStrut_12);
 		btnSettings.setActionCommand("Settings");
 		btnSettings.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/32/settings.png")));
 		toolBarMain.add(btnSettings);
@@ -402,6 +424,7 @@ public class MainWindow implements ActionListener {
 			table.setEditMode(editMode);
 			panelTree.setExamMode(true);
 			table.setFilter(null);
+			stepSpinner.setEnabled(true);
 		}
 		else {
 			editMode = true;
@@ -413,6 +436,7 @@ public class MainWindow implements ActionListener {
 			mainLayout.setComponentConstraints(table, "cell 1 1 1 2,grow");
 			table.setEditMode(editMode);
 			panelTree.setExamMode(false);
+			stepSpinner.setEnabled(false);
 		}
 		table.setEditMode(editMode);
 	}
@@ -423,7 +447,7 @@ public class MainWindow implements ActionListener {
 
 	private void next() {
 		boolean nextStep = true;
-		switch(step) {
+		switch(step.get()) {
 		case -1:
 			table.micRetry();
 			break;
@@ -462,11 +486,8 @@ public class MainWindow implements ActionListener {
 			table.reset();
 			break;
 		}
-		if(nextStep) {
-			step++;
-			if(step > 3)
-				step = 0;
-		}
+		if(nextStep) 
+			step.inc();
 		frmREAR.repaint();
 	}
 	
@@ -476,7 +497,7 @@ public class MainWindow implements ActionListener {
 			chckbxAllowStopp.setVisible(false);
 			btnReset.setVisible(false);
 			table.reset();
-			step = 0;
+			step.set(0);;
 		}
 	}
 
@@ -632,10 +653,9 @@ public class MainWindow implements ActionListener {
 				prop.setUploadServer(sd.getServer());
 				prop.setUploadUser(sd.getUser());
 				prop.setDebugMode(sd.getDebug());
-				if(sd.getDebug())
-					btnSendManualSignals.setVisible(true);
-				else
-					btnSendManualSignals.setVisible(false);
+				btnSendManualSignals.setVisible(sd.getDebug());
+				table.setVisible(sd.getDebug());
+				stepSpinner.setVisible(sd.getDebug());
 				sd.setVisible(false);
 			}
 			else if(cmd.equals("Settings_Cancel")) {
@@ -650,7 +670,7 @@ public class MainWindow implements ActionListener {
 			else if(cmd.equals("DebugSignals")) {
 				int[] rows = table.getJTable().getSelectedRows();
 				if(rows.length > 0) {
-					dSigs = new DebugSignals(table.getConnections(rows));
+					dSigs = new DebugSignals(table, rows);
 					dSigs.addListener(this);
 					dSigs.setVisible(true);
 				}
@@ -672,7 +692,7 @@ public class MainWindow implements ActionListener {
 			
 			if(mode.getNoMic()) {
 				lblWarning.setVisible(true);
-				step = -1;
+				step.set(-1);;
 			} else
 				lblWarning.setVisible(false);
 //			System.out.println(mode);
@@ -717,9 +737,9 @@ public class MainWindow implements ActionListener {
 				lblDone.setIcon(iconOkGray);
 			
 			if(mode.getDone() && ! mode.getRec() && ! mode.getUpload())
-				step = 3;
+				step.set(3);
 
-			switch(step) {
+			switch(step.get()) {
 			case -1:
 				btnNextStep.setText("Retry Mic Connection");
 				btnNextStep.setToolTipText("Retry connecting clients to microphone");
@@ -747,5 +767,16 @@ public class MainWindow implements ActionListener {
 			}
 			table.timerEvent();
 		}
+	}
+	
+	private class changeListener implements ChangeListener {
+
+		@Override
+		public void stateChanged(ChangeEvent e) {
+			JSpinner src = (JSpinner) e.getSource();
+			Integer  val = (Integer) src.getValue();
+			step.set(val);
+		}
+		
 	}
 }
