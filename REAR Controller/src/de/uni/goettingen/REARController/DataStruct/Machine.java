@@ -5,14 +5,13 @@ import java.net.UnknownHostException;
 import java.util.Vector;
 
 import de.uni.goettingen.REARController.GUI.Tools.IDfactory;
-import de.uni.goettingen.REARController.Net.IPreachable;
 
 public class Machine {
 	private long			id;
 	private String			computerID;
 	private AreaTreeNode	aNode;
 	private Area			area;
-	private IPreachable		ip;
+	private InetAddress		ip;
 	private String			studentID;
 	private ClientStatus	status;
 	private String			recTime;
@@ -21,7 +20,7 @@ public class Machine {
 	public Machine(Machine m) {
 		computerID	= m.getComputerID();
 		area		= m.getArea();
-		ip			= new IPreachable(m.getIPstr());
+		ip			= m.getIP();
 		studentID	= m.getStudentID();
 		status		= m.getClientStatus();
 		recTime		= m.getRecTime();
@@ -29,7 +28,7 @@ public class Machine {
 		id			= new IDfactory().getID();
 	}
 	
-	public Machine(String cid, Area a, IPreachable i, String studID, ClientStatus s, String rTime, long idIn) {
+	public Machine(String cid, Area a, InetAddress i, String studID, ClientStatus s, String rTime, long idIn) {
 		computerID	= cid;
 		area		= a;
 		ip			= i;
@@ -40,7 +39,7 @@ public class Machine {
 		id			= idIn;
 	}
 	
-	public Machine(String cid, Area a, IPreachable i, String studID, ClientStatus s, String rTime) {
+	public Machine(String cid, Area a, InetAddress i, String studID, ClientStatus s, String rTime) {
 		computerID	= cid;
 		area		= a;
 		ip			= i;
@@ -51,7 +50,7 @@ public class Machine {
 		id			= new IDfactory().getID();
 	}
 	
-	public Machine(String cid, Area a, IPreachable i) {
+	public Machine(String cid, Area a, InetAddress i) {
 		computerID	= cid;
 		area		= a;
 		ip			= i;
@@ -98,7 +97,7 @@ public class Machine {
 	}
 	
 	public void setIP(InetAddress i) {
-		ip = new IPreachable(i);
+		ip = i;
 	}
 	
 	public void setStudentID(String sid) {
@@ -135,7 +134,7 @@ public class Machine {
 			break;
 		case 2:
 			try {
-				ip = new IPreachable(InetAddress.getByName((String) o));
+				ip = InetAddress.getByName((String) o);
 			} catch (UnknownHostException e) {
 				ip = null;
 			}
@@ -168,15 +167,11 @@ public class Machine {
 	}
 	
 	public InetAddress getIP() {
-		return ip.getAddress();
+		return ip;
 	}
 	
 	public String getIPstr() {
-		return ip.getIPstr();
-	}
-	
-	public Boolean getReachable() {
-		return ip.isReachable();
+		return ip.toString();
 	}
 	
 	public String getStudentID() {
@@ -210,7 +205,7 @@ public class Machine {
 		case 1:
 			return area.getName();
 		case 2:
-			return ip.getAddress().getHostAddress();
+			return ip.getHostAddress();
 		case 3:
 			return studentID;
 		case 4:

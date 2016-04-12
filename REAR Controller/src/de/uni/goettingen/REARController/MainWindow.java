@@ -248,7 +248,8 @@ public class MainWindow implements ActionListener {
 		btnDeleteRow.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/32/stop.png")));
 		btnDeleteRow.setHorizontalTextPosition(SwingConstants.CENTER);
 		btnDeleteRow.setVerticalTextPosition(SwingConstants.BOTTOM);
-		btnDeleteRow.setVisible(false);
+		btnDeleteRow.addActionListener(listener);
+		btnDeleteRow.setVisible(true);
 		toolBarMain.add(btnDeleteRow);
 
 		Component horizontalStrut_8 = Box.createHorizontalStrut(10);
@@ -421,7 +422,6 @@ public class MainWindow implements ActionListener {
 			btnDeleteRow.setEnabled(false);
 			btnNextStep.setEnabled(true);
 			mainLayout.setComponentConstraints(table, "cell 1 1,grow");
-			table.setEditMode(editMode);
 			panelTree.setExamMode(true);
 			table.setFilter(null);
 			stepSpinner.setEnabled(true);
@@ -434,7 +434,6 @@ public class MainWindow implements ActionListener {
 			btnDeleteRow.setEnabled(true);
 			btnNextStep.setEnabled(false);
 			mainLayout.setComponentConstraints(table, "cell 1 1 1 2,grow");
-			table.setEditMode(editMode);
 			panelTree.setExamMode(false);
 			stepSpinner.setEnabled(false);
 		}
@@ -492,6 +491,7 @@ public class MainWindow implements ActionListener {
 	}
 	
 	private void reset() {
+		System.out.println("Reset Button pressed.");
 		if(chckbxAllowStopp.isSelected()) {
 			chckbxAllowStopp.setSelected(false);
 			chckbxAllowStopp.setVisible(false);
@@ -654,7 +654,7 @@ public class MainWindow implements ActionListener {
 				prop.setUploadUser(sd.getUser());
 				prop.setDebugMode(sd.getDebug());
 				btnSendManualSignals.setVisible(sd.getDebug());
-				table.setVisible(sd.getDebug());
+				lblStep.setVisible(sd.getDebug());
 				stepSpinner.setVisible(sd.getDebug());
 				sd.setVisible(false);
 			}
@@ -663,9 +663,9 @@ public class MainWindow implements ActionListener {
 			}
 			else if(cmd.equals("DeleteRow")) {
 				int[] rows = table.getJTable().getSelectedRows();
-				if(rows.length > 0) 
-					for(int r : rows) 
-						table.getTableModel().removeRow(r);
+				if(rows.length > 0) {
+					table.removeRows(rows);
+				}
 			}
 			else if(cmd.equals("DebugSignals")) {
 				int[] rows = table.getJTable().getSelectedRows();

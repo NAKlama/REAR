@@ -1,6 +1,7 @@
 package de.uni.goettingen.REARController.Net;
 
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Stack;
 
 import de.uni.goettingen.REARController.DataStruct.ClientStatus;
@@ -8,7 +9,7 @@ import de.uni.goettingen.REARController.DataStruct.ClientStatus;
 public class NetConnSignal {
 	private ClientStatus	status;
 	private String			recTime;
-	private IPreachable		ipr;
+	private InetAddress		ip;
 	private Boolean			connected;
 	
 	private Thread			conThread;
@@ -25,7 +26,7 @@ public class NetConnSignal {
 	private Object			connectedLock	= new Object();
 	private Object			recTimeLock		= new Object();
 	private Object			statusLock		= new Object();
-	private Object			iprLock			= new Object();
+	private Object			ipLock			= new Object();
 	private Object			pubKeyLock		= new Object();
 	private Object			idLock			= new Object();
 	private Object			eidLock			= new Object();
@@ -34,9 +35,13 @@ public class NetConnSignal {
 	private Object			sleepLock		= new Object();
 
 	
-	NetConnSignal(IPreachable ip) {
-		ipr			= new IPreachable(ip);
-		ipr.setConnection(this);
+	NetConnSignal(InetAddress ip_in) {
+		try {
+			ip			= InetAddress.getByName(ip_in.toString());
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		pubKey		= null;
 		id			= null;
 		eid			= null;
@@ -60,9 +65,9 @@ public class NetConnSignal {
 		return null;
 	}
 	
-	public IPreachable getIPR() {
-		synchronized(iprLock) {
-			return ipr;
+	public InetAddress getIP() {
+		synchronized(ipLock) {
+			return ip;
 		}
 	}
 	
@@ -93,12 +98,6 @@ public class NetConnSignal {
 	public String getPubKey() {
 		synchronized(pubKeyLock) {
 			return pubKey;
-		}
-	}
-	
-	public InetAddress getIP() {
-		synchronized(iprLock) {
-			return ipr.getAddress();
 		}
 	}
 	

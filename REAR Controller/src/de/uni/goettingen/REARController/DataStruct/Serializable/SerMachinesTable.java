@@ -2,11 +2,11 @@ package de.uni.goettingen.REARController.DataStruct.Serializable;
 
 import java.io.Serializable;
 import java.util.Vector;
+import java.net.InetAddress;
 
 import de.uni.goettingen.REARController.DataStruct.Area;
 import de.uni.goettingen.REARController.DataStruct.AreaTreeNode;
 import de.uni.goettingen.REARController.DataStruct.ClientStatus;
-import de.uni.goettingen.REARController.Net.IPreachable;
 
 public class SerMachinesTable implements Serializable {
 	private static final long serialVersionUID = -3241321017722896939L;
@@ -20,12 +20,16 @@ public class SerMachinesTable implements Serializable {
 		return data.size();
 	}
 	
+	public void removeRow(int r) {
+		data.remove(r);
+	}
+	
 	public SerMachinesTable removeEmpty() {
 		SerMachinesTable out = new SerMachinesTable();
 		for(Vector<Object> line : data) {
 			boolean testCompID = line.get(0) != null && ! ((String) line.get(0)).equals("");
 			boolean testArea   = line.get(1) != null;
-			boolean testIP     = line.get(2) != null && ! ((IPreachable) line.get(2)).getIPstr().equals("");
+			boolean testIP     = line.get(2) != null && ! ((InetAddress) line.get(2)).toString().equals("");
 			if(testCompID && testArea && testIP) {
 				Vector<Object> oLine = new Vector<Object>();
 				for(int i=0; i < line.size(); i++) {
@@ -102,7 +106,7 @@ public class SerMachinesTable implements Serializable {
 			else
 				out += ", null";
 			if(line.get(2) != null)
-				out += ", " + ((IPreachable) line.get(2)).getIPstr();				// IP Address
+				out += ", " + ((InetAddress) line.get(2)).toString();				// IP Address
 			else
 				out += ", null";
 			out += ", " + (String) line.get(3);									// Student ID
@@ -115,5 +119,11 @@ public class SerMachinesTable implements Serializable {
 			out += "\n";
 		}
 		return out;
+	}
+	
+	public InetAddress getIP(int r) {
+		if(r < data.size())
+			return (InetAddress) data.get(r).get(2);
+		return null;
 	}
 }

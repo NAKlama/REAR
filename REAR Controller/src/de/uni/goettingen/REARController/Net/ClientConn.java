@@ -12,7 +12,7 @@ import de.uni.goettingen.REARController.DataStruct.ClientStatus;
 
 public class ClientConn implements Runnable {
 	private Boolean				connect;
-	private IPreachable			ip;
+	private InetAddress			ip;
 	private Socket				sock;
 	private DataOutputStream	out;
 	private BufferedReader		in;
@@ -29,7 +29,7 @@ public class ClientConn implements Runnable {
 		pubKey = null;
 		connect = false;
 		sig = s;
-		ip  = sig.getIPR();
+		ip  = sig.getIP();
 		token = new AuthToken();
 	}
 
@@ -38,17 +38,15 @@ public class ClientConn implements Runnable {
 			return true;
 		else {
 			try {
-				sock	= new Socket(ip.getAddress(), 15000);
+				sock	= new Socket(ip, 15000);
 				out		= new DataOutputStream(sock.getOutputStream());
 				in		= new BufferedReader(new InputStreamReader(sock.getInputStream()));
 				sock.setKeepAlive(true);
 				connect = true;
 				sig.setConnected(true);
-				ip.setReachable(true);
 				salt	= getSalt();
 			} catch (ConnectException e) {
 				connect = false;
-				ip.setReachable(false);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -82,13 +80,9 @@ public class ClientConn implements Runnable {
 	}
 
 	public InetAddress getIP() {
-		return ip.getAddress();
-	}
-	
-	public IPreachable getIPR() {
 		return ip;
 	}
-
+	
 	public Boolean isReachable() {
 		return connect && sock.isConnected();
 	}

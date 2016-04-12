@@ -33,28 +33,22 @@ public class NetConnections {
 
 	public void update(SerMachinesTable mList) {
 		for(Vector<Object> m : mList.data) {
-			long		id	= (long) m.get(7);
-			String		studID = (String) m.get(3);
-			IPreachable ipr = new IPreachable((IPreachable) m.get(2));
-			Boolean		active = !studID.isEmpty();
-			if(ipr != null) {
-				InetAddress	ip	= ipr.getAddress();
-				if(ip != null && !clientIDs.contains(id)) {
+			long		id		= (long) m.get(7);
+			String		studID	= (String) m.get(3);
+			InetAddress ip		= (InetAddress) m.get(2);
+			Boolean		active	= !studID.isEmpty();
+			if(ip != null) {
+				if(!clientIDs.contains(id)) {
 					if(!clientIDs.contains(id)) 
 						clientIDs.add(id);
 
 					NetConnSignal c = connMap.get(id);
 					if(c == null || !c.isReachable()) {
 //						System.out.print("   Connecting...");
-						c = new NetConnSignal(ipr);
+						c = new NetConnSignal(ip);
 						connMap.put(id, c);
 //						System.out.println("connected");
 					}
-//					System.out.print("   Checking reachability...");
-					if(c != null && c.isReachable()) {
-						ipr.setReachable(true);
-					}
-//					System.out.println("done");
 				}
 			}
 			if(clientIDs.contains(id))
@@ -169,26 +163,16 @@ public class NetConnections {
 		return null;
 	}
 	
-	public IPreachable getIPR(long id) {
-		return connMap.get(id).getIPR();
-	}
-
 	public void setIP(long id, InetAddress ip) {
 		if(! clientIDs.contains(id))
 			clientIDs.add(id);
-		IPreachable ipr = new IPreachable(ip);
-		NetConnSignal c = new NetConnSignal(ipr);
+		NetConnSignal c = new NetConnSignal(ip);
 		connMap.put(id, c);
 	}
 
 	public ClientStatus getStatus(long id) {
 		if(! statusMap.containsKey(id)) {	
 			return null;
-		}
-		if(connMap.get(id).isReachable()) {
-			IPreachable ipr = connMap.get(id).getIPR();
-			if(ipr != null)
-				ipr.setReachable(true);
 		}
 		return statusMap.get(id);
 	}
