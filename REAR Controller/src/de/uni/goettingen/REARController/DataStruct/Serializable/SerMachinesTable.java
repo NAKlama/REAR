@@ -20,6 +20,10 @@ public class SerMachinesTable implements Serializable {
 		return data.size();
 	}
 	
+	public void removeRow(int r) {
+		data.remove(r);
+	}
+	
 	public SerMachinesTable removeEmpty() {
 		SerMachinesTable out = new SerMachinesTable();
 		for(Vector<Object> line : data) {

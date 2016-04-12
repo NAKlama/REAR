@@ -171,6 +171,11 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 	public ClientStatus getStatus() {
 		return connections.getStatus();
 	}
+	
+	public void removeRow(int r) {
+		machines.removeRow(r);
+		mainTable.removeRow(r);
+	}
 
 	public void setFilter(AreaTreeNode n) {
 		Vector<AreaTreeNode> nodeList = new Vector<AreaTreeNode>();
