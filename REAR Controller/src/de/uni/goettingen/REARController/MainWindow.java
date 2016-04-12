@@ -490,6 +490,7 @@ public class MainWindow implements ActionListener {
 	}
 	
 	private void reset() {
+		System.out.println("Reset Button pressed.");
 		if(chckbxAllowStopp.isSelected()) {
 			chckbxAllowStopp.setSelected(false);
 			chckbxAllowStopp.setVisible(false);
