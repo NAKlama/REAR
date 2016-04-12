@@ -25,13 +25,11 @@ import de.uni.goettingen.REARController.DataStruct.Machine;
 import de.uni.goettingen.REARController.DataStruct.MachinesTable;
 import de.uni.goettingen.REARController.DataStruct.Serializable.SerMachinesTable;
 import de.uni.goettingen.REARController.GUI.Tools.TreeChangeListener;
-import de.uni.goettingen.REARController.Net.IPreachable;
 import de.uni.goettingen.REARController.Net.NetConnSignal;
 import de.uni.goettingen.REARController.Net.NetConnections;
 
 import javax.swing.JScrollPane;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.net.InetAddress;
@@ -86,7 +84,7 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 	public void initTable(TableModel m) {
 		table.setModel(m);
 		table.setDefaultRenderer(AreaTreeNode.class, new AreaTreeNodeRenderer());
-		table.setDefaultRenderer(IPreachable.class, new IpRenderer());
+		table.setDefaultRenderer(InetAddress.class, new IpRenderer());
 		table.setDefaultRenderer(ClientStatus.class, new StatusRenderer());
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
@@ -283,9 +281,8 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 			long id = (long) line.get(7);
 			if(line.get(2) != null)
 				if(connections.hasID(id)) {
-					IPreachable ipr	= (IPreachable) line.get(2);
-					if(ipr != null) {
-						InetAddress ip	= ipr.getAddress();
+					InetAddress ip	= (InetAddress) line.get(2);
+					if(ip != null) {
 						if(connections.isReachabel(id) && !ip.equals(connections.getIP(id))) {
 							connections.setIP(id, ip);
 						}
@@ -314,7 +311,7 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 		Vector<NetConnSignal> out = new Vector<>();
 		if(lines.length > 0) {
 			for(int l : lines) {
-				Long id = (Long) machines.getValueAt(l, 7);
+				Long id = machines.getID(l);
 				System.out.println("line: " + l + "  ID: " + id);
 				NetConnSignal signalObj = connections.getClientConn(id);
 				if(signalObj != null) 
@@ -325,12 +322,12 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 	}
 
 	public NetConnSignal getConnection(int line) {
-		Long id = (Long) machines.getValueAt(line, 7);
+		Long id = machines.getID(line);
 		return connections.getClientConn(id);
 	}
 	
 	public String getID(int line) {
-		return (String) machines.getValueAt(line, 3);
+		return (String) machines.getObjectAt(line, 3);
 	}
 	
 	public void setServer(String uploadServer, String uploadUser) {
@@ -379,12 +376,12 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 			super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 			if(value != null) {
-				IPreachable a = (IPreachable) value;
-				if(a.isReachable())
-					this.setForeground(Color.decode("#00AA00"));
+				InetAddress a = (InetAddress) value;
+				String ipStr = a.toString();
+				if(ipStr.substring(0, 1).equals("/"))
+					this.setText(ipStr.substring(1));
 				else
-					this.setForeground(Color.RED);
-				this.setText(a.getIPstr());
+					this.setText(ipStr);
 			} else {
 				this.setText("None");
 			}

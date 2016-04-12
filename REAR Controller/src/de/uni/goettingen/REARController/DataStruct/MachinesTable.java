@@ -1,5 +1,6 @@
 package de.uni.goettingen.REARController.DataStruct;
 
+import java.net.InetAddress;
 import java.util.Vector;
 
 import javax.swing.table.AbstractTableModel;
@@ -8,7 +9,6 @@ import javax.swing.table.TableModel;
 import de.uni.goettingen.REARController.DataStruct.Serializable.SerMachinesTable;
 import de.uni.goettingen.REARController.DummyClasses.DelButton;
 import de.uni.goettingen.REARController.GUI.Tools.IDfactory;
-import de.uni.goettingen.REARController.Net.IPreachable;
 
 public class MachinesTable extends AbstractTableModel implements TableModel {
 	private static final long serialVersionUID = 3569965886668818735L;
@@ -28,7 +28,7 @@ public class MachinesTable extends AbstractTableModel implements TableModel {
 	private final static Class<?>[] COLUMN_CLASSES =
 		{	String.class,
 			AreaTreeNode.class,
-			IPreachable.class,
+			InetAddress.class,
 			String.class,
 			ClientStatus.class,
 			String.class,
@@ -102,18 +102,12 @@ public class MachinesTable extends AbstractTableModel implements TableModel {
 	
 	public void setStatus(int r, ClientStatus cs) {
 		if(cs != null)
-			setValueAt(cs, r, 4);
+			setObjectAt(cs, r, 4);
 	}
 	
 	public void setRecTime(int r, String t) {
 		if(t != null)
-			setValueAt(t, r, 5);
-	}
-	
-	public void setReachable(int r, Boolean b) {
-		IPreachable ipr = (IPreachable) getValueAt(r, 2);
-		ipr.setReachable(b);
-		setValueAt(ipr, r, 2);
+			setObjectAt(t, r, 5);
 	}
 	
 	public void removeEmptyRows() {
@@ -122,11 +116,23 @@ public class MachinesTable extends AbstractTableModel implements TableModel {
 			Vector<Object> l = table.get(i);
 			boolean testComputerID	= l.get(0) != null && ! ((String)l.get(0)).equals("");
 			boolean testArea		= l.get(1) != null;
-			boolean testIP			= l.get(2) != null && ! ((IPreachable)l.get(2)).getIPstr().equals("");
+			boolean testIP			= l.get(2) != null && ! ((InetAddress)l.get(2)).toString().equals("");
 			if(testComputerID && testArea && testIP) 
 				newTable.add(l);
 		}
 		table = newTable;
+	}
+	
+	public InetAddress getIP(int row) {
+		return (InetAddress) getObjectAt(row, 2);
+	}
+	
+	public String getRecTime(int row) {
+		return (String) getObjectAt(row, 5);
+	}
+	
+	public Long getID(int row) {
+		return (Long) getObjectAt(row, 7);
 	}
 	
 	public void removeRow(int row) {
@@ -160,6 +166,12 @@ public class MachinesTable extends AbstractTableModel implements TableModel {
 
 	@Override
 	public Object getValueAt(int r, int c) {
+		if(c < COL_NUM && r < table.size())
+			return table.get(r).get(c);
+		return null;
+	}
+	
+	public Object getObjectAt(int r, int c) {
 		if(c < COL_NUM_REAL && r < table.size())
 			return table.get(r).get(c);
 		return null;
@@ -180,16 +192,23 @@ public class MachinesTable extends AbstractTableModel implements TableModel {
 		}
 	}
 	
+	public void setObjectAt(Object o, int r, int c) {
+		if(c < COL_NUM_REAL && r < table.size()) {
+			table.get(r).set(c, o);
+			fireTableCellUpdated(r, c);
+		}
+	}
+	
 	private Machine objVectorToMachine(Vector<Object> o) {
 		AreaTreeNode 	atn	= (AreaTreeNode) o.get(1);
 		Area			a	= null;
-		IPreachable		ipr = (IPreachable) o.get(2);
+		InetAddress		ip = (InetAddress) o.get(2);
 		if(atn != null)
 			a = (Area) atn.getUserObject();
 		Machine m = new Machine(
 				(String) 		o.get(0),
 				(Area) 			a,
-				ipr,
+				ip,
 				(String) 		o.get(3),
 				(ClientStatus)	o.get(4),
 				(String) 		o.get(5),
