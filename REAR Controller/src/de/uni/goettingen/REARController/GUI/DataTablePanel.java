@@ -35,6 +35,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.net.InetAddress;
+import java.util.Arrays;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -172,9 +173,20 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 		return connections.getStatus();
 	}
 	
-	public void removeRow(int r) {
-		machines.removeRow(r);
-		mainTable.removeRow(r);
+	public void removeRows(int[] rows) {
+		if(rows.length > 0) {
+			Arrays.sort(rows);
+			for(int i = 0; i < rows.length / 2; i++) {  // reverse sorted after this
+				int tmp = rows[i];
+				rows[i] = rows[rows.length - i - 1];
+				rows[rows.length - i - 1] = tmp;
+			}
+			for(int r : rows) {
+				machines.removeRow(r);
+				mainTable.removeRow(r);
+			}
+			machines.fireTableRowsDeleted(rows[rows.length - 1], rows[0]);
+		}
 	}
 
 	public void setFilter(AreaTreeNode n) {

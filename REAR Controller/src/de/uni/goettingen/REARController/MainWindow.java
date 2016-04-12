@@ -32,7 +32,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Arrays;
 
 import javax.swing.JPanel;
 import javax.swing.BoxLayout;
@@ -249,7 +248,8 @@ public class MainWindow implements ActionListener {
 		btnDeleteRow.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/32/stop.png")));
 		btnDeleteRow.setHorizontalTextPosition(SwingConstants.CENTER);
 		btnDeleteRow.setVerticalTextPosition(SwingConstants.BOTTOM);
-		btnDeleteRow.setVisible(false);
+		btnDeleteRow.addActionListener(listener);
+		btnDeleteRow.setVisible(true);
 		toolBarMain.add(btnDeleteRow);
 
 		Component horizontalStrut_8 = Box.createHorizontalStrut(10);
@@ -664,14 +664,7 @@ public class MainWindow implements ActionListener {
 			else if(cmd.equals("DeleteRow")) {
 				int[] rows = table.getJTable().getSelectedRows();
 				if(rows.length > 0) {
-					Arrays.sort(rows);
-					for(int i = 0; i < rows.length / 2; i++) {  // reverse sorted after this
-						int tmp = rows[i];
-						rows[i] = rows[rows.length - i - 1];
-						rows[rows.length - i - 1] = tmp;
-					}
-					for(int r : rows) 
-						table.removeRow(r);
+					table.removeRows(rows);
 				}
 			}
 			else if(cmd.equals("DebugSignals")) {
