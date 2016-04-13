@@ -1,7 +1,6 @@
 package de.uni.goettingen.REARController.Net;
 
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.Stack;
 
 import de.uni.goettingen.REARController.DataStruct.ClientStatus;
@@ -36,12 +35,7 @@ public class NetConnSignal {
 
 	
 	NetConnSignal(InetAddress ip_in) {
-		try {
-			ip			= InetAddress.getByName(ip_in.toString());
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		ip			= ip_in;
 		pubKey		= null;
 		id			= null;
 		eid			= null;
