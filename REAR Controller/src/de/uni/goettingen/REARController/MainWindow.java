@@ -53,7 +53,7 @@ public class MainWindow implements ActionListener {
 	public  static final String PROGRAM_NAME	= "REAR Controller";
 	private static final int	MajorVersion 	= 0;
 	private static final int	MedVersion		= 4;
-	private static final int	MinorVersion	= 0;
+	private static final int	MinorVersion	= 1;
 	
 	private JFrame frmREAR;
 
@@ -444,7 +444,7 @@ public class MainWindow implements ActionListener {
 		return editMode;
 	}
 
-	private void next() {
+	private Boolean changedMode() {
 		boolean nextStep = true;
 		switch(step.get()) {
 		case -1:
@@ -485,7 +485,11 @@ public class MainWindow implements ActionListener {
 			table.reset();
 			break;
 		}
-		if(nextStep) 
+		return nextStep;
+	}
+	
+	private void next() {
+		if(this.changedMode()) 
 			step.inc();
 		frmREAR.repaint();
 	}
@@ -752,17 +756,17 @@ public class MainWindow implements ActionListener {
 			case 1:
 				btnNextStep.setText("Start Exam");
 				btnNextStep.setToolTipText("Start Exam");
-				btnEditMode.setEnabled(false);
+//				btnEditMode.setEnabled(false);
 				break;
 			case 2:
 				btnNextStep.setText("Stop Exam");
 				btnNextStep.setToolTipText("Stop Exam");
-				btnEditMode.setEnabled(false);
+//				btnEditMode.setEnabled(false);
 				break;
 			case 3:
 				btnNextStep.setText("Reset Exam");
 				btnNextStep.setToolTipText("Reset Exam");
-				btnEditMode.setEnabled(false);
+//				btnEditMode.setEnabled(false);
 				break;
 			}
 			table.timerEvent();
@@ -776,6 +780,7 @@ public class MainWindow implements ActionListener {
 			JSpinner src = (JSpinner) e.getSource();
 			Integer  val = (Integer) src.getValue();
 			step.set(val);
+			changedMode();
 		}
 		
 	}
