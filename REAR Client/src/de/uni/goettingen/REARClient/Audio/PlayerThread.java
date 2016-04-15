@@ -22,14 +22,12 @@ public class PlayerThread implements Runnable {
 	private AudioInputStream		inS;
 	private AudioInputStream		dinS;
 	private Player					player;
-	private Recorder				recorder;
 	private Boolean					stop;
 	
-	PlayerThread(File flacFile, Player p, Recorder r) {
+	PlayerThread(File flacFile, Player p) {
 		try {
 			stop			= false;
 			player			= p;
-			recorder		= r;
 			fileFormat 		= AudioSystem.getAudioFileFormat(flacFile);
 			audioFormat		= fileFormat.getFormat();
 //			type			= fileFormat.getType();
@@ -111,7 +109,6 @@ public class PlayerThread implements Runnable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		if(recorder != null)
-			recorder.stopRecording();
+		player.stopRecording();
 	}
 }
