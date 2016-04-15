@@ -200,6 +200,7 @@ public class SignalObject {
 
 	public synchronized void reset() {
 		win.reset();
+		micLine.close();
 		micLine.open();
 		doRecord			= true;
 		doPlay				= false;
