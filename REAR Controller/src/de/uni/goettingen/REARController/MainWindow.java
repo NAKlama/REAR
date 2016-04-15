@@ -259,7 +259,7 @@ public class MainWindow implements ActionListener {
 		btnNextStep.setVerticalTextPosition(SwingConstants.BOTTOM);
 		btnNextStep.setHorizontalTextPosition(SwingConstants.CENTER);
 		btnNextStep.setToolTipText("Start Exam");
-		btnNextStep.setEnabled(false);
+		btnNextStep.setEnabled(true);
 		btnNextStep.setActionCommand("Next");
 		btnNextStep.addActionListener(listener);
 		toolBarMain.add(btnNextStep);

@@ -11,7 +11,7 @@ public class Player {
 	public Player(File inFile, Recorder recorder) {
 		playing	= false;
 		rec		= recorder;
-		pt		= new PlayerThread(inFile, this, rec);
+		pt		= new PlayerThread(inFile, this);
 		t		= new Thread(pt);
 		t.start();
 	}
@@ -26,5 +26,9 @@ public class Player {
 	
 	public synchronized void stop() {
 		pt.stop();
+	}
+	
+	public synchronized void stopRecording() {
+		rec.stopRecording();
 	}
 }
