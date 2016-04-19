@@ -101,23 +101,27 @@ public class ClientStatus implements Serializable {
 	}
 
 	public void or(ClientStatus cs) {
-		none		|= cs.none;
-		connected	|= cs.connected;
-		noMic		|= cs.noMic;
-		init		|= cs.init;
-		rec			|= cs.rec;
-		upload		|= cs.upload;
-		done		|= cs.done;
+		if(cs != null) {
+			none		|= cs.none;
+			connected	|= cs.connected;
+			noMic		|= cs.noMic;
+			init		|= cs.init;
+			rec			|= cs.rec;
+			upload		|= cs.upload;
+			done		|= cs.done;
+		}
 	}
 
 	public void and(ClientStatus cs) {
-		none		&= cs.none;
-		connected	&= cs.connected;
-		noMic		&= cs.noMic;
-		init		&= cs.init;
-		rec			&= cs.rec;
-		upload		&= cs.upload;
-		done		&= cs.done;
+		if(cs != null) {
+			none		&= cs.none;
+			connected	&= cs.connected;
+			noMic		&= cs.noMic;
+			init		&= cs.init;
+			rec			&= cs.rec;
+			upload		&= cs.upload;
+			done		&= cs.done;
+		}
 	}
 
 	public void not() {
@@ -144,7 +148,7 @@ public class ClientStatus implements Serializable {
 		upload		= false;
 		done		= false;
 	}
-	
+
 	public void setConnected(Boolean n) {
 		if(n != null)
 			connected = n;
@@ -153,11 +157,11 @@ public class ClientStatus implements Serializable {
 	public void setConnected() {
 		connected 	= true;
 	}
-	
+
 	public void setDisconnected() {
 		connected 	= false;
 	}
-	
+
 	public void setInit(Boolean i) {
 		if(i != null)
 			init = i;
@@ -172,7 +176,7 @@ public class ClientStatus implements Serializable {
 		done	= false;
 		connected 	= true;
 	}
-	
+
 	public void setNoMic(Boolean i) {
 		if(i != null)
 			noMic = i;
@@ -238,7 +242,7 @@ public class ClientStatus implements Serializable {
 			return false;
 		return none;
 	}
-	
+
 	public Boolean getNoMic() {
 		if(noMic == null)
 			return false;
@@ -268,7 +272,7 @@ public class ClientStatus implements Serializable {
 			return false;
 		return done;
 	}
-	
+
 	public boolean isDisconnected() {
 		if(connected == null)
 			return false;
@@ -279,7 +283,7 @@ public class ClientStatus implements Serializable {
 		return none && !init && !rec && !upload && !done;
 
 	}
-	
+
 	public boolean isNoMic() {
 		return noMic && !init && !rec && !upload && !done;
 	}
