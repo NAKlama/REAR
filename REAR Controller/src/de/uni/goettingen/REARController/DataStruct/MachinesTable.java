@@ -200,19 +200,63 @@ public class MachinesTable extends AbstractTableModel implements TableModel {
 	}
 	
 	private Machine objVectorToMachine(Vector<Object> o) {
-		AreaTreeNode 	atn	= (AreaTreeNode) o.get(1);
-		Area			a	= null;
-		InetAddress		ip = (InetAddress) o.get(2);
-		if(atn != null)
-			a = (Area) atn.getUserObject();
+
+		
+		
+		// Neet to pretect against ClassCastException
+		AreaTreeNode 	atn;
+		Area			area;
+		InetAddress		ip;
+		String			compID;
+		String			studID;
+		ClientStatus	status;
+		String			time;
+		Long			id;
+		try {
+			compID = (String) o.get(0);
+		} catch(ClassCastException e) {
+			compID = "None";
+		}
+		try {
+			atn		= (AreaTreeNode) o.get(1);
+			area	= (Area) atn.getUserObject();
+		} catch (ClassCastException e) {
+			atn		= null;
+			area	= null;
+		}
+		try {
+			ip = (InetAddress) o.get(2);
+		} catch(ClassCastException e) {
+			ip = null;
+		}
+		try {
+			studID = (String) o.get(3);
+		} catch(ClassCastException e) {
+			studID = "";
+		}
+		try {
+			status = (ClientStatus) o.get(4);
+		} catch(ClassCastException e) {
+			status = null;
+		}
+		try {
+			time = (String) o.get(5);
+		} catch(ClassCastException e) {
+			time = "";
+		}
+		try {
+			id = (Long) o.get(7);
+		} catch(ClassCastException e) {
+			id = null;
+		}
 		Machine m = new Machine(
-				(String) 		o.get(0),
-				(Area) 			a,
+				compID,
+				area,
 				ip,
-				(String) 		o.get(3),
-				(ClientStatus)	o.get(4),
-				(String) 		o.get(5),
-				(Long)			o.get(7));
+				studID,
+				status,
+				time,
+				id);
 		return m;
 	}
 }
