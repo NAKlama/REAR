@@ -464,13 +464,13 @@ public class MainWindow implements ActionListener {
 			break;
 		case 1:
 			btnNextStep.setIcon(iconStop);
-			btnNextStep.setEnabled(false);
+//			btnNextStep.setEnabled(false);
 			table.rec();
 			break;
 		case 2:
 			if(chckbxAllowStopp.isSelected()) {
 				btnNextStep.setIcon(iconRestart);
-				btnNextStep.setEnabled(false);
+//				btnNextStep.setEnabled(false);
 				chckbxAllowStopp.setSelected(false);
 				chckbxAllowStopp.setVisible(false);
 				table.stop();
@@ -480,7 +480,7 @@ public class MainWindow implements ActionListener {
 			break;
 		case 3:
 			btnNextStep.setIcon(iconNext);
-			btnNextStep.setEnabled(false);
+//			btnNextStep.setEnabled(false);
 			btnReset.setVisible(false);
 			table.reset();
 			break;
@@ -641,7 +641,7 @@ public class MainWindow implements ActionListener {
 					table.setServer(prop.getUploadServer(), prop.getUploadUser());
 					table.init();
 					btnNextStep.setIcon(iconRec);
-					btnNextStep.setEnabled(false);
+//					btnNextStep.setEnabled(false);
 				}
 			}
 			else if(cmd.equals("ExamID_Cancel")) {
