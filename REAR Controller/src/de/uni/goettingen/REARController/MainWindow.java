@@ -660,6 +660,9 @@ public class MainWindow implements ActionListener {
 				btnSendManualSignals.setVisible(sd.getDebug());
 				lblStep.setVisible(sd.getDebug());
 				stepSpinner.setVisible(sd.getDebug());
+				
+				table.setServer(sd.getServer(), sd.getUser());
+				
 				sd.setVisible(false);
 			}
 			else if(cmd.equals("Settings_Cancel")) {

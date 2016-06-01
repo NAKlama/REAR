@@ -105,6 +105,7 @@ public class PlayerThread implements Runnable {
 		player.setPlaying(false);
 		try {
 			inS.close();
+			player.stopRecording();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

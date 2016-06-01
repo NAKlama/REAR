@@ -350,12 +350,12 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 						this.setIcon(warnIcon);
 					else if(status.getInit())
 						this.setIcon(stoppedIcon);
-					else if(status.getRec())
-						this.setIcon(recIcon);
 					else if(status.getUpload())
 						this.setIcon(uploadIcon);
 					else if(status.getDone())
 						this.setIcon(okIcon);
+					else if(status.getRec())
+						this.setIcon(recIcon);
 				}
 				catch(ClassCastException e) {
 					try {

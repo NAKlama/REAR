@@ -19,32 +19,34 @@ public class MicrophoneLine {
 	}
 
 	public boolean open() {
-		if(!lineOpen) {
-			lineOpen = true;
-			AudioFormat	audioFormat = new AudioFormat(
-					AudioFormat.Encoding.PCM_SIGNED, 
-					SAMPLERATE,
-					BITWIDTH,
-					CHANNELS, 
-					(BITWIDTH / 8) * CHANNELS,
-					SAMPLERATE, 
-					false);
-
-			DataLine.Info	info = new DataLine.Info(TargetDataLine.class, audioFormat);
-			tDataLine = null;
-			try
-			{
-				tDataLine = (TargetDataLine) AudioSystem.getLine(info);
-				tDataLine.open(audioFormat);
-				tDataLine.start();
-			}
-			catch (LineUnavailableException | IllegalArgumentException e)
-			{
-				lineOpen = false;
-				System.out.println("Unable to get a recording line");
-				return false;
-			}
+		if(lineOpen && tDataLine != null) {
+			tDataLine.close();
 		}
+		lineOpen = true;
+		AudioFormat	audioFormat = new AudioFormat(
+				AudioFormat.Encoding.PCM_SIGNED, 
+				SAMPLERATE,
+				BITWIDTH,
+				CHANNELS, 
+				(BITWIDTH / 8) * CHANNELS,
+				SAMPLERATE, 
+				false);
+
+		DataLine.Info	info = new DataLine.Info(TargetDataLine.class, audioFormat);
+		tDataLine = null;
+		try
+		{
+			tDataLine = (TargetDataLine) AudioSystem.getLine(info);
+			tDataLine.open(audioFormat);
+			tDataLine.start();
+		}
+		catch (LineUnavailableException | IllegalArgumentException e)
+		{
+			lineOpen = false;
+			System.out.println("Unable to get a recording line");
+			return false;
+		}
+
 		return true;
 	}
 
