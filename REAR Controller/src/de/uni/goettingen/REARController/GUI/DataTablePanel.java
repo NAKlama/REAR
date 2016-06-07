@@ -180,6 +180,8 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 				rows[rows.length - i - 1] = tmp;
 			}
 			for(int r : rows) {
+				Long id = machines.getID(r);
+				connections.delete(id);
 				machines.removeRow(r);
 				mainTable.removeRow(r);
 			}
