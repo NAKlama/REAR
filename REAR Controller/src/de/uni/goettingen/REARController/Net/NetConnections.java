@@ -30,6 +30,14 @@ public class NetConnections {
 		activeMap		= new ConcurrentHashMap<Long, Boolean>();
 		sshPush 		= null;
 	}
+	
+	public void delete(Long id) {
+		activeMap.remove(id);
+		statusMap.remove(id);
+		recTimeMap.remove(id);
+		connMap.remove(id);
+		clientIDs.remove(id);
+	}
 
 	public void update(SerMachinesTable mList) {
 		for(Vector<Object> m : mList.data) {
