@@ -28,7 +28,12 @@ public class Player {
 		pt.stop();
 	}
 	
+	public synchronized Boolean isDone() {
+		return pt.isDone();
+	}
+	
 	public synchronized void stopRecording() {
-		rec.stopRecording();
+		if(rec != null)
+			rec.stopRecording();
 	}
 }

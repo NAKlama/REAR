@@ -3,6 +3,7 @@ package de.uni.goettingen.REARClient;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.concurrent.TimeUnit;
 
 import de.uni.goettingen.REARClient.Audio.MicrophoneLine;
 import de.uni.goettingen.REARClient.Audio.Player;
@@ -16,7 +17,6 @@ import de.uni.goettingen.REARClient.Net.SSH.SSHkey;
 public class SignalObject {
 	private Boolean			shutdownServer;
 	private StatusWindow	win;
-	private Recorder		rec;
 	private MicrophoneLine	micLine;
 	private SSHkey			sshKey;
 	private File 			outFile;
@@ -30,9 +30,16 @@ public class SignalObject {
 	private URL				playFileLocation;
 	private File			playFile;
 	private Boolean			playFileDownloaded;
+	private URL				playTestFileLocation;
+	private File			playTestFile;
+	private Boolean			playTestFileDownloaded;
 	private Boolean			doRecord;
 	private Boolean			doPlay;
+	private Recorder		rec;
+	private Recorder		recMessage;
 	private Player			player;
+	private Player			messagePlayer;
+	private Player			voicePlayer;
 	
 	public SignalObject(StatusWindow w, MicrophoneLine ml, SSHkey ssh, PropertiesStore ps) {
 		shutdownServer		= false;
@@ -75,13 +82,24 @@ public class SignalObject {
 		doRecord = true;
 	}
 	
+	public synchronized void setAudioTestFileURL(String urlString) {
+		try {
+			playTestFileLocation = new URL(urlString);
+			playTestFile = new File(prop.getDefaultPath() + "audioTest.mp3");
+			DownloadThread downloadTh = new DownloadThread(playTestFileLocation, this, playTestFile, true);
+			Thread dt = new Thread(downloadTh);
+			dt.start();
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	public synchronized void setAudioFileURL(String urlString) {
 		try {
 //			System.out.println("Setting audio URL = " + urlString);
 			playFileLocation = new URL(urlString);
 			playFile = new File(prop.getDefaultPath() + "playback.mp3");
-			DownloadThread downloadTh = new DownloadThread(playFileLocation, this, playFile);
+			DownloadThread downloadTh = new DownloadThread(playFileLocation, this, playFile, false);
 			Thread dt = new Thread(downloadTh);
 			dt.start();
 		} catch (MalformedURLException e) {
@@ -92,6 +110,10 @@ public class SignalObject {
 	
 	public synchronized void finishedAudioDownload() {
 		playFileDownloaded = true;
+	}
+	
+	public synchronized void finishedAudioTestDownload() {
+		playTestFileDownloaded = true;
 	}
 	
 	public synchronized void setUploadServer(String uls) {
@@ -160,6 +182,39 @@ public class SignalObject {
 	public synchronized String getPubKeyString() {
 		return sshKey.getPubKeyString();
 	}
+	
+	public synchronized void startAudioTest() {
+		String recPath;
+		recPath = new String(prop.getAudioPath() + "audioTest.wav");
+		while(!this.playTestFileDownloaded) {
+			try {
+				Thread.sleep(1000);
+			} catch (Exception e) {;}
+		}
+		messagePlayer = new Player(playTestFile, null);
+		while(!messagePlayer.isDone()) {
+			try {
+				Thread.sleep(100);
+			} catch (Exception e) {;}
+		}
+		recMessage = new Recorder(micLine, new File(recPath), false);
+		Thread recThread = new Thread(recMessage);
+		recThread.start();
+		try {
+			TimeUnit.SECONDS.sleep(15);
+		} catch (Exception e) {;}
+		recMessage.stopRecording();
+		try {
+			TimeUnit.SECONDS.sleep(1);
+		} catch (Exception e) {;}
+		micLine.close();
+		voicePlayer = new Player(new File(recPath), null);
+		while(!voicePlayer.isDone()) {
+			try {
+				Thread.sleep(100);
+			} catch (Exception e) {;}
+		}
+	}
 
 	public synchronized void startRecording() {
 		String path;
@@ -176,8 +231,8 @@ public class SignalObject {
 			outFile			= new File(path + win.getID().replaceAll("[/\"\'|\\\\:\\*\\?<>]", "-") + ".flac");
 		else
 			outFile			= new File(prop.getDefaultAudioFile());
-		rec					= new Recorder(micLine, outFile);
-		Thread recThread	= new Thread(rec);
+		rec					= new Recorder(micLine, outFile, false);
+		Thread recThread	= new Thread (rec);
 		recThread.start();
 		if(doPlay)
 			player			= new Player(playFile, rec);

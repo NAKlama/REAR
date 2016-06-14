@@ -125,6 +125,8 @@ public class ServerThread implements Runnable {
 					playOnly(message);
 				else if(message.get(0).equals("RECONLY"))
 					recOnly(message);
+				else if(message.get(0).equals("AUDIOTEST"))
+					audioTest(message);
 			}
 		} catch(NullPointerException e) {
 			; // Do nothing
@@ -182,6 +184,17 @@ public class ServerThread implements Runnable {
 				if(tokenCheck(message.get(2).trim(), message.get(0), remoteAddr, Arrays.asList(0))) {
 					signal.setAudioFileURL(message.get(1));
 					signal.activatePlayAudio();
+				}
+			}
+		}
+	}
+	
+	private void audioTest(ArrayList<String> message) throws IOException {
+		if(message.size() > 2) {
+			synchronized(signal) {
+				if(tokenCheck(message.get(2).trim(), message.get(0), remoteAddr, Arrays.asList(1))) {
+					signal.setAudioFileURL(message.get(1));
+					signal.startAudioTest();
 				}
 			}
 		}

@@ -15,11 +15,13 @@ public class DownloadThread implements Runnable {
 	private URL				url;
 	private SignalObject	sig;
 	private File			outFile;
+	private Boolean			test;
 	
-	public DownloadThread(URL urlIn, SignalObject sigIn, File file) {
+	public DownloadThread(URL urlIn, SignalObject sigIn, File file, Boolean t) {
 		url		= urlIn;
 		sig		= sigIn;
 		outFile	= file;
+		test	= t;
 //		System.out.println("Created Download Thread => " + file.getAbsolutePath());
 	}
 	
@@ -41,7 +43,10 @@ public class DownloadThread implements Runnable {
 			bos.flush();
 			bis.close();
 			bos.close();
-			sig.finishedAudioDownload();
+			if(test)
+				sig.finishedAudioTestDownload();
+			else
+				sig.finishedAudioDownload();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

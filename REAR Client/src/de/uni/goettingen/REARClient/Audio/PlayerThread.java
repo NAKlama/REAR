@@ -23,10 +23,12 @@ public class PlayerThread implements Runnable {
 	private AudioInputStream		dinS;
 	private Player					player;
 	private Boolean					stop;
+	private Boolean					done;
 	
 	PlayerThread(File flacFile, Player p) {
 		try {
 			stop			= false;
+			done			= false;
 			player			= p;
 			fileFormat 		= AudioSystem.getAudioFileFormat(flacFile);
 			audioFormat		= fileFormat.getFormat();
@@ -70,6 +72,7 @@ public class PlayerThread implements Runnable {
 				line.drain();
 				line.stop();
 				line.close();
+				done = true;
 				dinS.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -93,6 +96,10 @@ public class PlayerThread implements Runnable {
 
 	public void stop() {
 		stop = true;
+	}
+	
+	public Boolean isDone() {
+		return done;
 	}
 	
 	@Override
