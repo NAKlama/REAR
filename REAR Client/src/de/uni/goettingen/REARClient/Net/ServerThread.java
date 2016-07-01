@@ -127,6 +127,8 @@ public class ServerThread implements Runnable {
 					recOnly(message);
 				else if(message.get(0).equals("AUDIOTEST"))
 					audioTest(message);
+				else if(message.get(0).equals("FILESIZE"))
+					fileSize(message);
 			}
 		} catch(NullPointerException e) {
 			; // Do nothing
@@ -296,6 +298,16 @@ public class ServerThread implements Runnable {
 		else {
 			out.writeBytes(signal.getExamID() + "\n");
 		}
+	}
+	
+	private void fileSize(ArrayList<String> message) throws IOException {
+		if(message.size() > 1)
+			synchronized(signal) {
+				if(tokenCheck(message.get(1).trim(), message.get(0), remoteAddr, null)) {
+					String size = signal.getFormattedRecFileSize();
+					out.writeBytes(size + "\n");
+				}
+			}
 	}
 	
 	private void uploadServer(ArrayList<String> message) throws IOException {

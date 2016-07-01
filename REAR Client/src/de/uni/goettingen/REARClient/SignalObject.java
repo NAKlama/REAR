@@ -15,55 +15,55 @@ import de.uni.goettingen.REARClient.Net.SSH.SSHconnection;
 import de.uni.goettingen.REARClient.Net.SSH.SSHkey;
 
 public class SignalObject {
-	private Boolean			shutdownServer;
-	private StatusWindow	win;
-	private MicrophoneLine	micLine;
-	private SSHkey			sshKey;
-	private File 			outFile;
-	private DataConnection	dataC;
-	private String			studentID;
-	private String			examID;
-	private SSHconnection	ssh;
-	private String			uploadServer;
-	private String			uploadUser;
-	private PropertiesStore	prop;
-	private URL				playFileLocation;
-	private File			playFile;
-	private Boolean			playFileDownloaded;
-	private URL				playTestFileLocation;
-	private File			playTestFile;
-	private Boolean			playTestFileDownloaded;
-	private Boolean			doRecord;
-	private Boolean			doPlay;
-	private Recorder		rec;
-	private Recorder		recMessage;
-	private Player			player;
-	private Player			messagePlayer;
-	private Player			voicePlayer;
-	
+	private Boolean shutdownServer;
+	private StatusWindow win;
+	private MicrophoneLine micLine;
+	private SSHkey sshKey;
+	private File outFile;
+	private DataConnection dataC;
+	private String studentID;
+	private String examID;
+	private SSHconnection ssh;
+	private String uploadServer;
+	private String uploadUser;
+	private PropertiesStore prop;
+	private URL playFileLocation;
+	private File playFile;
+	private Boolean playFileDownloaded;
+	private URL playTestFileLocation;
+	private File playTestFile;
+	private Boolean playTestFileDownloaded;
+	private Boolean doRecord;
+	private Boolean doPlay;
+	private Recorder rec;
+	private Recorder recMessage;
+	private Player player;
+	private Player messagePlayer;
+	private Player voicePlayer;
+
 	public SignalObject(StatusWindow w, MicrophoneLine ml, SSHkey ssh, PropertiesStore ps) {
-		shutdownServer		= false;
-		win					= w;
-		micLine				= ml;
-		sshKey				= ssh;
-		outFile				= null;
-		dataC				= null;
-		ssh					= null;
-		studentID			= "";
-		examID				= "";
-		prop				= ps;
-		uploadServer		= prop.getUploadServer();
-		uploadUser			= prop.getUploadServerUser();
-		playFileDownloaded	= false;
-		doRecord			= true;
-		doPlay				= false;
+		shutdownServer = false;
+		win = w;
+		micLine = ml;
+		sshKey = ssh;
+		outFile = null;
+		dataC = null;
+		ssh = null;
+		studentID = "";
+		examID = "";
+		prop = ps;
+		uploadServer = prop.getUploadServer();
+		uploadUser = prop.getUploadServerUser();
+		playFileDownloaded = false;
+		doRecord = true;
+		doPlay = false;
 		this.checkMicrophone();
 	}
-	
+
 	public synchronized Boolean getDoPlay() {
 		return doPlay;
 	}
-	
+
 	public synchronized Boolean getDoRecord() {
 		return doRecord;
 	}
@@ -76,12 +76,12 @@ public class SignalObject {
 		doPlay = true;
 		doRecord = false;
 	}
-	
+
 	public synchronized void activateRecOnly() {
 		doPlay = false;
 		doRecord = true;
 	}
-	
+
 	public synchronized void setAudioTestFileURL(String urlString) {
 		try {
 			playTestFileLocation = new URL(urlString);
@@ -93,10 +93,10 @@ public class SignalObject {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public synchronized void setAudioFileURL(String urlString) {
 		try {
-//			System.out.println("Setting audio URL = " + urlString);
+			// System.out.println("Setting audio URL = " + urlString);
 			playFileLocation = new URL(urlString);
 			playFile = new File(prop.getDefaultPath() + "playback.mp3");
 			DownloadThread downloadTh = new DownloadThread(playFileLocation, this, playFile, false);
@@ -107,15 +107,15 @@ public class SignalObject {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public synchronized void finishedAudioDownload() {
 		playFileDownloaded = true;
 	}
-	
+
 	public synchronized void finishedAudioTestDownload() {
 		playTestFileDownloaded = true;
 	}
-	
+
 	public synchronized void setUploadServer(String uls) {
 		uploadServer = uls;
 	}
@@ -133,7 +133,7 @@ public class SignalObject {
 	}
 
 	public synchronized void shutdown() {
-			shutdownServer = true;
+		shutdownServer = true;
 	}
 
 	public synchronized Boolean getShutdownStatus() {
@@ -141,23 +141,23 @@ public class SignalObject {
 	}
 
 	public synchronized int getMode() {
-		if(!this.getMicStatus())
+		if (!this.getMicStatus())
 			return -1;
 		int mode = new Integer(win.getMode());
-		if(mode == 1 && doPlay && !playFileDownloaded)
+		if (mode == 1 && doPlay && !playFileDownloaded)
 			mode -= 1;
 		return mode;
 	}
 
 	public synchronized String getID() {
-		studentID =  win.getID();
+		studentID = win.getID();
 		return studentID;
 	}
 
 	public synchronized String getTime() {
 		return win.getTime();
 	}
-	
+
 	public synchronized Boolean getMicStatus() {
 		return micLine.isOpen();
 	}
@@ -166,15 +166,15 @@ public class SignalObject {
 		win.setID(new String(id));
 		studentID = new String(id);
 	}
-	
+
 	public synchronized void checkMicrophone() {
-		if(!micLine.isOpen())
+		if (!micLine.isOpen())
 			micLine.open();
 	}
 
 	public synchronized void initClient() {
-		ssh				= new SSHconnection(uploadServer, uploadUser, sshKey, prop);
-		dataC			= new DataConnection("127.0.0.1", prop.getDataPort(), ssh);
+		ssh = new SSHconnection(uploadServer, uploadUser, sshKey, prop);
+		dataC = new DataConnection("127.0.0.1", prop.getDataPort(), ssh);
 		dataC.addSignal(this);
 		win.init();
 	}
@@ -182,86 +182,132 @@ public class SignalObject {
 	public synchronized String getPubKeyString() {
 		return sshKey.getPubKeyString();
 	}
-	
+
 	public synchronized void startAudioTest() {
 		String recPath;
 		recPath = new String(prop.getAudioPath() + "audioTest.wav");
-		while(!this.playTestFileDownloaded) {
+		while (!this.playTestFileDownloaded) {
 			try {
 				Thread.sleep(1000);
-			} catch (Exception e) {;}
+			} catch (Exception e) {
+				;
+			}
 		}
 		messagePlayer = new Player(playTestFile, null);
-		while(!messagePlayer.isDone()) {
+		while (!messagePlayer.isDone()) {
 			try {
 				Thread.sleep(100);
-			} catch (Exception e) {;}
+			} catch (Exception e) {
+				;
+			}
 		}
 		recMessage = new Recorder(micLine, new File(recPath), false);
 		Thread recThread = new Thread(recMessage);
 		recThread.start();
 		try {
 			TimeUnit.SECONDS.sleep(15);
-		} catch (Exception e) {;}
+		} catch (Exception e) {
+			;
+		}
 		recMessage.stopRecording();
 		try {
 			TimeUnit.SECONDS.sleep(1);
-		} catch (Exception e) {;}
+		} catch (Exception e) {
+			;
+		}
 		micLine.close();
 		voicePlayer = new Player(new File(recPath), null);
-		while(!voicePlayer.isDone()) {
+		while (!voicePlayer.isDone()) {
 			try {
 				Thread.sleep(100);
-			} catch (Exception e) {;}
+			} catch (Exception e) {
+				;
+			}
 		}
 	}
 
 	public synchronized void startRecording() {
 		String path;
-		if(win.getExamID() != null && ! win.getExamID().equals("")) {
+		if (win.getExamID() != null && !win.getExamID().equals("")) {
 			path = new String(prop.getAudioPath() + win.getExamID().replaceAll("[/\"\'|\\\\:\\*\\?<>]", "-") + "\\");
 			File p = new File(path);
 			p.mkdirs();
-		}
-		else 
+		} else
 			path = new String(prop.getAudioPath());
 		System.out.println(path);
 		System.out.println(win.getExamID());
-		if(win.getID() != null && ! win.getID().equals(""))
-			outFile			= new File(path + win.getID().replaceAll("[/\"\'|\\\\:\\*\\?<>]", "-") + ".flac");
+		if (win.getID() != null && !win.getID().equals(""))
+			outFile = new File(path + win.getID().replaceAll("[/\"\'|\\\\:\\*\\?<>]", "-") + ".flac");
 		else
-			outFile			= new File(prop.getDefaultAudioFile());
-		rec					= new Recorder(micLine, outFile, false);
-		Thread recThread	= new Thread (rec);
+			outFile = new File(prop.getDefaultAudioFile());
+		rec = new Recorder(micLine, outFile, false);
+		Thread recThread = new Thread(rec);
 		recThread.start();
-		if(doPlay)
-			player			= new Player(playFile, rec);
+		if (doPlay)
+			player = new Player(playFile, rec);
 		win.setRecording(doRecord, doPlay);
 	}
 
+	private synchronized long getRecFileSize() {
+		if (outFile.exists()) {
+			return outFile.length();
+		} else
+			return 0;
+	}
+
+	public String getFormattedRecFileSize() {
+		String	unit = "B";
+		long	Lsize = getRecFileSize();
+		double  size  = Lsize;
+		
+		if(Lsize < 2000) {
+			return String.format("%-4d %s", size, unit);
+		}
+		size /= 1024;
+		unit  = "kB";
+		if(size < 2000) {
+			return String.format("%-4.2f %s", size, unit);
+		}
+		size /= 1024;
+		unit  = "MB";
+		if(size < 2000) {
+			return String.format("%-4.2f %s", size, unit);
+		}
+		size /= 1024;
+		unit  = "GB";
+		if(size < 2000) {
+			return String.format("%-4.2f %s", size, unit);
+		}
+		size /= 1024;
+		unit  = "TB";
+		return String.format("%-4.2f %s", size, unit);
+	}
+
 	public synchronized void stopRecording() {
-		if(doPlay)
+		if (doPlay)
 			player.stop();
 		rec.stopRecording();
 		win.setUpload();
 		try {
 			Thread.sleep(5000);
-		} catch (InterruptedException e) {;}
-		if(dataC != null) {
+		} catch (InterruptedException e) {
+			;
+		}
+		if (dataC != null) {
 			dataC.pushFile(outFile, studentID, examID);
 		}
-		
+
 	}
 
 	public synchronized void reset() {
 		win.reset();
 		micLine.close();
 		micLine.open();
-		doRecord			= true;
-		doPlay				= false;
-		playFileDownloaded	= false;
-		studentID			= "";
-		examID				= "";
+		doRecord = true;
+		doPlay = false;
+		playFileDownloaded = false;
+		studentID = "";
+		examID = "";
 	}
 
 	public synchronized void setExamID(String id) {
