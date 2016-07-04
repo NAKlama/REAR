@@ -20,6 +20,7 @@ public class NetConnSignal {
 	private String			eid;
 	private String[]		server;
 	private String			playFile;
+	private String			fileSize;
 	
 	private Object			commandLock		= new Object();
 	private Object			connectedLock	= new Object();
@@ -32,6 +33,7 @@ public class NetConnSignal {
 	private Object			serverLock		= new Object();
 	private Object			playFileLock	= new Object();
 	private Object			sleepLock		= new Object();
+	private Object			fSizeLock		= new Object();
 
 	
 	NetConnSignal(InetAddress ip_in) {
@@ -40,6 +42,7 @@ public class NetConnSignal {
 		id			= null;
 		eid			= null;
 		connected	= false;
+		fileSize    = null;
 		server		= new String[2];
 		commands	= new Stack<String>();
 		conThread	= new Thread(new ClientConn(this));
@@ -107,6 +110,18 @@ public class NetConnSignal {
 		}
 		synchronized(commandLock) {
 			commands.push("ID");
+		}
+	}
+	
+	public String getFileSize() {
+		synchronized(fSizeLock) {
+			return fileSize;
+		}
+	}
+	
+	public void setFileSize(String fSize) {
+		synchronized(fSizeLock) {
+			fileSize = new String(fSize);
 		}
 	}
 	

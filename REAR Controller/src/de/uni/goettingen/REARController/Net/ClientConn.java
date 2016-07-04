@@ -114,6 +114,11 @@ public class ClientConn implements Runnable {
 		return null;
 	}
 
+	public String getFileSize() {
+		if(checkConnection())
+			return getAuthReply("FILESIZE\n").trim();
+		return null;
+	}
 
 	private boolean setID(String id) {
 		if(checkConnection()) {
@@ -201,10 +206,21 @@ public class ClientConn implements Runnable {
 	}
 
 	private String getReply(String c) {
+		return _getReply(c, false);
+	}
+	
+	private String getAuthReply(String c) {
+		return _getReply(c, true);
+	}
+	
+	private String _getReply(String c, Boolean auth) {
 		try {
 			if(!c.equals("STATUS") && !c.equals("RECTIME"))
 				System.out.println("> " + c.trim());
-			out.writeBytes(new String(c));
+			String command = new String(c.trim());
+			if(auth)
+				command += token.getToken(c.trim(), salt);
+			out.writeBytes(command + "\n");
 			String reply = in.readLine();
 			if(in.ready()) {
 				in.readLine();

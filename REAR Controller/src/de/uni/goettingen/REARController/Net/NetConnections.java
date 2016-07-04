@@ -198,6 +198,12 @@ public class NetConnections {
 		return recTimeMap.get(id);
 	}
 	
+	public String getFileSize(long id) {
+		NetConnSignal	conn	= connMap.get(id);
+		String			fSize	= new String(conn.getFileSize());
+		return fSize;
+	}
+	
 	public ClientStatus getStatus() {
 		ClientStatus out = new ClientStatus();
 		for(long id : clientIDs) {
