@@ -16,6 +16,7 @@ public class Machine {
 	private ClientStatus	status;
 	private String			recTime;
 	private Boolean			delete;
+	private String			fileSize;
 	
 	public Machine(Machine m) {
 		computerID	= m.getComputerID();
@@ -26,6 +27,19 @@ public class Machine {
 		recTime		= m.getRecTime();
 		delete		= false;
 		id			= new IDfactory().getID();
+		fileSize	= "";
+	}
+	
+	public Machine(String cid, Area a, InetAddress i, String studID, ClientStatus s, String rTime, long idIn, String fs) {
+		computerID	= cid;
+		area		= a;
+		ip			= i;
+		studentID	= studID;
+		status		= s;
+		recTime		= rTime;
+		delete		= false;
+		id			= idIn;
+		fileSize	= fs;
 	}
 	
 	public Machine(String cid, Area a, InetAddress i, String studID, ClientStatus s, String rTime, long idIn) {
@@ -37,6 +51,7 @@ public class Machine {
 		recTime		= rTime;
 		delete		= false;
 		id			= idIn;
+		fileSize	= "";
 	}
 	
 	public Machine(String cid, Area a, InetAddress i, String studID, ClientStatus s, String rTime) {
@@ -48,6 +63,7 @@ public class Machine {
 		recTime		= rTime;
 		delete		= false;
 		id			= new IDfactory().getID();
+		fileSize	= "";
 	}
 	
 	public Machine(String cid, Area a, InetAddress i) {
@@ -59,6 +75,7 @@ public class Machine {
 		recTime		= "0:00:00";
 		delete		= false;
 		id			= new IDfactory().getID();
+		fileSize	= "";
 	}
 	
 	public Machine(String cid, Area a) {
@@ -70,6 +87,7 @@ public class Machine {
 		recTime		= "0:00:00";
 		delete		= false;
 		id			= new IDfactory().getID();
+		fileSize	= "";
 	}
 	
 	public Machine() {
@@ -81,6 +99,7 @@ public class Machine {
 		recTime		= "0:00:00";
 		delete		= false;
 		id			= new IDfactory().getID();
+		fileSize	= "";
 	}
 	
 	public void setComputerID(String id) {
@@ -168,6 +187,14 @@ public class Machine {
 	
 	public InetAddress getIP() {
 		return ip;
+	}
+	
+	public void setFileSize(String fs) {
+		fileSize = fs;
+	}
+	
+	public String getFileSize() {
+		return fileSize;
 	}
 	
 	public String getIPstr() {

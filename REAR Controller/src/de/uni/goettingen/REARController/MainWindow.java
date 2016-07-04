@@ -59,7 +59,7 @@ public class MainWindow implements ActionListener {
 
 	private DataTablePanel	table;
 
-	private Step 			step = new Step(-1, 3, 0);
+	private Step 			step = new Step(-1, 5, 0);
 	private ClientStatus	mode;
 
 	private Boolean		editMode = true;
@@ -463,11 +463,15 @@ public class MainWindow implements ActionListener {
 				nextStep = false;
 			break;
 		case 1:
+			table.recTest();
+		case 2:
+			break;
+		case 3:
 			btnNextStep.setIcon(iconStop);
 //			btnNextStep.setEnabled(false);
 			table.rec();
 			break;
-		case 2:
+		case 4:
 			if(chckbxAllowStopp.isSelected()) {
 				btnNextStep.setIcon(iconRestart);
 //				btnNextStep.setEnabled(false);
@@ -478,7 +482,7 @@ public class MainWindow implements ActionListener {
 			else
 				nextStep = false;
 			break;
-		case 3:
+		case 5:
 			btnNextStep.setIcon(iconNext);
 //			btnNextStep.setEnabled(false);
 			btnReset.setVisible(false);
@@ -757,16 +761,24 @@ public class MainWindow implements ActionListener {
 				btnNextStep.setToolTipText("Prepare Exam");
 				break;
 			case 1:
+				btnNextStep.setText("Start Audio Test");
+				btnNextStep.setToolTipText("Start Audio Test");
+				break;
+			case 2:
+				btnNextStep.setText("Audio Test Complete");
+				btnNextStep.setToolTipText("Audio Test Complete");
+				break;
+			case 3:
 				btnNextStep.setText("Start Exam");
 				btnNextStep.setToolTipText("Start Exam");
 //				btnEditMode.setEnabled(false);
 				break;
-			case 2:
+			case 4:
 				btnNextStep.setText("Stop Exam");
 				btnNextStep.setToolTipText("Stop Exam");
 //				btnEditMode.setEnabled(false);
 				break;
-			case 3:
+			case 5:
 				btnNextStep.setText("Reset Exam");
 				btnNextStep.setToolTipText("Reset Exam");
 //				btnEditMode.setEnabled(false);

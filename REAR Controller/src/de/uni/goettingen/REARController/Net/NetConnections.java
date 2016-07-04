@@ -115,7 +115,13 @@ public class NetConnections {
 				connMap.get(id).micRetry();
 		}
 	}
-
+	
+	public void recTest() {
+		for(long id: clientIDs) {
+			if(activeMap.get(id))
+				connMap.get(id).recTest();
+		}
+	}
 	
 	public void rec() {
 		for(long id : clientIDs) {
@@ -123,7 +129,6 @@ public class NetConnections {
 				connMap.get(id).rec();
 		}
 	}
-
 
 	public void stop() {
 		for(long id : clientIDs) {

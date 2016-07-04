@@ -15,14 +15,15 @@ public class MachinesTable extends AbstractTableModel implements TableModel {
 	private final static int		COL_NUM			= 6;
 	private final static int		COL_NUM_REAL	= 8;
 	private final static String []	COLUMN_NAMES 	=
-		{	"Computer ID",	// 0
-			"Area",			// 1
-			"IP Address",	// 2
-			"Student ID",	// 3
-			"Status",		// 4
-			"Rec. Time",	// 5
-			"Del",			// 6
-			"ID"			// 7
+		{	"Computer ID",		// 0
+			"Area",				// 1
+			"IP Address",		// 2
+			"Student ID",		// 3
+			"Status",			// 4
+			"Rec. Time",		// 5
+			"Rec. File Size",	// 6
+			"Del",				// 7
+			"ID"				// 8
 		};
 	
 	private final static Class<?>[] COLUMN_CLASSES =
@@ -39,7 +40,7 @@ public class MachinesTable extends AbstractTableModel implements TableModel {
 	private Vector<Vector<Object>>	table;
 	private Boolean					examMode	= false;
 	private Boolean					examStarted	= false;
-	private Boolean[] 				editableCol = {true, true, true, false, false, false, false, false};
+	private Boolean[] 				editableCol = {true, true, true, false, false, false, false, false, false};
 	
 	public MachinesTable() {
 		table = new Vector<Vector<Object>>();
@@ -131,8 +132,12 @@ public class MachinesTable extends AbstractTableModel implements TableModel {
 		return (String) getObjectAt(row, 5);
 	}
 	
+	public String getRecSize(int row) {
+		return (String) getObjectAt(row, 6);
+	}
+	
 	public Long getID(int row) {
-		return (Long) getObjectAt(row, 7);
+		return (Long) getObjectAt(row, 8);
 	}
 	
 	public void removeRow(int row) {
@@ -200,10 +205,6 @@ public class MachinesTable extends AbstractTableModel implements TableModel {
 	}
 	
 	private Machine objVectorToMachine(Vector<Object> o) {
-
-		
-		
-		// Neet to pretect against ClassCastException
 		AreaTreeNode 	atn;
 		Area			area;
 		InetAddress		ip;
@@ -212,6 +213,7 @@ public class MachinesTable extends AbstractTableModel implements TableModel {
 		ClientStatus	status;
 		String			time;
 		Long			id;
+		String			fileSize;
 		try {
 			compID = (String) o.get(0);
 		} catch(ClassCastException e) {
@@ -245,9 +247,14 @@ public class MachinesTable extends AbstractTableModel implements TableModel {
 			time = "";
 		}
 		try {
-			id = (Long) o.get(7);
+			id = (Long) o.get(8);
 		} catch(ClassCastException e) {
 			id = null;
+		}
+		try {
+			fileSize = (String) o.get(6);
+		} catch(ClassCastException e) {
+			fileSize = "";
 		}
 		Machine m = new Machine(
 				compID,
@@ -256,7 +263,8 @@ public class MachinesTable extends AbstractTableModel implements TableModel {
 				studID,
 				status,
 				time,
-				id);
+				id,
+				fileSize);
 		return m;
 	}
 }

@@ -62,19 +62,19 @@ public class ClientConn implements Runnable {
 			int st = Integer.parseInt(reply);
 			switch(st) {
 			case -1:
-				return new ClientStatus(false, true, false, false, false, false);
+				return new ClientStatus(false, true, false, false, false, false, false, false);
 			case 0:
-				return new ClientStatus(true, false, false, false, false, false);
+				return new ClientStatus(true, false, false, false, false, false, false, false);
 			case 1:
-				return new ClientStatus(false, false, true,  false, false, false);
+				return new ClientStatus(false, false, true,  false, false, false, false, false);
 			case 2:
-				return new ClientStatus(false, false, false, true,  false, false);
+				return new ClientStatus(false, false, false, true,  false, false, false, false);
 			case 3:
-				return new ClientStatus(false, false, false, false, true,  false);
+				return new ClientStatus(false, false, false, false, true,  false, false, false);
 			case 4:
-				return new ClientStatus(false, false, false, false, false, true );
+				return new ClientStatus(false, false, false, false, false, true , false, false);
 			}
-			return new ClientStatus(true, false, false, false, false, false);
+			return     new ClientStatus(true , false, false, false, false, false, false, false);
 		}
 		return new ClientStatus();		
 	}
@@ -180,6 +180,12 @@ public class ClientConn implements Runnable {
 	private boolean rec() {
 		if(checkConnection())
 			return sendAuthCommand("REC");
+		return false;
+	}
+	
+	private boolean recTest(String recTestURL) {
+		if(checkConnection())
+			return sendAuthParCommand("AUDIOTEST", recTestURL);
 		return false;
 	}
 
@@ -309,6 +315,8 @@ public class ClientConn implements Runnable {
 						}
 						if(command.equals("init"))
 							modeString = "init";
+						if(command.equals("recTest"))
+							modeString = "recTest";
 						if(command.equals("rec"))
 							modeString = "rec";
 						if(command.equals("stop"))
@@ -328,18 +336,21 @@ public class ClientConn implements Runnable {
 				sig.setStatus(this.status());
 				sig.setTime(this.getTime());
 				
-				Boolean isInit		= modeString.equals("init")  && sig.getStatus().getInit();
-				Boolean isRec		= modeString.equals("rec")   && sig.getStatus().getRec();
-				Boolean isStop		= modeString.equals("stop")  && sig.getStatus().getUpload();
-				Boolean isReset		= modeString.equals("reset") && sig.getStatus().getNone();
+				Boolean isInit		= modeString.equals("init")		&& sig.getStatus().getInit();
+				Boolean isRec		= modeString.equals("rec")		&& sig.getStatus().getRec();
+				Boolean isRecTest	= modeString.equals("recTest")	&& sig.getStatus().getRecTest();
+				Boolean isStop		= modeString.equals("stop")		&& sig.getStatus().getUpload();
+				Boolean isReset		= modeString.equals("reset")	&& sig.getStatus().getNone();
 				
-				if(isInit || isRec || isStop || isReset)
+				if(isInit || isRec || isStop || isReset || isRecTest)
 					modeString = "";
 				
 				if(modeString.equals("init")  && !sig.getStatus().getInit()) {
 					if(!this.getID().equals("") && !this.getExamID().equals(""))
 						this.init();
 				}
+				if(modeString.equals("recTest") && !sig.getStatus().getRecTest())
+					this.recTest("http://ilias-intern.wiso.uni-goettingen.de/audioTest.mp3"); // TODO: REPLACE URL or make it a variable
 				if(modeString.equals("rec")   && !sig.getStatus().getRec())
 					this.rec();
 				if(modeString.equals("stop")  && !sig.getStatus().getUpload())

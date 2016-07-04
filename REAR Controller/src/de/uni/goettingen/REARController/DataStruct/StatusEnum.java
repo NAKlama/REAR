@@ -10,5 +10,7 @@ public enum StatusEnum implements Serializable {
 	RECORDING,
 	UPLOADING,
 	DONE,
-	MULTI_STATUS
+	MULTI_STATUS,
+	REC_TEST_INIT,
+	REC_TEST_DONE
 }

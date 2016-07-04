@@ -148,6 +148,10 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 	public void rec() {
 		connections.rec();
 	}
+	
+	public void recTest() {
+		connections.recTest();
+	}
 
 	public void stop() {
 		connections.stop();

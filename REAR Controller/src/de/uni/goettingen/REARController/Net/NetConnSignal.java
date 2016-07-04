@@ -219,6 +219,12 @@ public class NetConnSignal {
 		}
 	}
 	
+	public void recTest() {
+		synchronized(commandLock) {
+			commands.push("recTest");
+		}
+	}
+	
 	public void rec() {
 		synchronized(commandLock) {
 			commands.push("rec");
