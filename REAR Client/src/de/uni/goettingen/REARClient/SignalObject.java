@@ -40,6 +40,9 @@ public class SignalObject {
 	private Player player;
 	private Player messagePlayer;
 	private Player voicePlayer;
+	
+	private Boolean audioTestDone;
+	private Boolean runningAudioTest;
 
 	public SignalObject(StatusWindow w, MicrophoneLine ml, SSHkey ssh, PropertiesStore ps) {
 		shutdownServer = false;
@@ -57,6 +60,8 @@ public class SignalObject {
 		playFileDownloaded = false;
 		doRecord = true;
 		doPlay = false;
+		audioTestDone = false;
+		runningAudioTest = false;
 		this.checkMicrophone();
 	}
 
@@ -185,47 +190,61 @@ public class SignalObject {
 
 	public synchronized void startAudioTest() {
 		String recPath;
-		recPath = new String(prop.getAudioPath() + "audioTest.wav");
-		while (!this.playTestFileDownloaded) {
+		if(!runningAudioTest) {
+			audioTestDone = false;
+			runningAudioTest = true;
+			win.startAudioTest();
+			recPath = new String(prop.getAudioPath() + "audioTest.wav");
+			while (!this.playTestFileDownloaded) {
+				try {
+					Thread.sleep(1000);
+				} catch (Exception e) {
+					;
+				}
+			}
+			messagePlayer = new Player(playTestFile, null);
+			while (!messagePlayer.isDone()) {
+				try {
+					Thread.sleep(100);
+				} catch (Exception e) {
+					;
+				}
+			}
+			recMessage = new Recorder(micLine, new File(recPath), false);
+			Thread recThread = new Thread(recMessage);
+			recThread.start();
 			try {
-				Thread.sleep(1000);
+				TimeUnit.SECONDS.sleep(15);
 			} catch (Exception e) {
 				;
 			}
-		}
-		messagePlayer = new Player(playTestFile, null);
-		while (!messagePlayer.isDone()) {
+			recMessage.stopRecording();
 			try {
-				Thread.sleep(100);
+				TimeUnit.SECONDS.sleep(1);
 			} catch (Exception e) {
 				;
 			}
-		}
-		recMessage = new Recorder(micLine, new File(recPath), false);
-		Thread recThread = new Thread(recMessage);
-		recThread.start();
-		try {
-			TimeUnit.SECONDS.sleep(15);
-		} catch (Exception e) {
-			;
-		}
-		recMessage.stopRecording();
-		try {
-			TimeUnit.SECONDS.sleep(1);
-		} catch (Exception e) {
-			;
-		}
-		micLine.close();
-		voicePlayer = new Player(new File(recPath), null);
-		while (!voicePlayer.isDone()) {
-			try {
-				Thread.sleep(100);
-			} catch (Exception e) {
-				;
+			micLine.close();
+			voicePlayer = new Player(new File(recPath), null);
+			while (!voicePlayer.isDone()) {
+				try {
+					Thread.sleep(100);
+				} catch (Exception e) {
+					;
+				}
 			}
+			audioTestDone = true;
+			runningAudioTest = false;
+			win.finishedAudioTest();
 		}
 	}
 
+	public synchronized Boolean getAudioTestDone() {
+		if(audioTestDone && ! runningAudioTest)
+			return true;
+		return false;
+	}
+	
 	public synchronized void startRecording() {
 		String path;
 		if (win.getExamID() != null && !win.getExamID().equals("")) {

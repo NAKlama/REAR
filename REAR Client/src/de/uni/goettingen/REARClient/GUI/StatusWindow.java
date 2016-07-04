@@ -43,7 +43,17 @@ public class StatusWindow extends JFrame {
 //	private AudioLevel	micStreamLevel;
 
 	private int h, m, s;
-	private int mode; // 0 = invisible; 1 = stopped; 2 = recording; 3 = transferring; 4 = done; 5 = playing
+	private int mode; 
+	/* Modes:
+	 * 0 = invisible; 
+	 * 1 = stopped; 
+	 * 2 = audio test running;
+	 * 3 = audio test done; 
+	 * 4 = recording; 
+	 * 5 = transferring; 
+	 * 6 = done; 
+	 * 7 = playing
+	 */
 
 	private SignalObject signal = null;
 
@@ -134,14 +144,22 @@ public class StatusWindow extends JFrame {
 			setTitle("REAR");
 		setVisible(true);
 	}
+	
+	public void startAudioTest() {
+		mode = 2;
+	}
+	
+	public void finishedAudioTest() {
+		mode = 3;
+	}
 
 	public void setRecording(Boolean doRecord, Boolean doPlay) {
 		String label = new String("Recording");
 		synchronized(signal) {
 			if(doPlay && ! doRecord)
-				mode = 5;
+				mode = 7;
 			else
-				mode = 2;
+				mode = 4;
 		}
 		recStarted = new Date();
 		if(doPlay && doRecord)
@@ -158,7 +176,7 @@ public class StatusWindow extends JFrame {
 
 	public void setUpload() {
 		synchronized(signal) {
-			mode = 3;
+			mode = 5;
 		}
 		icon.setIcon(uploadIcon);
 		statusLabel.setText("Uploading recorded file to server.");
@@ -167,7 +185,7 @@ public class StatusWindow extends JFrame {
 
 	public void setOK() {
 		synchronized(signal) {
-			mode = 4;
+			mode = 6;
 		}
 		icon.setIcon(okIcon);
 		statusLabel.setText("Upload finished.");
