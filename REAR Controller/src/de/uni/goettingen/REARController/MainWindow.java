@@ -18,6 +18,7 @@ import de.uni.goettingen.REARController.GUI.Dialogs.SettingsDialog;
 import de.uni.goettingen.REARController.GUI.Tools.IDfactory;
 import de.uni.goettingen.REARController.GUI.Tools.RearFileFilter;
 import de.uni.goettingen.REARController.GUI.Tools.Step;
+import de.uni.goettingen.REARController.Net.NetConnSignal;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -132,6 +133,7 @@ public class MainWindow implements ActionListener {
 	private Component horizontalGlue_2;
 	private JSpinner stepSpinner;
 	private JLabel lblStep;
+	private JButton btnManualAudioTest;
 
 	/**
 	 * Launch the application.
@@ -273,6 +275,18 @@ public class MainWindow implements ActionListener {
 		btnReset = new JButton("Reset");
 		btnReset.setActionCommand("Reset");
 		btnReset.setVisible(false);
+		
+		btnManualAudioTest = new JButton("Manual Audio Test");
+		btnManualAudioTest.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/32/audio-headset.png")));
+		btnManualAudioTest.addActionListener(listener);
+		btnManualAudioTest.setVerticalTextPosition(SwingConstants.BOTTOM);
+		btnManualAudioTest.setToolTipText("Do an audio test with the selected client");
+		btnManualAudioTest.setHorizontalTextPosition(SwingConstants.CENTER);
+		btnManualAudioTest.setEnabled(true);
+		btnManualAudioTest.setActionCommand("ManAudioTest");
+		btnManualAudioTest.setVisible(false);
+		
+		toolBarMain.add(btnManualAudioTest);
 		btnReset.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/32/reload.png")));
 		btnReset.setVerticalTextPosition(SwingConstants.BOTTOM);
 		btnReset.setToolTipText("Reset");
@@ -464,9 +478,11 @@ public class MainWindow implements ActionListener {
 			break;
 		case 1:
 			table.recTest();
+			btnManualAudioTest.setVisible(true);
 		case 2:
 			break;
 		case 3:
+			btnManualAudioTest.setVisible(false);
 			btnNextStep.setIcon(iconStop);
 //			btnNextStep.setEnabled(false);
 			table.rec();
@@ -584,6 +600,13 @@ public class MainWindow implements ActionListener {
 			}
 		}
 	}
+	
+	private void manAudioTest(int[] rows) {
+		for(int r : rows) {
+			NetConnSignal c = table.getConnection(r);
+			c.recTest();
+		}
+	}
 
 	public static String getVersion() {
 		String ver;
@@ -624,6 +647,10 @@ public class MainWindow implements ActionListener {
 				saveFile();
 			else if(cmd.equals("SaveAsFile"))
 				saveAsFile();
+			else if(cmd.equals("ManAudioTest")) {
+				int[] rows = table.getJTable().getSelectedRows();
+				manAudioTest(rows);
+			}
 			else if(cmd.equals("ExamID_OK")) {
 				Boolean	play, record;
 				String	examID, playFileURL;
