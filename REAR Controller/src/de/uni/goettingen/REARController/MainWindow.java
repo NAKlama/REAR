@@ -50,7 +50,7 @@ import javax.swing.SwingConstants;
 import javax.swing.JSpinner;
 
 public class MainWindow implements ActionListener {
-	public  static final String PROGRAM_NAME	= "REAR Controller (Devel)";
+	public  static final String PROGRAM_NAME	= "REAR Controller";
 	private static final int	MajorVersion 	= 0;
 	private static final int	MedVersion		= 4;
 	private static final int	MinorVersion	= 1;
