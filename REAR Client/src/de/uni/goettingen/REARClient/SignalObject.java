@@ -196,7 +196,6 @@ public class SignalObject {
 			System.out.println("Starting audio test");
 			win.startAudioTest();
 			recPath = new String(prop.getAudioPath() + "audioTest.wav");
-			setAudioTestFileURL(recPath);
 			System.out.println("  downloading file");
 			while (!this.playTestFileDownloaded) {
 				try {
