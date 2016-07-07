@@ -224,7 +224,7 @@ public class StatusWindow extends JFrame {
 	public boolean timerEvent() {
 //		levelMic.setLevel(micStreamLevel.getLevel());
 
-		if(mode == 2) {
+		if(mode == 4) {
 			Date now = new Date();
 			double seconds = (now.getTime() - recStarted.getTime()) / 1000;
 			h = (int) Math.floor(seconds / 3600);
