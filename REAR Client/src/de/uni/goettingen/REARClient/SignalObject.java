@@ -193,8 +193,11 @@ public class SignalObject {
 		if(!runningAudioTest) {
 			audioTestDone = false;
 			runningAudioTest = true;
+			System.out.println("Starting audio test");
 			win.startAudioTest();
 			recPath = new String(prop.getAudioPath() + "audioTest.wav");
+			setAudioTestFileURL(recPath);
+			System.out.println("  downloading file");
 			while (!this.playTestFileDownloaded) {
 				try {
 					Thread.sleep(1000);
@@ -202,6 +205,7 @@ public class SignalObject {
 					;
 				}
 			}
+			System.out.println("  playing message");
 			messagePlayer = new Player(playTestFile, null);
 			while (!messagePlayer.isDone()) {
 				try {
@@ -210,6 +214,7 @@ public class SignalObject {
 					;
 				}
 			}
+			System.out.println("  recording sample");
 			recMessage = new Recorder(micLine, new File(recPath), false);
 			Thread recThread = new Thread(recMessage);
 			recThread.start();
@@ -219,12 +224,14 @@ public class SignalObject {
 				;
 			}
 			recMessage.stopRecording();
+			System.out.println("    stopped recording");
 			try {
 				TimeUnit.SECONDS.sleep(1);
 			} catch (Exception e) {
 				;
 			}
 			micLine.close();
+			System.out.println("  play back recording");
 			voicePlayer = new Player(new File(recPath), null);
 			while (!voicePlayer.isDone()) {
 				try {
@@ -233,6 +240,7 @@ public class SignalObject {
 					;
 				}
 			}
+			System.out.println("  done");
 			audioTestDone = true;
 			runningAudioTest = false;
 			win.finishedAudioTest();
