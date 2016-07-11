@@ -240,7 +240,11 @@ public class Machine {
 		case 5:
 			return recTime;
 		case 6:
+			return fileSize;
+		case 7:
 			return delete;
+		case 8:
+			return id;
 		}
 		return null;
 	}
@@ -253,6 +257,7 @@ public class Machine {
 		v.addElement(studentID);
 		v.addElement(status);
 		v.addElement(recTime);
+		v.addElement(fileSize);
 		v.addElement(delete);
 		v.addElement(id);
 		return v;

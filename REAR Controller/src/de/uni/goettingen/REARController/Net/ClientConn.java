@@ -61,17 +61,21 @@ public class ClientConn implements Runnable {
 			//		System.out.println("Status reply: " + reply);
 			int st = Integer.parseInt(reply);
 			switch(st) {
-			case -1:
-				return new ClientStatus(false, true, false, false, false, false, false, false);
-			case 0:
-				return new ClientStatus(true, false, false, false, false, false, false, false);
-			case 1:
+			case -1: // Mic Error
+				return new ClientStatus(false, true, false,  false, false, false, false, false);
+			case 0:  // Uninitialized
+				return new ClientStatus(true, false, false,  false, false, false, false, false);
+			case 1:  // Initialized
 				return new ClientStatus(false, false, true,  false, false, false, false, false);
 			case 2:
-				return new ClientStatus(false, false, false, true,  false, false, false, false);
+				return new ClientStatus(false, false, false, false, false, false, true,  false);
 			case 3:
-				return new ClientStatus(false, false, false, false, true,  false, false, false);
+				return new ClientStatus(false, false, false, false, false, false, false, true);
 			case 4:
+				return new ClientStatus(false, false, false, true,  false, false, false, false);
+			case 5:
+				return new ClientStatus(false, false, false, false, true,  false, false, false);
+			case 6:
 				return new ClientStatus(false, false, false, false, false, true , false, false);
 			}
 			return     new ClientStatus(true , false, false, false, false, false, false, false);
@@ -116,7 +120,7 @@ public class ClientConn implements Runnable {
 
 	public String getFileSize() {
 		if(checkConnection())
-			return getAuthReply("FILESIZE\n").trim();
+			return getReply("FILESIZE\n").trim();
 		return null;
 	}
 
@@ -215,9 +219,9 @@ public class ClientConn implements Runnable {
 		return _getReply(c, false);
 	}
 	
-	private String getAuthReply(String c) {
-		return _getReply(c, true);
-	}
+//	private String getAuthReply(String c) {
+//		return _getReply(c, true);
+//	}
 	
 	private String _getReply(String c, Boolean auth) {
 		try {
@@ -335,22 +339,26 @@ public class ClientConn implements Runnable {
 				}
 				sig.setStatus(this.status());
 				sig.setTime(this.getTime());
+				sig.setFileSize(this.getFileSize());
 				
 				Boolean isInit		= modeString.equals("init")		&& sig.getStatus().getInit();
 				Boolean isRec		= modeString.equals("rec")		&& sig.getStatus().getRec();
-				Boolean isRecTest	= modeString.equals("recTest")	&& sig.getStatus().getRecTest();
+				Boolean isRecTest	= modeString.equals("recTest");
+				Boolean isRecTestR	= modeString.equals("recTestR") && sig.getStatus().getRecTestDone();
 				Boolean isStop		= modeString.equals("stop")		&& sig.getStatus().getUpload();
 				Boolean isReset		= modeString.equals("reset")	&& sig.getStatus().getNone();
 				
-				if(isInit || isRec || isStop || isReset || isRecTest)
+				if(isInit || isRec || isStop || isReset || isRecTestR)
 					modeString = "";
 				
 				if(modeString.equals("init")  && !sig.getStatus().getInit()) {
 					if(!this.getID().equals("") && !this.getExamID().equals(""))
 						this.init();
 				}
-				if(modeString.equals("recTest") && !sig.getStatus().getRecTest())
+				if(isRecTest) {
 					this.recTest("http://ilias-intern.wiso.uni-goettingen.de/audioTest.mp3"); // TODO: REPLACE URL or make it a variable
+					modeString = "recTestR";
+				}
 				if(modeString.equals("rec")   && !sig.getStatus().getRec())
 					this.rec();
 				if(modeString.equals("stop")  && !sig.getStatus().getUpload())

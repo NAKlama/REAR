@@ -71,7 +71,7 @@ public class SerMachinesTable implements Serializable {
 			for(Vector<Object> line : data) 
 				if(inLine.get(8) == line.get(8)) {
 					found = true;
-					for(int i=0; i < 8; i++) {
+					for(int i=0; i <= 8; i++) {
 						line.set(i, inLine.get(i));
 //						System.out.println("Setting col " + i + " to " + inLine.get(i));
 					}

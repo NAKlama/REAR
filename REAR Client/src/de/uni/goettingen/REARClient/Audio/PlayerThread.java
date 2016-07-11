@@ -25,24 +25,27 @@ public class PlayerThread implements Runnable {
 	private Boolean					stop;
 	private Boolean					done;
 	
-	PlayerThread(File flacFile, Player p) {
+	PlayerThread(File audioFile, Player p) {
 		try {
+			System.out.println("Insisde PlayerThread");
 			stop			= false;
 			done			= false;
 			player			= p;
-			fileFormat 		= AudioSystem.getAudioFileFormat(flacFile);
+			fileFormat 		= AudioSystem.getAudioFileFormat(audioFile);
 			audioFormat		= fileFormat.getFormat();
+			System.out.println("  got file format");
 //			type			= fileFormat.getType();
 			
-			inS 			= AudioSystem.getAudioInputStream(flacFile);
+			inS 			= AudioSystem.getAudioInputStream(audioFile);
+			System.out.println("  got audioInputStream");
 			decodedFormat	= new AudioFormat(	AudioFormat.Encoding.PCM_SIGNED,
 					audioFormat.getSampleRate(),
 					16,
 					audioFormat.getChannels(),
 					audioFormat.getChannels() * 2,
 					audioFormat.getSampleRate(),
-					false );			
-//			System.out.println("Created player thread");
+					false );
+			System.out.println("  created output format");
 		} catch (UnsupportedAudioFileException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -54,6 +57,7 @@ public class PlayerThread implements Runnable {
 	}
 	
 	private void rawplay(AudioFormat targetFormat, AudioInputStream dinS) {
+		System.out.println("Inside PlayerThread::rawplay()");
 		byte[] data = new byte[4096];
 		SourceDataLine line = getLine(targetFormat);
 		if(line != null) {
@@ -63,11 +67,12 @@ public class PlayerThread implements Runnable {
 			int nBytesWritten	= 0;
 			try {
 				while(nBytesRead != -1 && !stop) {
-
 					nBytesRead = dinS.read(data, 0, data.length);
 					if(nBytesRead != -1) {
 						nBytesWritten = line.write(data, 0, nBytesRead);
 					}
+					System.out.print(".");
+					System.out.flush();
 				}
 				line.drain();
 				line.stop();
@@ -104,7 +109,7 @@ public class PlayerThread implements Runnable {
 	
 	@Override
 	public void run() {
-//		System.out.println("Running Player thread");
+		System.out.println("Running Player thread");
 		player.setPlaying(true);
 		dinS	= AudioSystem.getAudioInputStream(decodedFormat, inS);
 //		dinS = inS;

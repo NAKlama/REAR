@@ -12,8 +12,8 @@ import de.uni.goettingen.REARController.GUI.Tools.IDfactory;
 
 public class MachinesTable extends AbstractTableModel implements TableModel {
 	private static final long serialVersionUID = 3569965886668818735L;
-	private final static int		COL_NUM			= 6;
-	private final static int		COL_NUM_REAL	= 8;
+	private final static int		COL_NUM			= 7;
+	private final static int		COL_NUM_REAL	= 9;
 	private final static String []	COLUMN_NAMES 	=
 		{	"Computer ID",		// 0
 			"Area",				// 1
@@ -93,7 +93,7 @@ public class MachinesTable extends AbstractTableModel implements TableModel {
 		if(t != null)
 			for(Vector<Object> line : t.data) {
 				Vector<Object> newLine = new Vector<Object>();
-				new IDfactory().setUsedID((long) line.get(7));
+				new IDfactory().setUsedID((long) line.get(8));
 				for(Object obj : line)
 					newLine.addElement(obj);
 				o.table.addElement(newLine);
@@ -109,6 +109,11 @@ public class MachinesTable extends AbstractTableModel implements TableModel {
 	public void setRecTime(int r, String t) {
 		if(t != null)
 			setObjectAt(t, r, 5);
+	}
+	
+	public void setRecSize(int r, String t) {
+		if(t != null)
+			setObjectAt(t, r, 6);
 	}
 	
 	public void removeEmptyRows() {
@@ -222,7 +227,7 @@ public class MachinesTable extends AbstractTableModel implements TableModel {
 		try {
 			atn		= (AreaTreeNode) o.get(1);
 			area	= (Area) atn.getUserObject();
-		} catch (ClassCastException e) {
+		} catch (ClassCastException | NullPointerException e) {
 			atn		= null;
 			area	= null;
 		}

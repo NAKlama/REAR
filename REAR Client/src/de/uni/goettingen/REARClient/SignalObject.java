@@ -32,7 +32,6 @@ public class SignalObject {
 	private Boolean playFileDownloaded;
 	private URL playTestFileLocation;
 	private File playTestFile;
-	private Boolean playTestFileDownloaded;
 	private Boolean doRecord;
 	private Boolean doPlay;
 	private Recorder rec;
@@ -43,6 +42,8 @@ public class SignalObject {
 	
 	private Boolean audioTestDone;
 	private Boolean runningAudioTest;
+	
+	private Object downloadSync = new Object();
 
 	public SignalObject(StatusWindow w, MicrophoneLine ml, SSHkey ssh, PropertiesStore ps) {
 		shutdownServer = false;
@@ -89,11 +90,14 @@ public class SignalObject {
 
 	public synchronized void setAudioTestFileURL(String urlString) {
 		try {
+			synchronized(downloadSync) {
+				playFileDownloaded = false;
+			}
 			playTestFileLocation = new URL(urlString);
 			playTestFile = new File(prop.getDefaultPath() + "audioTest.mp3");
-			DownloadThread downloadTh = new DownloadThread(playTestFileLocation, this, playTestFile, true);
-			Thread dt = new Thread(downloadTh);
-			dt.start();
+			DownloadThread downloadTestTh = new DownloadThread(playTestFileLocation, this, playTestFile);
+			Thread dtt = new Thread(downloadTestTh);
+			dtt.start();
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
@@ -104,7 +108,7 @@ public class SignalObject {
 			// System.out.println("Setting audio URL = " + urlString);
 			playFileLocation = new URL(urlString);
 			playFile = new File(prop.getDefaultPath() + "playback.mp3");
-			DownloadThread downloadTh = new DownloadThread(playFileLocation, this, playFile, false);
+			DownloadThread downloadTh = new DownloadThread(playFileLocation, this, playFile);
 			Thread dt = new Thread(downloadTh);
 			dt.start();
 		} catch (MalformedURLException e) {
@@ -113,12 +117,10 @@ public class SignalObject {
 		}
 	}
 
-	public synchronized void finishedAudioDownload() {
-		playFileDownloaded = true;
-	}
-
-	public synchronized void finishedAudioTestDownload() {
-		playTestFileDownloaded = true;
+	public void finishedAudioDownload() {
+		synchronized(downloadSync) {
+			playFileDownloaded = true;
+		}
 	}
 
 	public synchronized void setUploadServer(String uls) {
@@ -149,8 +151,10 @@ public class SignalObject {
 		if (!this.getMicStatus())
 			return -1;
 		int mode = new Integer(win.getMode());
-		if (mode == 1 && doPlay && !playFileDownloaded)
-			mode -= 1;
+		synchronized(downloadSync) {
+			if (mode == 1 && doPlay && !playFileDownloaded)
+				mode -= 1;
+		}
 		return mode;
 	}
 
@@ -195,17 +199,23 @@ public class SignalObject {
 			runningAudioTest = true;
 			System.out.println("Starting audio test");
 			win.startAudioTest();
-			recPath = new String(prop.getAudioPath() + "audioTest.wav");
+			recPath = new String(prop.getAudioPath() + "audioTest.flac");
 			System.out.println("  downloading file");
-			while (!this.playTestFileDownloaded) {
+			
+			Boolean cont = true;
+			while (cont) {
 				try {
 					Thread.sleep(1000);
 				} catch (Exception e) {
 					;
 				}
+				synchronized(downloadSync) {
+					cont = !playFileDownloaded;
+				}
 			}
-			System.out.println("  playing message");
+			System.out.print("  playing message");
 			messagePlayer = new Player(playTestFile, null);
+			System.out.print("..."); System.out.flush();
 			while (!messagePlayer.isDone()) {
 				try {
 					Thread.sleep(100);
@@ -214,7 +224,7 @@ public class SignalObject {
 				}
 			}
 			System.out.println("  recording sample");
-			recMessage = new Recorder(micLine, new File(recPath), false);
+			recMessage = new Recorder(micLine, new File(recPath), true);
 			Thread recThread = new Thread(recMessage);
 			recThread.start();
 			try {
@@ -240,6 +250,7 @@ public class SignalObject {
 				}
 			}
 			System.out.println("  done");
+			micLine.open();
 			audioTestDone = true;
 			runningAudioTest = false;
 			win.finishedAudioTest();
@@ -275,8 +286,11 @@ public class SignalObject {
 	}
 
 	private synchronized long getRecFileSize() {
-		if (outFile.exists()) {
-			return outFile.length();
+		System.out.println("Determining file Size");
+		if (outFile != null && outFile.exists()) {
+			long l = outFile.length();
+			System.out.println("File size: " + Long.toString(l));
+			return l;
 		} else
 			return 0;
 	}
@@ -287,7 +301,7 @@ public class SignalObject {
 		double  size  = Lsize;
 		
 		if(Lsize < 2000) {
-			return String.format("%-4d %s", size, unit);
+			return String.format("%4d %s", Lsize, unit);
 		}
 		size /= 1024;
 		unit  = "kB";
@@ -331,7 +345,9 @@ public class SignalObject {
 		micLine.open();
 		doRecord = true;
 		doPlay = false;
-		playFileDownloaded = false;
+		synchronized(downloadSync) {
+			playFileDownloaded = false;
+		}
 		studentID = "";
 		examID = "";
 	}

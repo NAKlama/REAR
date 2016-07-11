@@ -42,7 +42,7 @@ public class NetConnSignal {
 		id			= null;
 		eid			= null;
 		connected	= false;
-		fileSize    = null;
+		fileSize    = "";
 		server		= new String[2];
 		commands	= new Stack<String>();
 		conThread	= new Thread(new ClientConn(this));

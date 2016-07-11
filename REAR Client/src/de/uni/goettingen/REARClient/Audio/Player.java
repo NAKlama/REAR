@@ -13,6 +13,7 @@ public class Player {
 		rec		= recorder;
 		pt		= new PlayerThread(inFile, this);
 		t		= new Thread(pt);
+		System.out.println("New player thread");
 		t.start();
 	}
 	
