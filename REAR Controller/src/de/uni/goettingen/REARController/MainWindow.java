@@ -18,6 +18,7 @@ import de.uni.goettingen.REARController.GUI.Dialogs.SettingsDialog;
 import de.uni.goettingen.REARController.GUI.Tools.IDfactory;
 import de.uni.goettingen.REARController.GUI.Tools.RearFileFilter;
 import de.uni.goettingen.REARController.GUI.Tools.Step;
+import de.uni.goettingen.REARController.Net.NetConnSignal;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -59,7 +60,7 @@ public class MainWindow implements ActionListener {
 
 	private DataTablePanel	table;
 
-	private Step 			step = new Step(-1, 3, 0);
+	private Step 			step = new Step(-1, 5, 0);
 	private ClientStatus	mode;
 
 	private Boolean		editMode = true;
@@ -83,7 +84,9 @@ public class MainWindow implements ActionListener {
 
 	private JLabel		lblStoppedState;
 	private JLabel		lblArrowToRec;
+	private JLabel		lblArrowToATest;
 	private JLabel		lblRec;
+	private JLabel		lblATest;
 	private JLabel		lblArrowToUpload;
 	private JLabel		lblUpload;
 	private JLabel		lblArrowToDone;
@@ -112,6 +115,8 @@ public class MainWindow implements ActionListener {
 	private static final ImageIcon	iconUpload			= new ImageIcon(MainWindow.class.getResource("/icons/32/upload.png"));
 	private static final ImageIcon	iconOkGray			= new ImageIcon(MainWindow.class.getResource("/icons/32/gray/OK.png"));
 	private static final ImageIcon	iconOk				= new ImageIcon(MainWindow.class.getResource("/icons/32/OK.png"));
+	private static final ImageIcon	iconATestGray		= new ImageIcon(MainWindow.class.getResource("/icons/32/gray/audio-headset.png"));
+	private static final ImageIcon	iconATest			= new ImageIcon(MainWindow.class.getResource("/icons/32/audio-headset.png"));
 	private static final ImageIcon	iconNext			= new ImageIcon(MainWindow.class.getResource("/icons/32/next.png"));
 	private static final ImageIcon	iconRestart			= new ImageIcon(MainWindow.class.getResource("/icons/32/reload.png"));
 	private static final ImageIcon	iconStop			= new ImageIcon(MainWindow.class.getResource("/icons/32/stop.png"));
@@ -132,6 +137,7 @@ public class MainWindow implements ActionListener {
 	private Component horizontalGlue_2;
 	private JSpinner stepSpinner;
 	private JLabel lblStep;
+	private JButton btnManualAudioTest;
 
 	/**
 	 * Launch the application.
@@ -273,6 +279,18 @@ public class MainWindow implements ActionListener {
 		btnReset = new JButton("Reset");
 		btnReset.setActionCommand("Reset");
 		btnReset.setVisible(false);
+		
+		btnManualAudioTest = new JButton("Manual Audio Test");
+		btnManualAudioTest.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/32/audio-headset.png")));
+		btnManualAudioTest.addActionListener(listener);
+		btnManualAudioTest.setVerticalTextPosition(SwingConstants.BOTTOM);
+		btnManualAudioTest.setToolTipText("Do an audio test with the selected client");
+		btnManualAudioTest.setHorizontalTextPosition(SwingConstants.CENTER);
+		btnManualAudioTest.setEnabled(true);
+		btnManualAudioTest.setActionCommand("ManAudioTest");
+		btnManualAudioTest.setVisible(false);
+		
+		toolBarMain.add(btnManualAudioTest);
 		btnReset.setIcon(new ImageIcon(MainWindow.class.getResource("/icons/32/reload.png")));
 		btnReset.setVerticalTextPosition(SwingConstants.BOTTOM);
 		btnReset.setToolTipText("Reset");
@@ -366,6 +384,20 @@ public class MainWindow implements ActionListener {
 		Component horizontalStrut = Box.createHorizontalStrut(20);
 		panelProgress.add(horizontalStrut);
 
+		lblArrowToATest = new JLabel("");
+		lblArrowToATest.setIcon(iconRightArrowGray);
+		panelProgress.add(lblArrowToATest);
+		
+		Component horizontalStrut_6 = Box.createHorizontalStrut(20);
+		panelProgress.add(horizontalStrut_6);
+		
+		lblATest = new JLabel("");
+		lblATest.setIcon(iconATestGray);
+		panelProgress.add(lblATest);
+		
+		Component horizontalStrut_9 = Box.createHorizontalStrut(20);
+		panelProgress.add(horizontalStrut_9);
+		
 		lblArrowToRec = new JLabel("");
 		lblArrowToRec.setIcon(iconRightArrowGray);
 		panelProgress.add(lblArrowToRec);
@@ -446,6 +478,7 @@ public class MainWindow implements ActionListener {
 
 	private Boolean changedMode() {
 		boolean nextStep = true;
+		System.out.println("changedMode(): " + step.get());
 		switch(step.get()) {
 		case -1:
 			table.micRetry();
@@ -463,11 +496,18 @@ public class MainWindow implements ActionListener {
 				nextStep = false;
 			break;
 		case 1:
+			table.recTest();
+			btnManualAudioTest.setVisible(true);
+			break;
+		case 2:
+			break;
+		case 3:
+			btnManualAudioTest.setVisible(false);
 			btnNextStep.setIcon(iconStop);
 //			btnNextStep.setEnabled(false);
 			table.rec();
 			break;
-		case 2:
+		case 4:
 			if(chckbxAllowStopp.isSelected()) {
 				btnNextStep.setIcon(iconRestart);
 //				btnNextStep.setEnabled(false);
@@ -478,7 +518,7 @@ public class MainWindow implements ActionListener {
 			else
 				nextStep = false;
 			break;
-		case 3:
+		case 5:
 			btnNextStep.setIcon(iconNext);
 //			btnNextStep.setEnabled(false);
 			btnReset.setVisible(false);
@@ -489,6 +529,7 @@ public class MainWindow implements ActionListener {
 	}
 	
 	private void next() {
+		System.out.println("next()");
 		if(this.changedMode()) 
 			step.inc();
 		frmREAR.repaint();
@@ -580,6 +621,13 @@ public class MainWindow implements ActionListener {
 			}
 		}
 	}
+	
+	private void manAudioTest(int[] rows) {
+		for(int r : rows) {
+			NetConnSignal c = table.getConnection(r);
+			c.recTest();
+		}
+	}
 
 	public static String getVersion() {
 		String ver;
@@ -600,12 +648,16 @@ public class MainWindow implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			String cmd = e.getActionCommand();
+			System.out.println("Action command = " + cmd);
 			if(cmd.equals("ExamMode"))
 				toggleEdit();
 			else if(cmd.equals("EditMode"))
 				toggleEdit();
 			else if(cmd.equals("Next"))
+			{
+				System.out.println("Next Button pressed");
 				next();
+			}
 			else if(cmd.equals("Reset"))
 				reset();
 			else if(cmd.equals("Info")) {
@@ -620,6 +672,10 @@ public class MainWindow implements ActionListener {
 				saveFile();
 			else if(cmd.equals("SaveAsFile"))
 				saveAsFile();
+			else if(cmd.equals("ManAudioTest")) {
+				int[] rows = table.getJTable().getSelectedRows();
+				manAudioTest(rows);
+			}
 			else if(cmd.equals("ExamID_OK")) {
 				Boolean	play, record;
 				String	examID, playFileURL;
@@ -712,8 +768,18 @@ public class MainWindow implements ActionListener {
 				lblStoppedState.setIcon(iconStopped);
 			else
 				lblStoppedState.setIcon(iconStoppedGray);
+			
+			if(mode.getInit() && mode.getRecTest())
+				lblArrowToATest.setIcon(iconRightArrow);
+			else
+				lblArrowToATest.setIcon(iconRightArrowGray);
+			
+			if(mode.getRecTest())
+				lblATest.setIcon(iconATest);
+			else
+				lblATest.setIcon(iconATestGray);
 
-			if(mode.getInit() && mode.getRec())
+			if(mode.getRecTestDone() && ! mode.getRecTest())
 				lblArrowToRec.setIcon(iconRightArrow);
 			else
 				lblArrowToRec.setIcon(iconRightArrowGray);
@@ -757,16 +823,24 @@ public class MainWindow implements ActionListener {
 				btnNextStep.setToolTipText("Prepare Exam");
 				break;
 			case 1:
+				btnNextStep.setText("Start Audio Test");
+				btnNextStep.setToolTipText("Start Audio Test");
+				break;
+			case 2:
+				btnNextStep.setText("Audio Test Complete");
+				btnNextStep.setToolTipText("Audio Test Complete");
+				break;
+			case 3:
 				btnNextStep.setText("Start Exam");
 				btnNextStep.setToolTipText("Start Exam");
 //				btnEditMode.setEnabled(false);
 				break;
-			case 2:
+			case 4:
 				btnNextStep.setText("Stop Exam");
 				btnNextStep.setToolTipText("Stop Exam");
 //				btnEditMode.setEnabled(false);
 				break;
-			case 3:
+			case 5:
 				btnNextStep.setText("Reset Exam");
 				btnNextStep.setToolTipText("Reset Exam");
 //				btnEditMode.setEnabled(false);
@@ -783,7 +857,7 @@ public class MainWindow implements ActionListener {
 			JSpinner src = (JSpinner) e.getSource();
 			Integer  val = (Integer) src.getValue();
 			step.set(val);
-			changedMode();
+//			changedMode();
 		}
 		
 	}

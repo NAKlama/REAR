@@ -17,6 +17,7 @@ public class NetConnections {
 	private Vector<Long>							clientIDs;
 	private ConcurrentHashMap<Long, NetConnSignal>	connMap;
 	private ConcurrentHashMap<Long, String> 		recTimeMap;
+	private ConcurrentHashMap<Long, String> 		recSizeMap;
 	private ConcurrentHashMap<Long, ClientStatus>	statusMap;
 	private ConcurrentHashMap<Long, Boolean>		activeMap;
 	
@@ -26,6 +27,7 @@ public class NetConnections {
 		clientIDs		= new Vector<Long>();
 		connMap			= new ConcurrentHashMap<Long, NetConnSignal>();
 		recTimeMap		= new ConcurrentHashMap<Long, String>();
+		recSizeMap		= new ConcurrentHashMap<Long, String>();
 		statusMap		= new ConcurrentHashMap<Long, ClientStatus>();
 		activeMap		= new ConcurrentHashMap<Long, Boolean>();
 		sshPush 		= null;
@@ -41,7 +43,7 @@ public class NetConnections {
 
 	public void update(SerMachinesTable mList) {
 		for(Vector<Object> m : mList.data) {
-			long		id		= (long) m.get(7);
+			long		id		= (long) m.get(8);
 			String		studID	= (String) m.get(3);
 			InetAddress ip		= (InetAddress) m.get(2);
 			Boolean		active	= !studID.isEmpty();
@@ -115,7 +117,13 @@ public class NetConnections {
 				connMap.get(id).micRetry();
 		}
 	}
-
+	
+	public void recTest() {
+		for(long id: clientIDs) {
+			if(activeMap.get(id))
+				connMap.get(id).recTest();
+		}
+	}
 	
 	public void rec() {
 		for(long id : clientIDs) {
@@ -123,7 +131,6 @@ public class NetConnections {
 				connMap.get(id).rec();
 		}
 	}
-
 
 	public void stop() {
 		for(long id : clientIDs) {
@@ -198,6 +205,13 @@ public class NetConnections {
 		return recTimeMap.get(id);
 	}
 	
+	public String getFileSize(long id) {
+		if(! recSizeMap.containsKey(id)) {
+			return "0 B";
+		}
+		return recSizeMap.get(id);
+	}
+	
 	public ClientStatus getStatus() {
 		ClientStatus out = new ClientStatus();
 		for(long id : clientIDs) {
@@ -211,7 +225,9 @@ public class NetConnections {
 				String			recTime = conn.getTime();
 				if(recTime != null)
 					recTimeMap.put(id, new String(recTime));
-				
+				String			recSize = conn.getFileSize();
+				if(recSize != null)
+					recSizeMap.put(id, new String(recSize));
 			}
 		}
 		return out;

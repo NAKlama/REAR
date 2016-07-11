@@ -46,6 +46,7 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 	private static final ImageIcon warnIcon		= new ImageIcon(MainWindow.class.getResource("/icons/16/warning.png"));
 	private static final ImageIcon connIcon		= new ImageIcon(MainWindow.class.getResource("/icons/16/connected.png"));
 	private static final ImageIcon disconnIcon	= new ImageIcon(MainWindow.class.getResource("/icons/16/disconnected.png"));
+	private static final ImageIcon audTestIcon	= new ImageIcon(MainWindow.class.getResource("/icons/16/audio-headset.png"));
 
 	private JTable 			table;
 	private MachinesTable	machines;
@@ -120,7 +121,7 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 		ConcurrentHashMap<Long, String> studIDs = new ConcurrentHashMap<Long, String>();
 		for(Vector<Object> line : mainTable.data) {
 			String 	studID	= (String) 	line.get(3);
-			long	id		= (long)	line.get(7);
+			long	id		= (long)	line.get(8);
 //			System.out.println(id + ": " + studID);
 			if(studID != null && ! studID.trim().equals("")) {
 				studIDs.put(id, studID);
@@ -147,6 +148,10 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 
 	public void rec() {
 		connections.rec();
+	}
+	
+	public void recTest() {
+		connections.recTest();
 	}
 
 	public void stop() {
@@ -242,13 +247,15 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 			if(m.getComputerID() != "" && m.getArea() != null && m.getIP() != null) {
 				tab.setStatus(i, connections.getStatus(id));
 				tab.setRecTime(i, connections.getRecTime(id));
+				tab.setRecSize(i, connections.getFileSize(id));
 			}
 		}
 		for(Vector<Object> line : mainTable.data) {
-			long id = (long) line.get(7);
+			long id = (long) line.get(8);
 			if((String) line.get(0) != "" && line.get(1) != null && line.get(2) != null) {
 				line.set(4, connections.getStatus(id));
-				line.set(4, connections.getRecTime(id));
+				line.set(5, connections.getRecTime(id));
+				line.set(6, connections.getFileSize(id));
 			}
 		}
 	}
@@ -280,7 +287,7 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 
 	private void updateConn() {
 		for(Vector<Object> line : mainTable.data) {
-			long id = (long) line.get(7);
+			long id = (long) line.get(8);
 			if(line.get(2) != null)
 				if(connections.hasID(id)) {
 					InetAddress ip	= (InetAddress) line.get(2);
@@ -358,6 +365,8 @@ public class DataTablePanel extends JPanel implements TableModelListener {
 						this.setIcon(okIcon);
 					else if(status.getRec())
 						this.setIcon(recIcon);
+					else if(status.getRecTest() || status.getRecTestDone())
+						this.setIcon(audTestIcon);
 				}
 				catch(ClassCastException e) {
 					try {

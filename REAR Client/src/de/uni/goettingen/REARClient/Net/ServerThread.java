@@ -125,6 +125,10 @@ public class ServerThread implements Runnable {
 					playOnly(message);
 				else if(message.get(0).equals("RECONLY"))
 					recOnly(message);
+				else if(message.get(0).equals("AUDIOTEST"))
+					audioTest(message);
+				else if(message.get(0).equals("FILESIZE"))
+					fileSize(message);
 			}
 		} catch(NullPointerException e) {
 			; // Do nothing
@@ -187,6 +191,18 @@ public class ServerThread implements Runnable {
 		}
 	}
 	
+	private void audioTest(ArrayList<String> message) throws IOException {
+		if(message.size() > 2) {
+			synchronized(signal) {
+				if(tokenCheck(message.get(2).trim(), message.get(0), remoteAddr, Arrays.asList(1, 0, 2, 3))) {
+					System.out.println("URL: " + message.get(1));
+					signal.setAudioTestFileURL(message.get(1));
+					signal.startAudioTest();
+				}
+			}
+		}
+	}
+	
 	private void checkMicrophone(ArrayList<String> message) throws IOException {
 		if(message.size() > 1) {
 			synchronized(signal) {
@@ -228,7 +244,7 @@ public class ServerThread implements Runnable {
 	private void startRecording(ArrayList<String> message) throws IOException {
 		if(message.size() > 1) 
 			synchronized(signal) {
-				if(tokenCheck(message.get(1).trim(), message.get(0), remoteAddr, Arrays.asList(1)))
+				if(tokenCheck(message.get(1).trim(), message.get(0), remoteAddr, Arrays.asList(3)))
 					signal.startRecording();
 			}
 	}
@@ -236,7 +252,7 @@ public class ServerThread implements Runnable {
 	private void stopRecording(ArrayList<String> message) throws IOException {
 		if(message.size() > 1) 
 			synchronized(signal) {
-				if(tokenCheck(message.get(1).trim(), message.get(0), remoteAddr, Arrays.asList(2)))
+				if(tokenCheck(message.get(1).trim(), message.get(0), remoteAddr, Arrays.asList(4)))
 					signal.stopRecording();
 			}
 	}
@@ -284,13 +300,21 @@ public class ServerThread implements Runnable {
 			out.writeBytes(signal.getExamID() + "\n");
 		}
 	}
+
+	private void fileSize(ArrayList<String> message) throws IOException {
+		System.out.println("< FILESIZE");
+		synchronized(signal) {
+			String size = signal.getFormattedRecFileSize();
+			System.out.println("> " + size);
+			out.writeBytes(size + "\n");
+		}
+	}
 	
 	private void uploadServer(ArrayList<String> message) throws IOException {
 		if(message.size() > 1) 
 			synchronized(signal) {
 				if(tokenCheck(message.get(2).trim(), message.get(0), remoteAddr, Arrays.asList(0)))
 					signal.setUploadServer(message.get(1));
-						
 				}
 	}
 	
@@ -299,7 +323,6 @@ public class ServerThread implements Runnable {
 			synchronized(signal) {
 				if(tokenCheck(message.get(2).trim(), message.get(0), remoteAddr, Arrays.asList(0)))
 					signal.setUploadUser(message.get(1));
-						
 				}
 	}
 	

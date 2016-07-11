@@ -13,6 +13,7 @@ public class Player {
 		rec		= recorder;
 		pt		= new PlayerThread(inFile, this);
 		t		= new Thread(pt);
+		System.out.println("New player thread");
 		t.start();
 	}
 	
@@ -28,7 +29,12 @@ public class Player {
 		pt.stop();
 	}
 	
+	public synchronized Boolean isDone() {
+		return pt.isDone();
+	}
+	
 	public synchronized void stopRecording() {
-		rec.stopRecording();
+		if(rec != null)
+			rec.stopRecording();
 	}
 }

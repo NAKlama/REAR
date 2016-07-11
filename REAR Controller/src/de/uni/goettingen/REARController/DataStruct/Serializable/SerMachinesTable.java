@@ -53,6 +53,8 @@ public class SerMachinesTable implements Serializable {
 				else if(i==5)
 					oLine.add("0:00:00");
 				else if(i==6)
+					oLine.add("0 B");
+				else if(i==7)
 					oLine.add(null);
 				else
 					oLine.add(line.get(i));
@@ -67,9 +69,9 @@ public class SerMachinesTable implements Serializable {
 		for(Vector<Object> inLine : t.data) {
 			Boolean found = false;
 			for(Vector<Object> line : data) 
-				if(inLine.get(7) == line.get(7)) {
+				if(inLine.get(8) == line.get(8)) {
 					found = true;
-					for(int i=0; i < 7; i++) {
+					for(int i=0; i <= 8; i++) {
 						line.set(i, inLine.get(i));
 //						System.out.println("Setting col " + i + " to " + inLine.get(i));
 					}
@@ -115,7 +117,8 @@ public class SerMachinesTable implements Serializable {
 			else
 				out += ", null";
 			out += ", " + (String) line.get(5);
-			out += ", " + String.valueOf((Long) line.get(7));
+			out += ", " + (String) line.get(6);
+			out += ", " + String.valueOf((Long) line.get(8));
 			out += "\n";
 		}
 		return out;
