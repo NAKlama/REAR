@@ -3,10 +3,10 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="lib" path="C:/Users/Frederik Klama/git/REAR/lib/javaFlacEncoder-0.3.1.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Frederik Klama/git/REAR/lib/jsch-0.1.53.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="C:/Users/Frederik Klama/git/REAR/lib/jl1.0.1.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Frederik Klama/git/REAR/lib/tritonus_share.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Frederik Klama/git/REAR/lib/mp3spi1.9.5.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Frederik Klama/git/REAR/resources - Copy.zip"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
